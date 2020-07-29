@@ -82,6 +82,7 @@ namespace MJL {
 
         /**
          * Get option data from the client and set member data
+         * @return A boost::tuple<> representing an equity option
          */
         const OptionData& Input::setOptionData() {
             std::cout << "\nEnter the required option data:\n";
