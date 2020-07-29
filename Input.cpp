@@ -22,7 +22,7 @@ namespace MJL {
         /**
          * Initialize a new Input object with the specified option data
          * @param optionData A {@link boost::tuple} containing values to initialize core option data (e.g expiry,
-         * volatility, risk-free rate, spot, call option price, put option price)
+         * volatility, risk-free rate, spot price, strike price)
          * @throws OutOfMemoryException Indicates insufficient memory for this new Input object
          */
         Input::Input(const OptionData &optionData_) : optionData(optionData_) {}
@@ -35,14 +35,14 @@ namespace MJL {
          * @param S Spot price of the underlying
          * @throws OutOfMemoryException Indicates insufficient memory for this new Input object
          */
-        Input::Input(double &T_, double &sig_, double &r_, double &S_) : T(T_), sig(sig_), r(r_), S(S_) {}
+        Input::Input(double &T_, double &sig_, double &r_, double &S_, double &K_) : T(T_), sig(sig_), r(r_), S(S_), K(K_) {}
 
         /**
          * Initialize a new Input object using the member data of the source
          * @param source An Input object whose data members will be used to initialize this Input objects members
          * @throws OutOfMemoryException Indicates insufficient memory for this new Input object
          */
-        Input::Input(const Input &source) : T(source.T), sig(source.sig), r(source.r), S(source.S) {}
+        Input::Input(const Input &source) : T(source.T), sig(source.sig), r(source.r), S(source.S), K(source.K) {}
 
         /**
          * Destory's this Input object
@@ -62,6 +62,7 @@ namespace MJL {
             sig = source.sig;
             r = source.r;
             S = source.S;
+            K = source.K;
 
             return *this;
         }
@@ -145,7 +146,20 @@ namespace MJL {
 
                     // Set a default value
                     std::cout << "Incorrect input. Setting default stock price to $65\n";
-                    S = 65;                      // Page 36-37 of Intro to C++ for Financial Engineers by Dr. Duffy
+                    S = 60;                      // Page 36-37 of Intro to C++ for Financial Engineers by Dr. Duffy
+                }
+
+                std::cout << "Strike price: "; std::cin >> K;
+
+                // Handle input errors and crashes gracefully
+                if (K < 0 || !std::cin) {
+
+                    // Clear the error flat
+                    std::cin.clear();
+
+                    // Ignore input up to stream size or new line (whichever comes first)
+                    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+                    K = 65;                     // Page 36-37 of Intro to C++ for Financial Engineers by Dr. Duffy
                 }
             } catch (std::exception& e) {
                 std::cout << e.what() << std::endl;

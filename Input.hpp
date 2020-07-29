@@ -11,7 +11,7 @@
 #include <boost/tuple/tuple_io.hpp>
 
 // Alias for required option data (e.g. expiry, volatility, risk-free rate, spot
-typedef  boost::tuple<double, double, double, double> OptionData;
+typedef  boost::tuple<double, double, double, double, double> OptionData;
 namespace MJL {
     namespace Input {
         class Input {
@@ -21,12 +21,13 @@ namespace MJL {
             double sig;                          // Volatility
             double r;                            // Risk-free interest rate
             double S;                            // Spot price
+            double K;                            // Strike price
             OptionData optionData;               // Holds the option data
         public:
             // Constructors and destructor
             Input();
             Input(const OptionData& optionData_);
-            Input(double& T_, double& sig_, double& r_, double& S_);
+            Input(double& T_, double& sig_, double& r_, double& S_, double& K_);
             Input(const Input& source);
             virtual ~Input();
 
