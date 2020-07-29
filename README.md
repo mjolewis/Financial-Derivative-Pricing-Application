@@ -8,6 +8,10 @@ The application attempts to implement the single responsiblity principle and, as
 # Libraries
 The system uses STL for Containers, Algorithms, and Iterators. Additionally, the system uses the Boost library for the boost::tuple data container in favor of stl::tuple simply out of preference for how Boost treats the get<>() function as a member function versus a being a free function in stl::boost. Finally, the Boost library is used to generate the Guassian probability density functions and the cumulative normal distribution function. As a result, you must download and include the Boost libraries to compile the application on your machine.
 
-# Class Descriptions
+# System Analysis
+
+
 
 # System Design
+
+# Output
