@@ -21,24 +21,26 @@ namespace MJL {
 
         /**
          * Initialize a new Input object with the specified option data
-         * @param optionData A {@link boost::tuple} containing values to initialize core option data (e.g expiry,
-         * volatility, risk-free rate, spot price, strike price)
+         * @param optionData_ A {@link boost::tuple} containing values to initialize core option data (e.g expiry,
+         * volatility, risk-free rate, spot price, strike price, option type)
          * @throws OutOfMemoryException Indicates insufficient memory for this new Input object
          */
-        Input::Input(const OptionData &optionData_) : optionData(optionData_) {}
+        Input::Input(const OptionData &optionData_) : T(optionData_.get<0>()), sig(optionData_.get<1>()),
+                                                      r(optionData_.get<2>()), S(optionData_.get<3>()),
+                                                      K(optionData_.get<4>()), optType(optionData_.get<5>()) {}
 
         /**
          * Initialize a new Input object with the specified option data
-         * @param T Time to expiry
-         * @param sig Volatility
-         * @param r Risk-free interest rate
-         * @param S Spot price of the underlying
-         * @param K Strike price
-         * @param b Cost of carry
+         * @param T_ Time to expiry
+         * @param sig_ Volatility
+         * @param r_ Risk-free interest rate
+         * @param S_ Spot price of the underlying
+         * @param K_ Strike price
+         * @param optType_ A put or a call
          * @throws OutOfMemoryException Indicates insufficient memory for this new Input object
          */
-        Input::Input(double &T_, double &sig_, double &r_, double &S_, double &K_, double &b_) :
-                                                T(T_), sig(sig_), r(r_), S(S_), K(K_), b(b_) {}
+        Input::Input(double T_, double sig_, double r_, double S_, double K_, std::string& optType_) :
+                                                            T(T_), sig(sig_), r(r_), S(S_), K(K_), optType(optType_) {}
 
         /**
          * Initialize a new Input object using the member data of the source
@@ -46,7 +48,7 @@ namespace MJL {
          * @throws OutOfMemoryException Indicates insufficient memory for this new Input object
          */
         Input::Input(const Input &source) : T(source.T), sig(source.sig), r(source.r),
-                                            S(source.S), K(source.K), b(source.b) {}
+                                            S(source.S), K(source.K), optType(source.optType){}
 
         /**
          * Destory's this Input object
@@ -67,24 +69,24 @@ namespace MJL {
             r = source.r;
             S = source.S;
             K = source.K;
-            b = source.b;
+            optType = source.optType;
 
             return *this;
         }
 
         /**
          * Accessor that retrieve OptionData
-         * @return A boost::tuple<double, double, double, double> containing fundamental option data (e.g. vol, S, etc)
+         * @return A {@link boost::tuple<>} representing core option data (e.g. Expiry, Sig, r, S, K)
          */
-        const OptionData & Input::getOptionData() const {
-            return optionData;
+        OptionData Input::getOptionData() const {
+            return boost::make_tuple(T, sig, r, S, K, optType);
         }
 
         /**
          * Get option data from the client and set member data
-         * @return A boost::tuple<> representing an equity option
+         * @return A {@link boost::tuple<>} representing an equity option
          */
-        const OptionData& Input::setOptionData() {
+        OptionData Input::setOptionData() {
             std::cout << "\nEnter the required option data:\n";
 
             // Get parameters
@@ -102,7 +104,7 @@ namespace MJL {
 
                     // Set a default value
                     std::cout << "\nIncorrect input. Setting default expiry to 3 months\n";
-                    T = 0.25;                    // Page 36-37 of Intro to C++ for Financial Engineers by Dr. Duffy
+                    T = 0.25;                            // Pg. 37 of Intro to C++ for Financial Engineers by Dr. Duffy
                 }
 
                 std::cout << "Volatility: "; std::cin >> sig;
@@ -119,7 +121,7 @@ namespace MJL {
 
                     // Set a default value
                     std::cout << "\nIncorrect input. Setting default volatility to 30%\n";
-                    sig = 0.3;                 // Page 36-37 of Intro to C++ for Financial Engineers by Dr. Duffy
+                    sig = 0.3;                           // Pg. 36 of Intro to C++ for Financial Engineers by Dr. Duffy
                 }
 
                 std::cout << "Risk-free interest rate: "; std::cin >> r;
@@ -136,7 +138,7 @@ namespace MJL {
 
                     // Set a default value
                     std::cout << "\nIncorrect input. Setting default risk-free rate to 8%\n";
-                    r = 0.08;                    // Page 36-37 of Intro to C++ for Financial Engineers by Dr. Duffy
+                    r = 0.08;                            // Pg. 36 of Intro to C++ for Financial Engineers by Dr. Duffy
                 }
 
                 std::cout << "Stock price: "; std::cin >> S;
@@ -152,7 +154,7 @@ namespace MJL {
 
                     // Set a default value
                     std::cout << "Incorrect input. Setting default stock price to $65\n";
-                    S = 60;                      // Page 36-37 of Intro to C++ for Financial Engineers by Dr. Duffy
+                    S = 60;                              // Pg. 37 of Intro to C++ for Financial Engineers by Dr. Duffy
                 }
 
                 std::cout << "Strike price: "; std::cin >> K;
@@ -165,27 +167,28 @@ namespace MJL {
 
                     // Ignore input up to stream size or new line (whichever comes first)
                     std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-                    K = 65;                     // Page 36-37 of Intro to C++ for Financial Engineers by Dr. Duffy
+                    K = 65;                              // Pg. 37 of Intro to C++ for Financial Engineers by Dr. Duffy
                 }
 
-                std::cout << "Cost of carry: "; std::cin >> b;
+                std::cout << "Put or Call: "; std::cin >> optType;
+                if (optType == "call") { optType = "Call"; }
+                if (optType == "put") { optType = "Put"; }
 
                 // Handle input errors and crashes gracefully
-                if (b < 0 || !std::cin) {
+                if (optType != "Put" || optType != "Call") {
 
                     // Clear the error flag
                     std::cin.clear();
 
                     // Ignore input up to stream size or new line (whichever comes first)
                     std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-                    b = r;                       // Page 36-37 of Intro to C++ for Financial Engineers by Dr. Duffy
+                    optType = "Call";                    // Pg. 37 of Intro to C++ for Financial Engineers by Dr. Duffy
                 }
             } catch (std::exception& e) {
                 std::cout << e.what() << std::endl;
             }
 
-            optionData = boost::make_tuple(T, sig, r, S, K, b);
-            return optionData;
+            return boost::make_tuple(T, sig, r, S, K, optType);
         }
     }
 }
