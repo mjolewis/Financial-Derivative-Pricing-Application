@@ -13,7 +13,8 @@ namespace MJL {
     namespace Instrument {
         class Instrument {
         public:
-            virtual void print() const = 0;
+            virtual double callPrice(double T_, double sig_, double r_, double S_, double K_, double b_) const = 0;
+            virtual double putPrice(double T_, double sig_, double r_, double S_, double K_, double b_) const = 0;
         };
     }
 }

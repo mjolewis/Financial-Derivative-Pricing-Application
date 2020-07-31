@@ -13,7 +13,7 @@
 #include <vector>
 #include "Input.hpp"
 
-typedef  boost::tuple<double, double, double, double, double, std::string> OptionData;
+typedef  boost::tuple<double, double, double, double, double, double, std::string> OptionData;
 
 namespace MJL {
     namespace Pricers {
@@ -23,10 +23,6 @@ namespace MJL {
             OptionData optionData;                         // Holds the option data; Provided via Input.cpp
             std::vector<double> optionPrices;              // Output of option prices
             double optionPrice;                            // Output of the current option price
-
-            // Helper functions for the public pricing engine
-            void callPrice(double T_, double sig_, double r_, double S_, double K_);
-            void putPrice(double T_, double sig_, double r_, double S_, double K_);
 
         public:
             // Constructors and destructors
