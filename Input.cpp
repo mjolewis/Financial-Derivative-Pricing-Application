@@ -27,7 +27,8 @@ namespace MJL {
          */
         Input::Input(const OptionData &optionData_) : T(optionData_.get<0>()), sig(optionData_.get<1>()),
                                                       r(optionData_.get<2>()), S(optionData_.get<3>()),
-                                                      K(optionData_.get<4>()), optType(optionData_.get<5>()) {}
+                                                      K(optionData_.get<4>()), b(optionData_.get<5>()),
+                                                      optType(optionData_.get<6>()) {}
 
         /**
          * Initialize a new Input object with the specified option data
@@ -36,19 +37,20 @@ namespace MJL {
          * @param r_ Risk-free interest rate
          * @param S_ Spot price of the underlying
          * @param K_ Strike price
+         * @param b_ Cost of carry
          * @param optType_ A put or a call
          * @throws OutOfMemoryException Indicates insufficient memory for this new Input object
          */
-        Input::Input(double T_, double sig_, double r_, double S_, double K_, std::string& optType_) :
-                                                            T(T_), sig(sig_), r(r_), S(S_), K(K_), optType(optType_) {}
+        Input::Input(double T_, double sig_, double r_, double S_, double K_, double b_, std::string& optType_) :
+                                                T(T_), sig(sig_), r(r_), S(S_), K(K_), b(b_), optType(optType_) {}
 
         /**
          * Initialize a new Input object using the member data of the source
          * @param source An Input object whose data members will be used to initialize this Input objects members
          * @throws OutOfMemoryException Indicates insufficient memory for this new Input object
          */
-        Input::Input(const Input &source) : T(source.T), sig(source.sig), r(source.r),
-                                            S(source.S), K(source.K), optType(source.optType){}
+        Input::Input(const Input &source) : T(source.T), sig(source.sig), r(source.r), S(source.S),
+                                            K(source.K), b(source.b), optType(source.optType){}
 
         /**
          * Destory's this Input object
@@ -69,6 +71,7 @@ namespace MJL {
             r = source.r;
             S = source.S;
             K = source.K;
+            b = source.b;
             optType = source.optType;
 
             return *this;
@@ -76,10 +79,10 @@ namespace MJL {
 
         /**
          * Accessor that retrieve OptionData
-         * @return A {@link boost::tuple<>} representing core option data (e.g. Expiry, Sig, r, S, K)
+         * @return A {@link boost::tuple<>} representing core option data (e.g. Expiry, Sig, r, S, K, b, optType)
          */
         OptionData Input::getOptionData() const {
-            return boost::make_tuple(T, sig, r, S, K, optType);
+            return boost::make_tuple(T, sig, r, S, K, b, optType);
         }
 
         /**
@@ -170,6 +173,19 @@ namespace MJL {
                     K = 65;                              // Pg. 37 of Intro to C++ for Financial Engineers by Dr. Duffy
                 }
 
+                std::cout << "Cost of carry: "; std::cin >> b;
+
+                // Handle input errors and crashes gracefully
+                if (b < 0 || !std::cin) {
+
+                    // Clear the error flag
+                    std::cin.clear();
+
+                    // Ignore input up to stream size or new line (whichever comes first)
+                    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+                    b = r;                              // Pg. 37 of Intro to C++ for Financial Engineers by Dr. Duffy
+                }
+
                 std::cout << "Put or Call: "; std::cin >> optType;
                 if (optType == "call") { optType = "Call"; }
                 if (optType == "put") { optType = "Put"; }
@@ -188,7 +204,7 @@ namespace MJL {
                 std::cout << e.what() << std::endl;
             }
 
-            return boost::make_tuple(T, sig, r, S, K, optType);
+            return boost::make_tuple(T, sig, r, S, K, b, optType);
         }
     }
 }
