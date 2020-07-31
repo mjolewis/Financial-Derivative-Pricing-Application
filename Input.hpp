@@ -13,7 +13,7 @@
 #include <string>
 
 // Stores option data (e.g. expiry, volatility, risk-free rate, spot, option type
-typedef boost::tuple<double, double, double, double, double, std::string> OptionData;
+typedef boost::tuple<double, double, double, double, double, double, std::string> OptionData;
 namespace MJL {
     namespace Input {
         class Input {
@@ -24,12 +24,13 @@ namespace MJL {
             double r = 0.08;                           // Risk-free interest rate
             double S = 60;                             // Spot price
             double K = 65;                             // Strike price
-            std::string optType = "Call""";            // Call or Put
+            double b = r;                              // Cost of carry; b = r for Black-Scholes equity option model
+            std::string optType = "Call";              // Call or Put
         public:
             // Constructors and destructor
             Input();
             explicit Input(const OptionData& optionData_);
-            Input(double T_, double sig_, double r_, double S_, double K_, std::string& optType_);
+            Input(double T_, double sig_, double r_, double S_, double K_, double b_, std::string& optType_);
             Input(const Input& source);
             virtual ~Input();
 
