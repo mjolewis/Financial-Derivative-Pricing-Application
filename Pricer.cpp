@@ -97,36 +97,15 @@ namespace MJL {
             double r = optionData.get<2>();                          // Risk-free interest rate
             double S = optionData.get<3>();                          // Spot price
             double K = optionData.get<4>();                          // Strike price
-            std::string optType = optionData.get<5>();               // Put or Call
+            double b = optionData.get<5>();                          // Cost of carry
+            std::string optType = optionData.get<6>();               // Put or Call
 
             if (optType == "Call") {
-                callPrice(T, sig, r, S, K);
+                callPrice(T, sig, r, S, K, b);
             } else {
-                putPrice(T, sig, r, S, K);
+                putPrice(T, sig, r, S, K, b);
             }
             return optionPrice;
-        }
-
-        // Calculate the price of a call option using the Black-Scholes formula
-        void Pricer::callPrice(double T, double sig, double r, double S, double K) {
-            double b = r;
-            double tmp = sig * sqrt(T);
-
-            double d1 = ( log(U/K) + (b+ (sig*sig)*0.5 ) * T )/ tmp;
-            double d2 = d1 - tmp;
-
-
-            return (U * exp((b-r)*T) * N(d1)) - (K * exp(-r * T)* N(d2));
-        }
-
-        // Calculate the price of a put option using the Black-Scholes formula
-        void Pricer::putPrice(double T, double sig, double r, double S, double K) {
-            double b = r;
-            double tmp = sig * sqrt(T);
-            double d1 = ( log(S/K) + (b+ (sig*sig)*0.5 ) * T )/ tmp;
-            double d2 = d1 - tmp;
-
-            return (K * exp(-r * T)* N(-d2)) - (S * exp((b-r)*T) * N(-d1));
         }
     }
 }
