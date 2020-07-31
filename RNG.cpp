@@ -12,7 +12,7 @@
 #include "RNG.hpp"
 
 namespace MJL {
-    namespace Pricer {
+    namespace Pricers {
 
         /**
          * Initialize a new RNG
