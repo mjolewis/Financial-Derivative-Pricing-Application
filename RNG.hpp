@@ -14,7 +14,7 @@
 #include <boost/math/distributions.hpp>
 
 namespace MJL {
-    namespace Pricer {
+    namespace Pricers {
         class RNG {
         private:
             std::string RNGName;                       // Name of random number generator
