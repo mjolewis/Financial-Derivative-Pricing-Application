@@ -17,7 +17,7 @@ namespace MJL {
     namespace Pricers {
         class RNG {
         private:
-            std::string RNGName;                       // Name of random number generator
+            std::string RNGName;                 // Name of random number generator
         public:
 
             // Constructors and Destructors
@@ -33,7 +33,7 @@ namespace MJL {
             const std::string& getRNGName() const;
 
             // Core functionality
-            double MersenneTwister() const;            // Generate a standard normal distribution using MersenneTwister
+            double MersenneTwister();            // Generate a standard normal distribution using Mersenne Twister
         };
     }
 }

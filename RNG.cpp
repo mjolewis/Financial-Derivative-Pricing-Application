@@ -8,6 +8,7 @@
  *********************************************************************************************************************/
 
 #include <boost/random.hpp>
+#include <string>
 
 #include "RNG.hpp"
 
@@ -57,7 +58,8 @@ namespace MJL {
          * Generate N(x) for Black-Scholes Pricer
          * @return A Gaussian random variate
          */
-        double RNG::MersenneTwister() const {
+        double RNG::MersenneTwister() {
+            RNGName = "Mersenne Twister";
             boost::random::mt19937 rng;
 
             // Set the seed using the current time to generate more randomness
