@@ -13,29 +13,28 @@
 #include <string>
 #include <boost/math/distributions.hpp>
 
-namespace MJL {
-    namespace Pricers {
-        class RNG {
-        private:
-            std::string RNGName;                 // Name of random number generator
-        public:
+class RNG {
+private:
+    std::string RNGName;                 // Name of random number generator
+public:
 
-            // Constructors and Destructors
-            RNG();
-            RNG(const RNG& source);
-            explicit RNG(const std::string& RNGName_);
-            virtual ~RNG();
+    // Constructors and Destructors
+    RNG();
 
-            // Operator overloading
-            RNG& operator=(const RNG& source);
+    RNG(const RNG &source);
 
-            // Getters
-            const std::string& getRNGName() const;
+    explicit RNG(const std::string &RNGName_);
 
-            // Core functionality
-            double MersenneTwister();            // Generate a standard normal distribution using Mersenne Twister
-        };
-    }
-}
+    virtual ~RNG();
+
+    // Operator overloading
+    RNG &operator=(const RNG &source);
+
+    // Getters
+    const std::string &getRNGName() const;
+
+    // Core functionality
+    double MersenneTwister();            // Generate a standard normal distribution using Mersenne Twister
+};
 
 #endif //RNG_HPP

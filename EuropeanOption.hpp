@@ -16,38 +16,36 @@
 
 typedef MJL::Pricers::RNG RNG;
 
-namespace MJL {
-    namespace Instrument {
+template<typename RNG_>
+class EuropeanOption : public Instrument, public RNG_ {
+private:
 
-        template<typename RNG_>
-        class EuropeanOption : public Instrument, public RNG_ {
-        private:
+    // Required option data
+    double T;                           // Expiry time/maturity. E.g. T = 1 means one year
+    double sig;                         // Volatility
+    double r;                           // Risk-free interest rate
+    double S;                           // Spot price
+    double K;                           // Strike price
+    double b;                           // Cost of carry; b = r for Black-Scholes equity option model
+    std::string optType;                // Call or Put
 
-            // Required option data
-            double T;                           // Expiry time/maturity. E.g. T = 1 means one year
-            double sig;                         // Volatility
-            double r;                           // Risk-free interest rate
-            double S;                           // Spot price
-            double K;                           // Strike price
-            double b;                           // Cost of carry; b = r for Black-Scholes equity option model
-            std::string optType;                // Call or Put
+public:
 
-        public:
+    // Constructors and Destructors
+    EuropeanOption();
 
-            // Constructors and Destructors
-            EuropeanOption();
-            EuropeanOption(const EuropeanOption& source);
-            virtual ~EuropeanOption();
+    EuropeanOption(const EuropeanOption &source);
 
-            // Operator overloading
-            EuropeanOption& operator=(const EuropeanOption& source);
+    virtual ~EuropeanOption();
 
-            // Base class function implementations
-            double callPrice(double T_, double sig_, double r_, double S_, double K_, double b_) const;
-            double putPrice(double T_, double sig_, double r_, double S_, double K_, double b_) const;
-        };
-    }
-}
+    // Operator overloading
+    EuropeanOption &operator=(const EuropeanOption &source);
+
+    // Base class function implementations
+    double callPrice(double T_, double sig_, double r_, double S_, double K_, double b_) const;
+
+    double putPrice(double T_, double sig_, double r_, double S_, double K_, double b_) const;
+};
 
 
 #endif //EUROPEANOPTION_HPP
