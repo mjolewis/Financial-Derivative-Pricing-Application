@@ -2,8 +2,10 @@
 // Created by Michael Lewis on 7/31/20.
 //
 
-#ifndef BlackScholesBuilder_CPP
-#define BlackScholesBuilder_CPP
+#ifndef Builder_CPP
+#define Builder_CPP
+
+#include <iostream>
 
 #include "Builder.hpp"
 
@@ -25,8 +27,15 @@ namespace MJL {
         template<typename Input_, typename RNG_, typename Pricer_>
         void Builder<Input_, RNG_, Pricer_ >::Build() {
 
+            // Set up option data with input from the user
+            Pricer_::
+        }
+
+        template<typename Input_, typename RNG_, typename Pricer_>
+        void Builder<Input_, RNG_, Pricer_>::Finished() {
+            std::cout << "\n\nBuilder has finished\n\n";
         }
     }
 }
 
-#endif // BlackScholesBuilder_CPP
+#endif // Builder_CPP

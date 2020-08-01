@@ -13,10 +13,12 @@
 #include <vector>
 #include "Input.hpp"
 
-typedef  boost::tuple<double, double, double, double, double, double, std::string> OptionData;
+typedef  boost::tuple<double, double, double, double, double, double, std::string, std::string> OptionData;
 
 namespace MJL {
     namespace Pricers {
+
+        template<typename Input_, typename RNG_, typename Instrument_>
         class Pricer : public MJL::Input::Input {
 
         private:
@@ -47,4 +49,8 @@ namespace MJL {
     }
 }
 
-#endif //PRICER_HPP
+#ifndef PRICER_CPP
+#include "Pricer.cpp"
+
+#endif // PRICER_CPP
+#endif // PRICER_HPP

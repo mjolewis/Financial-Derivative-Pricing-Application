@@ -22,13 +22,13 @@ namespace MJL {
         /**
          * Initialize a new Input object with the specified option data
          * @param optionData_ A {@link boost::tuple} containing values to initialize core option data (e.g expiry,
-         * volatility, risk-free rate, spot price, strike price, option type)
+         * volatility, risk-free rate, spot price, strike price, option type, European or American)
          * @throws OutOfMemoryException Indicates insufficient memory for this new Input object
          */
         Input::Input(const OptionData &optionData_) : T(optionData_.get<0>()), sig(optionData_.get<1>()),
                                                       r(optionData_.get<2>()), S(optionData_.get<3>()),
                                                       K(optionData_.get<4>()), b(optionData_.get<5>()),
-                                                      optType(optionData_.get<6>()) {}
+                                                      optType(optionData_.get<6>()), uName(optionData_.get<7>()) {}
 
         /**
          * Initialize a new Input object with the specified option data
@@ -39,18 +39,19 @@ namespace MJL {
          * @param K_ Strike price
          * @param b_ Cost of carry
          * @param optType_ A put or a call
+         * @param uName_ European or American option
          * @throws OutOfMemoryException Indicates insufficient memory for this new Input object
          */
-        Input::Input(double T_, double sig_, double r_, double S_, double K_, double b_, std::string& optType_) :
-                                                T(T_), sig(sig_), r(r_), S(S_), K(K_), b(b_), optType(optType_) {}
+        Input::Input(double T_, double sig_, double r_, double S_, double K_, double b_, std::string& optType_, std::string& uName_) :
+                                    T(T_), sig(sig_), r(r_), S(S_), K(K_), b(b_), optType(optType_), uName(uName_) {}
 
         /**
          * Initialize a new Input object using the member data of the source
          * @param source An Input object whose data members will be used to initialize this Input objects members
          * @throws OutOfMemoryException Indicates insufficient memory for this new Input object
          */
-        Input::Input(const Input &source) : T(source.T), sig(source.sig), r(source.r), S(source.S),
-                                            K(source.K), b(source.b), optType(source.optType){}
+        Input::Input(const Input &source) : T(source.T), sig(source.sig), r(source.r), S(source.S), K(source.K),
+                                            b(source.b), optType(source.optType), uName(source.uName) {}
 
         /**
          * Destory's this Input object
@@ -73,6 +74,7 @@ namespace MJL {
             K = source.K;
             b = source.b;
             optType = source.optType;
+            uName = source.uName;
 
             return *this;
         }
@@ -81,9 +83,7 @@ namespace MJL {
          * Accessor that retrieve OptionData
          * @return A {@link boost::tuple<>} representing core option data (e.g. Expiry, Sig, r, S, K, b, optType)
          */
-        OptionData Input::getOptionData() const {
-            return boost::make_tuple(T, sig, r, S, K, b, optType);
-        }
+        OptionData Input::getOptionData() const { return boost::make_tuple(T, sig, r, S, K, b, optType, uName); }
 
         /**
          * Get option data from the client and set member data
@@ -200,11 +200,26 @@ namespace MJL {
                     std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
                     optType = "Call";                    // Pg. 37 of Intro to C++ for Financial Engineers by Dr. Duffy
                 }
+
+                std::cout << "European or American: "; std::cin >> uName;
+                if (uName == "european") { uName = "European"; }
+                if (uName == "american") { uName = "American"; }
+
+                // Handle input errors and crashes gracefully
+                if (optType != "European" || optType != "American") {
+
+                    // Clear the error flag
+                    std::cin.clear();
+
+                    // Ignore input up to stream size or new line (whichever comes first)
+                    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+                    optType = "European";                // Pg. 37 of Intro to C++ for Financial Engineers by Dr. Duffy
+                }
             } catch (std::exception& e) {
                 std::cout << e.what() << std::endl;
             }
 
-            return boost::make_tuple(T, sig, r, S, K, b, optType);
+            return boost::make_tuple(T, sig, r, S, K, b, optType, uName);
         }
     }
 }

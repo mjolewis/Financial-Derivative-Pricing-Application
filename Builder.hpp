@@ -1,7 +1,5 @@
 /**********************************************************************************************************************
- * Function declarations for Builder.hpp
- *
- * Builder design pattern used to centralize the build and assembly for this option pricing application
+ * Builder design pattern used to centralize the build and assembly
  *
  * Created by Michael Lewis on 7/31/20.
  *********************************************************************************************************************/
@@ -13,19 +11,20 @@ namespace MJL {
     namespace Builders {
 
         template<typename Input_, typename RNG_, typename Pricer_>
-        class Builder {
+        class Builder : Input_, RNG_, Pricer_ {
         private:
         public:
             Builder();
             virtual ~Builder();
 
             void Build();
+            void Finished();
         };
     }
 }
 
-#ifndef BlackScholesBuilder_CPP
+#ifndef Builder_CPP
 #include "Builder.cpp"
 
-#endif // BlackScholesBuilder_CPP
+#endif // Builder_CPP
 #endif //BUILDER_HPP

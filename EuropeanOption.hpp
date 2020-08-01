@@ -1,7 +1,7 @@
 /**********************************************************************************************************************
  * Function declarations for EuropeanOption.hpp
  *
- * Derived from Instrument
+ * A EuropeanOption is derived from Instrument and also uses parameterized inheritance for maximum flexibility.
  *
  * Created by Michael Lewis on 7/31/20.
  *********************************************************************************************************************/

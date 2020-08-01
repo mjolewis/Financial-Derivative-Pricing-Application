@@ -6,6 +6,9 @@
  * Created by Michael Lewis on 7/31/20.
  *********************************************************************************************************************/
 
+#ifndef PRICER_CPP
+#define PRICER_CPP
+
 #include "Pricer.hpp"
 
 #include <boost/tuple/tuple_io.hpp>
@@ -19,7 +22,8 @@ namespace MJL {
          * Initialize a new Pricer object
          * @throws OutOfMemoryException Indicates insufficient memory for this new Pricer object
          */
-        Pricer::Pricer() {}
+        template<typename Input_, typename RNG_, typename Instrument_>
+        Pricer<Input_, RNG_, Instrument_>::Pricer() : Input_(), RNG_(), Instrument_() {}
 
         /**
          * Initialize a new Pricer object with the specified parameters
@@ -28,26 +32,32 @@ namespace MJL {
          * @param optionPrices_ A {@link std::vector<>} containing option prices
          * @throws OutOfMemoryError Indicates insufficient memory for this new Pricer
          */
-        Pricer::Pricer(const OptionData &optionData_, const std::vector<double>& optionPrices_) :
-                                                        optionData(optionData_), optionPrices(optionPrices_) {}
+        template<typename Input_, typename RNG_, typename Instrument_>
+        Pricer<Input_, RNG_, Instrument_>::Pricer(const OptionData &optionData_, const std::vector<double>& optionPrices_) :
+                            Input_(), RNG_(), Instrument_(), optionData(optionData_), optionPrices(optionPrices_) {}
         /**
          * Initialize a deep copy of the specified source
          * @param source A Pricer that will be deeply copied
          * @throws OutOfMemoryError Indicates insufficient memory for this new Pricer
          */
-        Pricer::Pricer(const Pricer &source) : optionData(source.optionData), optionPrices(source.optionPrices) {}
+        template<typename Input_, typename RNG_, typename Instrument_>
+        Pricer<Input_, RNG_, Instrument_>::Pricer(const Pricer &source) : Input_(), RNG_(), Instrument_(),
+                                        optionData(source.optionData), optionPrices(source.optionPrices) {}
 
         /**
          * Destroy's this Pricer
          */
-        Pricer::~Pricer() {}
+        template<typename Input_, typename RNG_, typename Instrument_>
+        Pricer<Input_, RNG_, Instrument_>::~Pricer() {}
 
         /**
          * Create a deep copy of the source Pricer
          * @param source A Pricer that will be deeply copied
          * @return A reference to this Pricer
          */
-        Pricer & Pricer::operator=(const Pricer &source) {
+        template<typename Input_, typename RNG_, typename Instrument_>
+        Pricer<Input_, RNG_, Instrument_> & Pricer<Input_, RNG_, Instrument_>::operator=
+                                                            (const Pricer<Input_, RNG_, Instrument_> &source) {
             // Avoid self assign
             if (this == &source) { return *this; }
 
@@ -61,24 +71,23 @@ namespace MJL {
          * Accessor function that returns the option data
          * @return A {@link boost::tuple<>} containing the core option data (e.g. Expiry, sig, r, S, K, optType)
          */
-        const OptionData & Pricer::getOptionData() const {
-            return optionData;
-        }
+        template<typename Input_, typename RNG_, typename Instrument_>
+        const OptionData & Pricer<Input_, RNG_, Instrument_>::getOptionData() const {return optionData;}
 
         /**
          * Accessor function that returns the option prices
          * @return A {@link std::vector} of option prices
          */
-        std::vector<double> Pricer::getOptionPrices() const {
-            return optionPrices;
-        }
+        template<typename Input_, typename RNG_, typename Instrument_>
+        std::vector<double> Pricer<Input_, RNG_, Instrument_>::getOptionPrices() const {return optionPrices;}
 
         /**
          * Mutator function that assigns the parameter to this objects optionData member
          * @param optionData_ A {@link boost::tuple<>} containing the core option data (e.g. Expiry, sig, r, S, K,
          * optType)
          */
-        void Pricer::setOptionData(const OptionData &optionData_) {
+        template<typename Input_, typename RNG_, typename Instrument_>
+        void Pricer<Input_, RNG_, Instrument_>::setOptionData(const OptionData &optionData_) {
             optionData = optionData_;
         }
 
@@ -86,10 +95,11 @@ namespace MJL {
          * The core pricing engine that uses the Black-Scholes formula to price various types of options
          * @return The price of the option
          */
-        double Pricer::price() {
+        template<typename Input_, typename RNG_, typename Instrument_>
+        double Pricer<Input_, RNG_, Instrument_>::price() {
 
-            // Transfer option data from the Input
-            optionData = MJL::Input::Input::setOptionData();
+            // Provides a UI to enter required option parameters
+            optionData = Input_::setOptionData();
 
             // Required option data
             double T = optionData.get<0>();                          // Expiry time/maturity. E.g. T = 1 means one year
@@ -99,13 +109,16 @@ namespace MJL {
             double K = optionData.get<4>();                          // Strike price
             double b = optionData.get<5>();                          // Cost of carry
             std::string optType = optionData.get<6>();               // Put or Call
+            std::string uName = optionData.get<7>();                 // European or American
 
-//            if (optType == "Call") {
-//                callPrice(T, sig, r, S, K, b);
-//            } else {
-//                putPrice(T, sig, r, S, K, b);
-//            }
+            if (optType == "Call" && uName == "European") {
+                optionPrice = Instrument_::callPrice(T, sig, r, S, K, b);
+            } else if (optType == "Put" && uName == "European")  {
+                optionPrice = Instrument_::putPrice(T, sig, r, S, K, b);
+            }
             return optionPrice;
         }
     }
 }
+
+#endif
