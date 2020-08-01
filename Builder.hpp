@@ -11,7 +11,7 @@ namespace MJL {
     namespace Builders {
 
         template<typename Input_, typename RNG_, typename Pricer_>
-        class Builder : Input_, RNG_, Pricer_ {
+        class Builder : public Input_, public RNG_, public Pricer_ {
         private:
         public:
             Builder();
