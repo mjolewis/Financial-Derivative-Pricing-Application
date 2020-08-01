@@ -12,10 +12,15 @@
 #include "string"
 
 #include "Instrument.hpp"
+#include "RNG.hpp"
+
+typedef MJL::Pricers::RNG RNG;
 
 namespace MJL {
     namespace Instrument {
-        class EuropeanOption : public Instrument {
+
+        template<typename RNG_>
+        class EuropeanOption : public Instrument, public RNG_ {
         private:
 
             // Required option data
@@ -40,7 +45,6 @@ namespace MJL {
             // Base class function implementations
             double callPrice(double T_, double sig_, double r_, double S_, double K_, double b_) const;
             double putPrice(double T_, double sig_, double r_, double S_, double K_, double b_) const;
-
         };
     }
 }
