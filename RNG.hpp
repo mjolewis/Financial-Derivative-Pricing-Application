@@ -10,9 +10,6 @@
 #ifndef RNG_HPP
 #define RNG_HPP
 
-#include <string>
-#include <boost/math/distributions.hpp>
-
 class RNG {
 private:
     std::string RNGName;                 // Name of random number generator
@@ -20,11 +17,8 @@ public:
 
     // Constructors and Destructors
     RNG();
-
     RNG(const RNG &source);
-
     explicit RNG(const std::string &RNGName_);
-
     virtual ~RNG();
 
     // Operator overloading

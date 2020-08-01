@@ -9,12 +9,11 @@
 
 #include "Builder.hpp"
 
+template<typename Input_, typename RNG_, typename Instrument_, template<typename , typename, typename> class Pricer_>
+Builder<Input_, RNG_, Instrument_, Pricer_>::Builder() : Input_(), RNG_(), Instrument_(), Pricer_() {}
 
-template<typename Input_, typename RNG_, typename Pricer_>
-Builder<Input_, RNG_, Pricer_>::Builder() {}
-
-template<typename Input_, typename RNG_, typename Pricer_>
-Builder<Input_, RNG_, Pricer_>::~Builder<Input_, RNG_, Pricer_>() {}
+template<class Input_, class RNG_, class Instrument_, template<class, class, class> class Pricer_>
+Builder<Input_, RNG_, Instrument_, Pricer_>::~Builder<Input_, RNG_, Instrument_, Pricer_>() {}
 
 /**
  * Build and assemble the option pricer
@@ -22,16 +21,16 @@ Builder<Input_, RNG_, Pricer_>::~Builder<Input_, RNG_, Pricer_>() {}
  * @tparam RNG_
  * @tparam Pricer_
  */
-template<typename Input_, typename RNG_, typename Pricer_>
-void Builder<Input_, RNG_, Pricer_>::Build() {
+template<typename Input_, typename RNG_, typename Instrument_, template<typename , typename, typename> class Pricer_>
+void Builder<Input_, RNG_, Instrument_, Pricer_>::Build() {
 
     // Set up option data with input from the user
     double optionPrice = Pricer_::price();
     std::cout << "Option Price (delete): " << optionPrice << std::endl;
 }
 
-template<typename Input_, typename RNG_, typename Pricer_>
-void Builder<Input_, RNG_, Pricer_>::Finished() {
+template<typename Input_, typename RNG_, typename Instrument_, template<typename , typename, typename> class Pricer_>
+void Builder<Input_, RNG_, Instrument_, Pricer_>::Finished() {
     std::cout << "\n\nBuilder has finished\n\n";
 }
 
