@@ -19,13 +19,13 @@ namespace MJL {
         class Input {
         private:
             // Required option data
-            double T = 0.25;                           // Expiry time/maturity. E.g. T = 1 means one year
-            double sig = 0.3;                          // Volatility
-            double r = 0.08;                           // Risk-free interest rate
-            double S = 60;                             // Spot price
-            double K = 65;                             // Strike price
-            double b = r;                              // Cost of carry; b = r for Black-Scholes equity option model
-            std::string optType = "Call";              // Call or Put
+            double T;                                 // Expiry time/maturity. E.g. T = 1 means one year
+            double sig;                               // Volatility
+            double r;                                 // Risk-free interest rate
+            double S;                                 // Spot price
+            double K;                                 // Strike price
+            double b;                             // Cost of carry; b = r for Black-Scholes equity option model
+            std::string optType;                      // Call or Put
         public:
             // Constructors and destructor
             Input();
