@@ -38,12 +38,12 @@ namespace MJL {
             EuropeanOption& operator=(const EuropeanOption& source);
 
             // Base class function implementations
-            double callPrice(double T_, double sig_, double r_, double S_, double K_, double b_) const override;
-            double putPrice(double T_, double sig_, double r_, double S_, double K_, double b_) const override;
+            double callPrice(double T_, double sig_, double r_, double S_, double K_, double b_) const;
+            double putPrice(double T_, double sig_, double r_, double S_, double K_, double b_) const;
 
         };
     }
 }
 
 
-#endif //GROUP_A_AND_B_EUROPEANOPTION_HPP
+#endif //EUROPEANOPTION_HPP

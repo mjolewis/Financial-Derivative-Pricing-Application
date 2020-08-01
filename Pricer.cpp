@@ -100,11 +100,11 @@ namespace MJL {
             double b = optionData.get<5>();                          // Cost of carry
             std::string optType = optionData.get<6>();               // Put or Call
 
-            if (optType == "Call") {
-                callPrice(T, sig, r, S, K, b);
-            } else {
-                putPrice(T, sig, r, S, K, b);
-            }
+//            if (optType == "Call") {
+//                callPrice(T, sig, r, S, K, b);
+//            } else {
+//                putPrice(T, sig, r, S, K, b);
+//            }
             return optionPrice;
         }
     }
