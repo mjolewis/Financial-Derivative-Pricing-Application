@@ -17,7 +17,8 @@ namespace MJL {
          * @throws OutOfMemoryError Indicates insufficient memory for this EuropeanOption
          */
         template<typename RNG_>
-        EuropeanOption<RNG_>::EuropeanOption() : Instrument(), T(0.25), sig(0.3), r(0.08), S(60), K(65), b(r), optType("Call") {}
+        EuropeanOption<RNG_>::EuropeanOption() : Instrument(), RNG_(), T(0.25), sig(0.3), r(0.08),
+                                                 S(60), K(65), b(r), optType("Call") {}
 
         /**
          * Initialize a new EuropeanOption with the source object
@@ -25,14 +26,14 @@ namespace MJL {
          * @throws OutOfMemoryError Indicates insufficient memory for this EuropeanOption
          */
         template<typename RNG_>
-        EuropeanOption<RNG_>::EuropeanOption(const EuropeanOption &source) : Instrument(), T(source.T),
-                                                                             sig(source.sig), r(source.r),
-                                                                             S(source.S), K(source.K),
-                                                                             b(source.b), optType(source.optType){}
+        EuropeanOption<RNG_>::EuropeanOption(const EuropeanOption &source) : Instrument(), RNG_(), T(source.T),
+                                                                             sig(source.sig), r(source.r), S(source.S),
+                                                                             K(source.K), b(source.b),
+                                                                             optType(source.optType){}
 
         /**
          * Destroy this EuropeanOption
-         */git
+         */
         template<typename RNG_>
         EuropeanOption<RNG_>::~EuropeanOption() {}
 
