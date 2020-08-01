@@ -1,15 +1,14 @@
 /**********************************************************************************************************************
- * Function definitions for RNG.hpp
- *
  * Generates different types of distributions that will be used by the Pricer. The distributions requirea random
  * number generator and the default will be Mersenne Twister.
  *
  * Created by Michael Lewis on 7/31/20.
  *********************************************************************************************************************/
 
-#include <boost/random.hpp>
 #include <string>
+#include <ctime>
 
+#include "boost/random.hpp"
 #include "RNG.hpp"
 
 /**
@@ -60,7 +59,7 @@ double RNG::MersenneTwister() {
     boost::random::mt19937 rng;
 
     // Set the seed using the current time to generate more randomness
-    rng.seed(static_cast<uint32_t>(std::time(0)));
+    rng.seed(static_cast<unsigned int> (std::time(0)));
 
     // A normal distribution with a mean of 0 and standard deviation of 1 is known as the Standard Normal Distribution
     boost::normal_distribution<double> N(0, 1);

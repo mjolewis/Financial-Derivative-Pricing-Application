@@ -7,16 +7,18 @@
 #ifndef BUILDER_HPP
 #define BUILDER_HPP
 
-template<typename Input_, typename RNG_, typename Pricer_>
-class Builder : public Input_, public RNG_, public Pricer_ {
+template<class Input_, class RNG_, class Instrument_,
+template<class , class, class> class Pricer_>
+class Builder : public Pricer_<Input_, RNG_, Instrument_> {
 private:
 public:
-    Builder();
 
+    // Constructors and Destructors
+    Builder();
     virtual ~Builder();
 
+    // Core functionality
     void Build();
-
     void Finished();
 };
 
@@ -24,4 +26,4 @@ public:
 #include "Builder.cpp"
 
 #endif // Builder_CPP
-#endif //BUILDER_HPP
+#endif // BUILDER_HPP
