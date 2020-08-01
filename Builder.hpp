@@ -7,21 +7,18 @@
 #ifndef BUILDER_HPP
 #define BUILDER_HPP
 
-namespace MJL {
-    namespace Builders {
+template<typename Input_, typename RNG_, typename Pricer_>
+class Builder : public Input_, public RNG_, public Pricer_ {
+private:
+public:
+    Builder();
 
-        template<typename Input_, typename RNG_, typename Pricer_>
-        class Builder : public Input_, public RNG_, public Pricer_ {
-        private:
-        public:
-            Builder();
-            virtual ~Builder();
+    virtual ~Builder();
 
-            void Build();
-            void Finished();
-        };
-    }
-}
+    void Build();
+
+    void Finished();
+};
 
 #ifndef Builder_CPP
 #include "Builder.cpp"

@@ -15,39 +15,34 @@
 
 typedef  boost::tuple<double, double, double, double, double, double, std::string, std::string> OptionData;
 
-namespace MJL {
-    namespace Pricers {
+template<typename Input_, typename RNG_, typename Instrument_>
+class Pricer : public Input_, public RNG_, public Instrument_ {
 
-        template<typename Input_, typename RNG_, typename Instrument_>
-        class Pricer : public Input_, public RNG_, public Instrument_ {
+private:
+    OptionData optionData;                         // Holds the option data; Provided via Input.cpp
+    std::vector<double> optionPrices;              // Output of option prices
+    double optionPrice;                            // Output of the current option price
 
-        private:
-            OptionData optionData;                         // Holds the option data; Provided via Input.cpp
-            std::vector<double> optionPrices;              // Output of option prices
-            double optionPrice;                            // Output of the current option price
+public:
+    // Constructors and destructors
+    Pricer(); // Default constructor
+    Pricer(const OptionData& optionData_, const std::vector<double>& optionPrices_);
+    Pricer(const Pricer& source);
+    virtual ~Pricer();
 
-        public:
-            // Constructors and destructors
-            Pricer(); // Default constructor
-            Pricer(const OptionData& optionData_, const std::vector<double>& optionPrices_);
-            Pricer(const Pricer& source);
-            virtual ~Pricer();
+    // Operator overloading
+    Pricer& operator=(const Pricer& source);
 
-            // Operator overloading
-            Pricer& operator=(const Pricer& source);
+    // Getters
+    const OptionData& getOptionData() const;
+    std::vector<double> getOptionPrices() const;
 
-            // Getters
-            const OptionData& getOptionData() const;
-            std::vector<double> getOptionPrices() const;
+    // Setters
+    void setOptionData(const OptionData& optionData_);
 
-            // Setters
-            void setOptionData(const OptionData& optionData_);
-
-            // Core Pricing engine that implements the Black-Scholes pricing formula.
-            double price();
-        };
-    }
-}
+    // Core Pricing engine that implements the Black-Scholes pricing formula.
+    double price();
+};
 
 #ifndef PRICER_CPP
 #include "Pricer.cpp"
