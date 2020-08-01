@@ -13,6 +13,13 @@ namespace MJL {
     namespace Instrument {
         class Instrument {
         public:
+
+            Instrument();
+            Instrument(const Instrument& source);
+            virtual ~Instrument();
+
+            Instrument& operator=(const Instrument& source);
+
             virtual double callPrice(double T_, double sig_, double r_, double S_, double K_, double b_) const = 0;
             virtual double putPrice(double T_, double sig_, double r_, double S_, double K_, double b_) const = 0;
         };
