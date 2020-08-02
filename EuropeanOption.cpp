@@ -59,11 +59,14 @@ EuropeanOption &EuropeanOption::operator=(const EuropeanOption &source) {
 double EuropeanOption::callPrice(double T_, double sig_, double r_, double S_, double K_, double b_) {
     double tmp = sig_ * sqrt(T_);
 
-    RNG rng;
-    double N1 = rng.MersenneTwister();
-    double N2 = N1 - tmp;
+    double d1 = (log(S_/K_) + (b_ + (sig_ * sig_) * 0.5) * T_ ) / tmp;
+    double d2 = d1 - tmp;
 
-    return (S_ * exp((b_ - r_) * T) * N1) - (K_ * exp(-r_ * T_) * N2);
+    RNG rng;
+    double N1 = rng.CDF(d1);
+    double N2 = rng.CDF(d2);
+
+    return (S_ * exp((b_ - r_) * T_) * N1) - (K_ * exp(-r_ * T_) * N2);
 }
 
 /**
@@ -79,10 +82,12 @@ double EuropeanOption::callPrice(double T_, double sig_, double r_, double S_, d
 double EuropeanOption::putPrice(double T_, double sig_, double r_, double S_, double K_, double b_) {
     double tmp = sig_ * sqrt(T_);
 
+    double d1 = (log(S_/K_) + (b_ + (sig_ * sig_) * 0.5) * T_ ) / tmp;
+    double d2 = d1 - tmp;
+
     RNG rng;
-    double N1 = rng.MersenneTwister();
-    double N2 = N1 - tmp;
+    double N1 = rng.CDF(-d1);
+    double N2 = rng.CDF(-d2);
 
     return (K_ * exp(-r_ * T_) * N2) - (S_ * exp((b_ - r_) * T_) * N1);
-    //return (K_ * exp(-r_ * T_) * N(-d2)) - (S_ * exp((b_ - r_) * T_) * N(-d1));
 }
