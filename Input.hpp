@@ -7,9 +7,11 @@
 #ifndef INPUT_HPP
 #define INPUT_HPP
 
-#include <boost/tuple/tuple_io.hpp>
-#include <vector>
 #include <string>
+#include <vector>
+
+#include <boost/tuple/tuple.hpp>
+
 
 // Stores option data (e.g. expiry, volatility, risk-free rate, spot, option type, uName
 typedef boost::tuple<double, double, double, double, double, double, std::string, std::string> OptionData;
@@ -42,8 +44,8 @@ public:
     Input &operator=(const Input &source);
 
     // Getters
-    OptionData getOption() const;                // Simple getter that returns the option object
-    OptionData getOptionData();                  // Provides a UI that allows a user to dynamically provide option data
+    OptionData getOptionData() const;            // Simple getter that returns the option object
+    OptionData getOptionInput();                 // Provides a UI that allows a user to dynamically provide option data
 
     // Setters
     void setOptionData(double T_, double sig_, double r_, double S_, double K_, double b_, const std::string &optType_, const std::string &uName_);

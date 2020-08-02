@@ -73,6 +73,16 @@ Pricer<Input_, RNG_, Instrument_> &Pricer<Input_, RNG_, Instrument_>::operator=
 template<typename Input_, typename RNG_, typename Instrument_>
 const OptionData &Pricer<Input_, RNG_, Instrument_>::getOptionData() const { return optionData; }
 
+
+/**
+ * Leverages Input.cpp to provide a console UI, allowing the user to dynamically input option data
+ * @tparam Input_
+ * @tparam RNG_
+ * @tparam Instrument_
+ */
+template<typename Input_, typename RNG_, typename Instrument_>
+void Pricer<Input_, RNG_, Instrument_>::getOptionInput() { optionData = Input_::getOptionInput();}
+
 /**
  * Accessor function that returns the option prices
  * @return A {@link std::vector} of option prices
@@ -81,24 +91,11 @@ template<typename Input_, typename RNG_, typename Instrument_>
 std::vector<double> Pricer<Input_, RNG_, Instrument_>::getOptionPrices() const { return optionPrices; }
 
 /**
- * Mutator function that assigns the parameter to this objects optionData member
- * @param optionData_ A {@link boost::tuple<>} containing the core option data (e.g. Expiry, sig, r, S, K,
- * optType)
- */
-template<typename Input_, typename RNG_, typename Instrument_>
-void Pricer<Input_, RNG_, Instrument_>::setOptionData(const OptionData &optionData_) {
-    optionData = optionData_;
-}
-
-/**
  * The core pricing engine that uses the Black-Scholes formula to price various types of options
  * @return The price of the option
  */
 template<typename Input_, typename RNG_, typename Instrument_>
 double Pricer<Input_, RNG_, Instrument_>::price() {
-
-    // Provides a UI to enter required option parameters
-    optionData = Input_::setOptionData();
 
     // Required option data
     double T = optionData.get<0>();                          // Expiry time/maturity. E.g. T = 1 means one year
@@ -117,6 +114,16 @@ double Pricer<Input_, RNG_, Instrument_>::price() {
         optionPrice = Instrument_::putPrice(T, sig, r, S, K, b);
     }
     return optionPrice;
+}
+
+/**
+ * Mutator function that assigns the parameter to this objects optionData member
+ * @param optionData_ A {@link boost::tuple<>} containing the core option data (e.g. Expiry, sig, r, S, K,
+ * optType)
+ */
+template<typename Input_, typename RNG_, typename Instrument_>
+void Pricer<Input_, RNG_, Instrument_>::setOptionData(const OptionData &optionData_) {
+    optionData = optionData_;
 }
 
 #endif

@@ -81,13 +81,13 @@ Input &Input::operator=(const Input &source) {
  * Accessor that retrieves OptionData
  * @return A {@link boost::tuple<>} representing core option data (e.g. Expiry, Sig, r, S, K, b, optType, uName)
  */
-OptionData Input::getOption() const { return boost::make_tuple(T, sig, r, S, K, b, optType, uName); }
+OptionData Input::getOptionData() const { return boost::make_tuple(T, sig, r, S, K, b, optType, uName); }
 
 /**
  * Get option data from the client and set member data
  * @return A {@link boost::tuple<>} representing an equity option
  */
-OptionData Input::getOptionData() {
+OptionData Input::getOptionInput() {
     std::cout << "\nEnter the required option data:\n";
 
     // Get parameters
@@ -196,14 +196,15 @@ OptionData Input::getOptionData() {
         if (optType == "put") { optType = "Put"; }
 
         // Handle input errors and crashes gracefully
-        if (optType != "Put" || optType != "Call") {
+        if (optType != "Put") {
+            if (optType != "Call") {
+                // Clear the error flag
+                std::cin.clear();
 
-            // Clear the error flag
-            std::cin.clear();
-
-            // Ignore input up to stream size or new line (whichever comes first)
-            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-            optType = "Call";                    // Pg. 37 of Intro to C++ for Financial Engineers by Dr. Duffy
+                // Ignore input up to stream size or new line (whichever comes first)
+                std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+                optType = "Call";                // Pg. 37 of Intro to C++ for Financial Engineers by Dr. Duffy
+            }
         }
 
         std::cout << "European or American: ";
@@ -212,14 +213,16 @@ OptionData Input::getOptionData() {
         if (uName == "american") { uName = "American"; }
 
         // Handle input errors and crashes gracefully
-        if (uName != "European" || uName != "American") {
+        if (uName != "European") {
+            if (uName != "American") {
 
-            // Clear the error flag
-            std::cin.clear();
+                // Clear the error flag
+                std::cin.clear();
 
-            // Ignore input up to stream size or new line (whichever comes first)
-            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-            uName = "European";                  // Pg. 37 of Intro to C++ for Financial Engineers by Dr. Duffy
+                // Ignore input up to stream size or new line (whichever comes first)
+                std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+                uName = "European";              // Pg. 37 of Intro to C++ for Financial Engineers by Dr. Duffy
+            }
         }
     } catch (std::exception &e) {
         std::cout << e.what() << std::endl;
