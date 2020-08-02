@@ -1,14 +1,17 @@
 /**********************************************************************************************************************
- * Function definitions for RNG.hpp
- *
- * Generates different types of distributions that will be used by the Pricer. The distributions requirea random
- * number generator and the default will be Mersenne Twister.
+ * Generates different types of distributions for the Pricer.
  *
  * Created by Michael Lewis on 7/31/20.
  *********************************************************************************************************************/
 
 #ifndef RNG_HPP
 #define RNG_HPP
+
+#include <string>
+#include <ctime>
+
+#include "boost/random.hpp"
+#include "boost/math/distributions/normal.hpp"
 
 class RNG {
 private:
@@ -29,6 +32,8 @@ public:
 
     // Core functionality
     double MersenneTwister();            // Generate a standard normal distribution using Mersenne Twister
+    double CDF(double x);                // Cumulative normal distribution function
+    double PDF(double x);                // Normal (Gaussian) probability density function
 };
 
 #endif //RNG_HPP

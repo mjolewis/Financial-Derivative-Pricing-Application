@@ -1,14 +1,9 @@
 /**********************************************************************************************************************
- * Generates different types of distributions that will be used by the Pricer. The distributions requirea random
- * number generator and the default will be Mersenne Twister.
+ * Generates different types of distributions for the Pricer.
  *
  * Created by Michael Lewis on 7/31/20.
  *********************************************************************************************************************/
 
-#include <string>
-#include <ctime>
-
-#include "boost/random.hpp"
 #include "RNG.hpp"
 
 /**
@@ -48,6 +43,24 @@ RNG &RNG::operator=(const RNG &source) {
     RNGName = source.RNGName;
 
     return *this;
+}
+
+/**
+ * Generate N(x) for Black-Scholes Pricer
+ * @return Probability that X will take on a value less than or equal to x
+ */
+double RNG::CDF(double x) {
+    boost::math::normal norm;
+    return boost::math::cdf(norm, x);
+}
+
+/**
+ * Generate n(x) for Black-Scholes Pricer
+ * @return Probability that X will take on a value greater than x
+ */
+double RNG::PDF(double x) {
+    boost::math::normal norm;
+    return boost::math::pdf(norm, x);
 }
 
 /**
