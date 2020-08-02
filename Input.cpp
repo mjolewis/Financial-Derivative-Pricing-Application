@@ -212,14 +212,14 @@ OptionData Input::setOptionData() {
         if (uName == "american") { uName = "American"; }
 
         // Handle input errors and crashes gracefully
-        if (optType != "European" || optType != "American") {
+        if (uName != "European" || uName != "American") {
 
             // Clear the error flag
             std::cin.clear();
 
             // Ignore input up to stream size or new line (whichever comes first)
             std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-            optType = "European";                // Pg. 37 of Intro to C++ for Financial Engineers by Dr. Duffy
+            uName = "European";                  // Pg. 37 of Intro to C++ for Financial Engineers by Dr. Duffy
         }
     } catch (std::exception &e) {
         std::cout << e.what() << std::endl;

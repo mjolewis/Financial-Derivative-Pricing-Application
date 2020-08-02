@@ -1,5 +1,5 @@
 /**********************************************************************************************************************
- * A financial instrument to price
+ * European equity option
  *
  * Created by Michael Lewis on 7/31/20.
  *********************************************************************************************************************/
@@ -11,18 +11,15 @@
  * Initialize a new EuropeanOption
  * @throws OutOfMemoryError Indicates insufficient memory for this EuropeanOption
  */
-EuropeanOption::EuropeanOption() : T(0.25), sig(0.3), r(0.08),
-                                         S(60), K(65), b(r), optType("Call") {}
+EuropeanOption::EuropeanOption() : T(0.25), sig(0.3), r(0.08), S(60), K(65), b(r), optType("Call") {}
 
 /**
  * Initialize a new EuropeanOption with the source object
  * @param source The source object used to initialize this EuropeanOptions data members
  * @throws OutOfMemoryError Indicates insufficient memory for this EuropeanOption
  */
-EuropeanOption::EuropeanOption(const EuropeanOption &source) : T(source.T),
-                                                                     sig(source.sig), r(source.r), S(source.S),
-                                                                     K(source.K), b(source.b),
-                                                                     optType(source.optType) {}
+EuropeanOption::EuropeanOption(const EuropeanOption &source) : T(source.T), sig(source.sig), r(source.r), S(source.S),
+                                                                K(source.K), b(source.b), optType(source.optType) {}
 
 /**
  * Destroy this EuropeanOption
