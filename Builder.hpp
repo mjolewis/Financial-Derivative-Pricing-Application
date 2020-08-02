@@ -19,7 +19,6 @@ public:
 
     // Core functionality
     void Build();
-    void Finished();
 };
 
 #ifndef BUILDER_CPP

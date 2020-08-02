@@ -38,10 +38,4 @@ void Builder<Input_, RNG_, Instrument_, Pricer_>::Build() {
     std::cout << "Option Price (delete): " << optionPrice << std::endl;
 }
 
-template<typename Input_, typename RNG_, typename Instrument_,
-template<typename , typename, typename> class Pricer_>
-void Builder<Input_, RNG_, Instrument_, Pricer_>::Finished() {
-    std::cout << "\n\nBuilder has finished\n\n";
-}
-
 #endif // Builder_CPP
