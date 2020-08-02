@@ -19,9 +19,9 @@ template<typename Input_, typename RNG_, typename Instrument_>
 class Pricer : public Input_, public RNG_, public Instrument_ {
 
 private:
-    OptionData optionData;                         // Holds the option data; Provided via Input.cpp
-    std::vector<double> optionPrices;              // Output of option prices
-    double optionPrice;                            // Output of the current option price
+    OptionData optionData;                            // Holds the option data; Provided via Input.cpp
+    std::vector<double> optionPrices;                 // Output of option prices
+    double optionPrice;                               // Output of the current option price
 
 public:
     // Constructors and destructors
@@ -36,6 +36,7 @@ public:
     // Getters
     const OptionData& getOptionData() const;
     std::vector<double> getOptionPrices() const;
+    void getOptionInput();                               // Uses Input.cpp to set up a console UI to input option data
 
     // Setters
     void setOptionData(const OptionData& optionData_);

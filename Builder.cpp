@@ -29,8 +29,12 @@ template<typename Input_, typename RNG_, typename Instrument_,
 template<typename, typename, typename> class Pricer_>
 void Builder<Input_, RNG_, Instrument_, Pricer_>::Build() {
 
-    // Set up option data with input from the user
+    // Provides console UI to input option parameters
+    Pricer_<Input_, RNG_, Instrument_>::getOptionInput();
+
+    // Starts the pricing engine
     double optionPrice = Pricer_<Input_, RNG_, Instrument_>::price();
+
     std::cout << "Option Price (delete): " << optionPrice << std::endl;
 }
 
