@@ -17,14 +17,14 @@ typedef boost::tuple<double, double, double, double, double, double, std::string
 class Input {
 private:
     // Required option data
-    double T;                                 // Expiry time/maturity. E.g. T = 1 means one year
-    double sig;                               // Volatility
-    double r;                                 // Risk-free interest rate
-    double S;                                 // Spot price
-    double K;                                 // Strike price
-    double b;                                 // Cost of carry; b = r for Black-Scholes equity option model
-    std::string optType;                      // Call or Put
-    std::string uName;                        // European or American
+    double T;                                    // Expiry time/maturity. E.g. T = 1 means one year
+    double sig;                                  // Volatility
+    double r;                                    // Risk-free interest rate
+    double S;                                    // Spot price
+    double K;                                    // Strike price
+    double b;                                    // Cost of carry; b = r for Black-Scholes equity option model
+    std::string optType;                         // Call or Put
+    std::string uName;                           // European or American
 public:
     // Constructors and destructor
     Input();
@@ -42,10 +42,11 @@ public:
     Input &operator=(const Input &source);
 
     // Getters
-    OptionData getOptionData() const;
+    OptionData getOption() const;                // Simple getter that returns the option object
+    OptionData getOptionData();                  // Provides a UI that allows a user to dynamically provide option data
 
     // Setters
-    OptionData setOptionData();
+    void setOptionData(double T_, double sig_, double r_, double S_, double K_, double b_, const std::string &optType_, const std::string &uName_);
 };
 
 #endif //INPUT_HPP

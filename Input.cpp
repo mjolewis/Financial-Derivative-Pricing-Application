@@ -78,16 +78,16 @@ Input &Input::operator=(const Input &source) {
 }
 
 /**
- * Accessor that retrieve OptionData
- * @return A {@link boost::tuple<>} representing core option data (e.g. Expiry, Sig, r, S, K, b, optType)
+ * Accessor that retrieves OptionData
+ * @return A {@link boost::tuple<>} representing core option data (e.g. Expiry, Sig, r, S, K, b, optType, uName)
  */
-OptionData Input::getOptionData() const { return boost::make_tuple(T, sig, r, S, K, b, optType, uName); }
+OptionData Input::getOption() const { return boost::make_tuple(T, sig, r, S, K, b, optType, uName); }
 
 /**
  * Get option data from the client and set member data
  * @return A {@link boost::tuple<>} representing an equity option
  */
-OptionData Input::setOptionData() {
+OptionData Input::getOptionData() {
     std::cout << "\nEnter the required option data:\n";
 
     // Get parameters
@@ -226,4 +226,17 @@ OptionData Input::setOptionData() {
     }
 
     return boost::make_tuple(T, sig, r, S, K, b, optType, uName);
+}
+
+void Input::setOptionData(double T_, double sig_, double r_, double S_, double K_, double b_,
+                          const std::string& optType_, const std::string& uName_) {
+
+    T = T_;
+    sig = sig_;
+    r = r_;
+    S = S_;
+    K = K_;
+    b = b_;
+    optType = optType_;
+    uName = uName_;
 }
