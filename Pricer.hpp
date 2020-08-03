@@ -23,6 +23,10 @@ private:
     std::vector<double> optionPrices;                 // Output of option prices
     double optionPrice;                               // Output of the current option price
 
+    // Hides core pricing functionality; Public interface provided by price()
+    void callPrice(double T_, double sig_, double r_, double S_, double K_, double b_, std::string& optFlavor_);
+    void putPrice(double T_, double sig_, double r_, double S_, double K_, double b_, std::string& optFlavor_);
+
 public:
     // Constructors and destructors
     Pricer(); // Default constructor
