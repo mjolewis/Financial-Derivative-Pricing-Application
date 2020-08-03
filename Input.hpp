@@ -13,7 +13,7 @@
 #include <boost/tuple/tuple.hpp>
 
 
-// Stores option data (e.g. expiry, volatility, risk-free rate, spot, option type, uName
+// Stores option data (e.g. expiry, volatility, risk-free rate, spot, option type, optFlavor
 typedef boost::tuple<double, double, double, double, double, double, std::string, std::string> OptionData;
 
 class Input {
@@ -26,7 +26,7 @@ private:
     double K;                                    // Strike price
     double b;                                    // Cost of carry; b = r for Black-Scholes equity option model
     std::string optType;                         // Call or Put
-    std::string uName;                           // European or American
+    std::string optFlavor;                       // European or American
 public:
     // Constructors and destructor
     Input();
@@ -34,7 +34,7 @@ public:
     explicit Input(const OptionData &optionData_);
 
     Input(double T_, double sig_, double r_, double S_, double K_, double b_, std::string &optType_,
-          std::string &uName_);
+          std::string &optFlavor_);
 
     Input(const Input &source);
 
@@ -48,7 +48,7 @@ public:
     OptionData getOptionInput();                 // Provides a UI that allows a user to dynamically provide option data
 
     // Setters
-    void setOptionData(double T_, double sig_, double r_, double S_, double K_, double b_, const std::string &optType_, const std::string &uName_);
+    void setOptionData(double T_, double sig_, double r_, double S_, double K_, double b_, const std::string &optType_, const std::string &optFlavor_);
 };
 
 #endif //INPUT_HPP
