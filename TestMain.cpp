@@ -8,15 +8,20 @@
 
 #include "TestBatches.hpp"
 #include "TestBuilder.hpp"
+#include "TestExtras.hpp"
 
 // Comment or uncomment to toggle test cases
 int main() {
 
     // Hard-coded test cases
-    TestBS batchTests;
-    batchTests.RunTest();
+//    TestBS batchTests;
+//    batchTests.RunTest();
 
     // Test Builder Pattern, which allows the user to input option data
-//    TestBuilder builderTest;
-//    builderTest.RunTest();
+    TestBuilder builderTest;
+    builderTest.RunTest();
+
+    // Test extras
+//    TestExtras extrasTest;
+//    extrasTest.RunTest();
 }

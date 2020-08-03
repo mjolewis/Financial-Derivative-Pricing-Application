@@ -11,19 +11,43 @@
 
 #include "Builder.hpp"
 
+/**
+ * Initialize a new Builder
+ * @throws OutOfMemoryError Indicates insufficient memory for this new Builder
+ */
 template<typename Input_, typename RNG_, typename Instrument_,
 template<typename, typename, typename> class Pricer_>
 Builder<Input_, RNG_, Instrument_, Pricer_>::Builder() {}
 
+/**
+ * Initialize a new Builder
+ * @throws OutOfMemoryError Indicates insufficient memory for this new Builder
+ */
+template<typename Input_, typename RNG_, typename Instrument_,
+template<typename, typename, typename> class Pricer_>
+Builder<Input_, RNG_, Instrument_, Pricer_>::Builder(const Builder<Input_, RNG_, Instrument_, Pricer_> &builder) {}
+
+/**
+ * Destroy this Builder
+ */
 template<typename Input_, typename RNG_, typename Instrument_,
 template<typename, typename, typename> class Pricer_>
 Builder<Input_, RNG_, Instrument_, Pricer_>::~Builder<Input_, RNG_, Instrument_, Pricer_>() {}
 
 /**
+ * Assignment operator
+ */
+template<typename Input_, typename RNG_, typename Instrument_,
+template<typename, typename, typename> class Pricer_>
+Builder<Input_, RNG_, Instrument_, Pricer_>& Builder
+        <Input_, RNG_, Instrument_, Pricer_>::operator=(const Builder<Input_, RNG_, Instrument_, Pricer_> &builder) {
+            // Avoid self assign
+            if (this == &builder) { return *this; }
+            return *this;
+        }
+
+/**
  * Build and assemble the option pricer
- * @tparam Input_
- * @tparam RNG_
- * @tparam Pricer_
  */
 template<typename Input_, typename RNG_, typename Instrument_,
 template<typename, typename, typename> class Pricer_>

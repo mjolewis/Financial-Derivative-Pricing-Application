@@ -47,6 +47,9 @@ Option &Option::operator=(const Option &source) {
     // Avoid self assign
     if (this == &source) { return *this; }
 
+    // Call base class assignment
+    Instrument::operator=(source);
+
     T = source.T;
     sig = source.sig;
     r = source.r;
@@ -59,3 +62,13 @@ Option &Option::operator=(const Option &source) {
 
     return *this;
 }
+
+double Option::expiry() const { return T; }
+double Option::vol() const { return sig; }
+double Option::riskFree() const { return r; }
+double Option::spot() const { return S; }
+double Option::strike() const { return K; }
+double Option::carry() const { return b; }
+const std::string & Option::type() const { return optType; }
+const std::string & Option::flavor() const { return optFlavor; }
+const std::string & Option::underlying() const { return uName; }

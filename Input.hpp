@@ -30,14 +30,9 @@ private:
 public:
     // Constructors and destructor
     Input();
-
     explicit Input(const OptionData &optionData_);
-
-    Input(double T_, double sig_, double r_, double S_, double K_, double b_, std::string &optType_,
-          std::string &optFlavor_);
-
+    Input(double T_, double sig_, double r_, double S_, double K_, double b_, std::string &optType_, std::string &optFlavor_);
     Input(const Input &source);
-
     virtual ~Input();
 
     // Operator overloading
