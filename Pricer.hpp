@@ -20,17 +20,15 @@ class Pricer : public Input_, public RNG_, public Instrument_ {
 
 private:
     OptionData optionData;                            // Holds the option data; Provided via Input.cpp
-    std::vector<double> optionPrices;                 // Output of option prices
     double optionPrice;                               // Output of the current option price
 
-    // Hides core pricing functionality; Public interface provided by price()
-    void callPrice(double T_, double sig_, double r_, double S_, double K_, double b_, std::string& optFlavor_);
-    void putPrice(double T_, double sig_, double r_, double S_, double K_, double b_, std::string& optFlavor_);
+    // Used for output only
+    std::vector<double> optionPrices;                 // Output of option prices
 
 public:
     // Constructors and destructors
-    Pricer(); // Default constructor
-    Pricer(const OptionData& optionData_, const std::vector<double>& optionPrices_);
+    Pricer();
+    Pricer(const OptionData& optionData_);
     Pricer(const Pricer& source);
     virtual ~Pricer();
 
@@ -40,13 +38,15 @@ public:
     // Getters
     const OptionData& getOptionData() const;
     std::vector<double> getOptionPrices() const;
-    void getOptionInput();                               // Uses Input.cpp to set up a console UI to input option data
+    void getOptionInput();                            // Uses Input.cpp to set up a console UI to input option data
 
     // Setters
     void setOptionData(const OptionData& optionData_);
 
-    // Core Pricing engine that implements the Black-Scholes pricing formula.
+    // Core Pricing engine that implements the Black-Scholes pricing formula
     double price();
+    double callPrice(double T_, double sig_, double r_, double S_, double K_, double b_, std::string& optFlavor_);
+    double putPrice(double T_, double sig_, double r_, double S_, double K_, double b_, std::string& optFlavor_);
 };
 
 #ifndef PRICER_CPP

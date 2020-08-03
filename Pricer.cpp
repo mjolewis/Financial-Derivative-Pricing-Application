@@ -26,12 +26,10 @@ Pricer<Input_, RNG_, Instrument_>::Pricer() : Input_(), RNG_(), Instrument_() {}
  * Initialize a new Pricer object with the specified parameters
  * @param optionData_ A {@link boost::tuple} containing values to initialize core option data (e.g expiry,
  * volatility, risk-free rate, spot price, strike price, option type)
- * @param optionPrices_ A {@link std::vector<>} containing option prices
  * @throws OutOfMemoryError Indicates insufficient memory for this new Pricer
  */
 template<typename Input_, typename RNG_, typename Instrument_>
-Pricer<Input_, RNG_, Instrument_>::Pricer(const OptionData &optionData_, const std::vector<double> &optionPrices_) :
-        Input_(), RNG_(), Instrument_(), optionData(optionData_), optionPrices(optionPrices_) {}
+Pricer<Input_, RNG_, Instrument_>::Pricer(const OptionData &optionData_) : Input_(), RNG_(), Instrument_(), optionData(optionData_) {}
 
 /**
  * Initialize a deep copy of the specified source
@@ -39,9 +37,7 @@ Pricer<Input_, RNG_, Instrument_>::Pricer(const OptionData &optionData_, const s
  * @throws OutOfMemoryError Indicates insufficient memory for this new Pricer
  */
 template<typename Input_, typename RNG_, typename Instrument_>
-Pricer<Input_, RNG_, Instrument_>::Pricer(const Pricer &source) : Input_(), RNG_(), Instrument_(),
-                                                                  optionData(source.optionData),
-                                                                  optionPrices(source.optionPrices) {}
+Pricer<Input_, RNG_, Instrument_>::Pricer(const Pricer &source) : Input_(), RNG_(), Instrument_(), optionData(source.optionData) {}
 
 /**
  * Destroy's this Pricer
@@ -61,7 +57,6 @@ Pricer<Input_, RNG_, Instrument_> &Pricer<Input_, RNG_, Instrument_>::operator=
     if (this == &source) { return *this; }
 
     optionData = source.optionData;
-    optionPrices = source.optionPrices;
 
     return *this;
 }
@@ -127,7 +122,7 @@ void Pricer<Input_, RNG_, Instrument_>::setOptionData(const OptionData &optionDa
 
 // Calculates the call price using the Black-Scholes formula
 template<typename Input_, typename RNG_, typename Instrument_>
-void Pricer<Input_, RNG_, Instrument_>::callPrice(double T_, double sig_, double r_, double S_, double K_, double b_, std::string& optFlavor_) {
+double Pricer<Input_, RNG_, Instrument_>::callPrice(double T_, double sig_, double r_, double S_, double K_, double b_, std::string& optFlavor_) {
 
     if (optFlavor_ == "European") {
         double tmp = sig_ * sqrt(T_);
@@ -142,12 +137,14 @@ void Pricer<Input_, RNG_, Instrument_>::callPrice(double T_, double sig_, double
     } else if (optFlavor_ == "American") {
         //todo
     }
+
+    return optionPrice;
 }
 
 
 // Calculates the put price using the Black-Scholes formula
 template<typename Input_, typename RNG_, typename Instrument_>
-void Pricer<Input_, RNG_, Instrument_>::putPrice(double T_, double sig_, double r_, double S_, double K_, double b_, std::string& optFlavor_) {
+double Pricer<Input_, RNG_, Instrument_>::putPrice(double T_, double sig_, double r_, double S_, double K_, double b_, std::string& optFlavor_) {
 
     if (optFlavor_ == "European") {
         double tmp = sig_ * sqrt(T_);
@@ -162,6 +159,8 @@ void Pricer<Input_, RNG_, Instrument_>::putPrice(double T_, double sig_, double 
     } else if (optFlavor_ == "American") {
         //todo
     }
+
+    return optionPrice;
 }
 
 #endif

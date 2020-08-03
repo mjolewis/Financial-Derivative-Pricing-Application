@@ -15,7 +15,7 @@
 #include "Input.hpp"
 #include "Pricer.hpp"
 #include "RNG.hpp"
-#include "EuropeanOption.hpp"
+#include "Option.hpp"
 
 class TestBuilder {
 public:
@@ -30,7 +30,7 @@ public:
         std::cout << "\t\tAuthored By: Michael Lewis\n";
         std::cout << "\n-------------------------------------------------------------------" << std::endl;
 
-        Builder<Input, RNG, EuropeanOption, Pricer> Builder;
+        Builder<Input, RNG, Option, Pricer> Builder;
         Builder.Build();
 
         std::cout << "\n-------------------------------------------------------------------\n\n";

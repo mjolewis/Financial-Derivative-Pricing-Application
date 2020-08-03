@@ -1,5 +1,5 @@
 /**********************************************************************************************************************
- * Generates different types of distributions for the Pricer.
+ * Generates model parameter for Pricer
  *
  * Created by Michael Lewis on 7/31/20.
  *********************************************************************************************************************/
@@ -15,7 +15,7 @@
 
 class RNG {
 private:
-    std::string RNGName;                 // Name of random number generator
+    std::string RNGName;                         // Name of random number generator
 public:
 
     // Constructors and Destructors
@@ -31,9 +31,9 @@ public:
     const std::string &getRNGName() const;
 
     // Core functionality
-    double MersenneTwister();            // Generate a standard normal distribution using Mersenne Twister
-    double CDF(double x);                // Cumulative normal distribution function
-    double PDF(double x);                // Normal (Gaussian) probability density function
+    double MersenneTwister();                    // Generate a standard normal distribution using Mersenne Twister
+    double CDF(double x);                        // Cumulative normal distribution function
+    double PDF(double x);                        // Normal (Gaussian) probability density function
 };
 
 #endif //RNG_HPP

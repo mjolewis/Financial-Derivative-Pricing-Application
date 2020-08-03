@@ -9,7 +9,9 @@
 
 #include "string"
 
-class EuropeanOption {
+#include "Instrument.hpp"
+
+class Option : public Instrument {
 private:
 
     // Required option data
@@ -20,17 +22,19 @@ private:
     double K;                           // Strike price
     double b;                           // Cost of carry; b = r for Black-Scholes equity option model
     std::string optType;                // Call or Put
+    std::string optFlavor;              // European, American
+    std::string uName;                  // Underlying
 
 public:
 
     // Constructors and Destructors
-    EuropeanOption();
-    EuropeanOption(const EuropeanOption &source);
-    virtual ~EuropeanOption();
+    Option();
+    Option(double T_, double sig_, double r_, double S_, double K_, double b_, std::string& optType_, std::string& optFlavor_, std::string& uName_);
+    Option(const Option &source);
+    virtual ~Option();
 
     // Operator overloading
-    EuropeanOption &operator=(const EuropeanOption &source);
+    Option &operator=(const Option &source);
 };
-
 
 #endif // EUROPEANOPTION_HPP
