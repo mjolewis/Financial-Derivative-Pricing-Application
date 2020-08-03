@@ -8,6 +8,7 @@
 #define EUROPEANOPTION_HPP
 
 #include "string"
+#include "boost/tuple/tuple.hpp"
 
 #include "Instrument.hpp"
 
@@ -35,6 +36,17 @@ public:
 
     // Operator overloading
     Option &operator=(const Option &source);
+
+    // Getters
+    double expiry() const;
+    double vol() const;
+    double riskFree() const;
+    double spot() const;
+    double strike() const;
+    double carry() const;
+    const std::string& type() const;
+    const std::string& flavor() const;
+    const std::string& underlying() const;
 };
 
 #endif // EUROPEANOPTION_HPP
