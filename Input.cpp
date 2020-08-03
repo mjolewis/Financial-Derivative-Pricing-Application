@@ -25,7 +25,7 @@ Input::Input() {}
 Input::Input(const OptionData &optionData_) : T(optionData_.get<0>()), sig(optionData_.get<1>()),
                                               r(optionData_.get<2>()), S(optionData_.get<3>()),
                                               K(optionData_.get<4>()), b(optionData_.get<5>()),
-                                              optType(optionData_.get<6>()), uName(optionData_.get<7>()) {}
+                                              optType(optionData_.get<6>()), optFlavor(optionData_.get<7>()) {}
 
 /**
  * Initialize a new Input object with the specified option data
@@ -36,12 +36,12 @@ Input::Input(const OptionData &optionData_) : T(optionData_.get<0>()), sig(optio
  * @param K_ Strike price
  * @param b_ Cost of carry
  * @param optType_ A put or a call
- * @param uName_ European or American option
+ * @param optFlavor_ European or American option
  * @throws OutOfMemoryException Indicates insufficient memory for this new Input object
  */
 Input::Input(double T_, double sig_, double r_, double S_, double K_, double b_, std::string &optType_,
-             std::string &uName_) :
-        T(T_), sig(sig_), r(r_), S(S_), K(K_), b(b_), optType(optType_), uName(uName_) {}
+             std::string &optFlavor_) :
+        T(T_), sig(sig_), r(r_), S(S_), K(K_), b(b_), optType(optType_), optFlavor(optFlavor_) {}
 
 /**
  * Initialize a new Input object using the member data of the source
@@ -49,7 +49,7 @@ Input::Input(double T_, double sig_, double r_, double S_, double K_, double b_,
  * @throws OutOfMemoryException Indicates insufficient memory for this new Input object
  */
 Input::Input(const Input &source) : T(source.T), sig(source.sig), r(source.r), S(source.S), K(source.K),
-                                    b(source.b), optType(source.optType), uName(source.uName) {}
+                                    b(source.b), optType(source.optType), optFlavor(source.optFlavor) {}
 
 /**
  * Destory's this Input object
@@ -72,16 +72,16 @@ Input &Input::operator=(const Input &source) {
     K = source.K;
     b = source.b;
     optType = source.optType;
-    uName = source.uName;
+    optFlavor = source.optFlavor;
 
     return *this;
 }
 
 /**
  * Accessor that retrieves OptionData
- * @return A {@link boost::tuple<>} representing core option data (e.g. Expiry, Sig, r, S, K, b, optType, uName)
+ * @return A {@link boost::tuple<>} representing core option data (e.g. Expiry, Sig, r, S, K, b, optType, optFlavor)
  */
-OptionData Input::getOptionData() const { return boost::make_tuple(T, sig, r, S, K, b, optType, uName); }
+OptionData Input::getOptionData() const { return boost::make_tuple(T, sig, r, S, K, b, optType, optFlavor); }
 
 /**
  * Get option data from the client and set member data
@@ -208,31 +208,31 @@ OptionData Input::getOptionInput() {
         }
 
         std::cout << "European or American: ";
-        std::cin >> uName;
-        if (uName == "european") { uName = "European"; }
-        if (uName == "american") { uName = "American"; }
+        std::cin >> optFlavor;
+        if (optFlavor == "european") { optFlavor = "European"; }
+        if (optFlavor == "american") { optFlavor = "American"; }
 
         // Handle input errors and crashes gracefully
-        if (uName != "European") {
-            if (uName != "American") {
+        if (optFlavor != "European") {
+            if (optFlavor != "American") {
 
                 // Clear the error flag
                 std::cin.clear();
 
                 // Ignore input up to stream size or new line (whichever comes first)
                 std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-                uName = "European";              // Pg. 37 of Intro to C++ for Financial Engineers by Dr. Duffy
+                optFlavor = "European";              // Pg. 37 of Intro to C++ for Financial Engineers by Dr. Duffy
             }
         }
     } catch (std::exception &e) {
         std::cout << e.what() << std::endl;
     }
 
-    return boost::make_tuple(T, sig, r, S, K, b, optType, uName);
+    return boost::make_tuple(T, sig, r, S, K, b, optType, optFlavor);
 }
 
 void Input::setOptionData(double T_, double sig_, double r_, double S_, double K_, double b_,
-                          const std::string& optType_, const std::string& uName_) {
+                          const std::string& optType_, const std::string& optFlavor_) {
 
     T = T_;
     sig = sig_;
@@ -241,5 +241,5 @@ void Input::setOptionData(double T_, double sig_, double r_, double S_, double K
     K = K_;
     b = b_;
     optType = optType_;
-    uName = uName_;
+    optFlavor = optFlavor_;
 }
