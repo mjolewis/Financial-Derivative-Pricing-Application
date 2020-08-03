@@ -108,7 +108,6 @@ double Pricer<Input_, RNG_, Instrument_>::price() {
     std::string uName = optionData.get<7>();                 // European or American
 
     if (optType == "Call" && uName == "European") {
-        std::cout << "Test" << std::endl;
         optionPrice = Instrument_::callPrice(T, sig, r, S, K, b);
     } else if (optType == "Put" && uName == "European") {
         optionPrice = Instrument_::putPrice(T, sig, r, S, K, b);
