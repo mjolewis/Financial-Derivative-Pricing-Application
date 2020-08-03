@@ -46,48 +46,48 @@ EuropeanOption &EuropeanOption::operator=(const EuropeanOption &source) {
     return *this;
 }
 
-/**
- * Calculates the call price using the Black-Scholes formula
- * @param T_ Expiry
- * @param sig_ Volatility
- * @param r_ Risk-free rate
- * @param S_ Price of underlying
- * @param K_ String price
- * @param b_ Cost of carry
- * @return The call option price
- */
-double EuropeanOption::callPrice(double T_, double sig_, double r_, double S_, double K_, double b_) {
-    double tmp = sig_ * sqrt(T_);
-
-    double d1 = (log(S_/K_) + (b_ + (sig_ * sig_) * 0.5) * T_ ) / tmp;
-    double d2 = d1 - tmp;
-
-    RNG rng;
-    double N1 = rng.CDF(d1);
-    double N2 = rng.CDF(d2);
-
-    return (S_ * exp((b_ - r_) * T_) * N1) - (K_ * exp(-r_ * T_) * N2);
-}
-
-/**
- * Calculates the put price using the Black-Scholes formula
- * @param T_ Expiry
- * @param sig_ Volatility
- * @param r_ Risk-free rate
- * @param S_ Price of underlying
- * @param K_ String price
- * @param b_ Cost of carry
- * @return The put option price
- */
-double EuropeanOption::putPrice(double T_, double sig_, double r_, double S_, double K_, double b_) {
-    double tmp = sig_ * sqrt(T_);
-
-    double d1 = (log(S_/K_) + (b_ + (sig_ * sig_) * 0.5) * T_ ) / tmp;
-    double d2 = d1 - tmp;
-
-    RNG rng;
-    double N1 = rng.CDF(-d1);
-    double N2 = rng.CDF(-d2);
-
-    return (K_ * exp(-r_ * T_) * N2) - (S_ * exp((b_ - r_) * T_) * N1);
-}
+//**
+// * Calculates the call price using the Black-Scholes formula
+// * @param T_ Expiry
+// * @param sig_ Volatility
+// * @param r_ Risk-free rate
+// * @param S_ Price of underlying
+// * @param K_ String price
+// * @param b_ Cost of carry
+// * @return The call option price
+// */
+//double EuropeanOption::callPrice(double T_, double sig_, double r_, double S_, double K_, double b_) {
+//    double tmp = sig_ * sqrt(T_);
+//
+//    double d1 = (log(S_/K_) + (b_ + (sig_ * sig_) * 0.5) * T_ ) / tmp;
+//    double d2 = d1 - tmp;
+//
+//    RNG rng;
+//    double N1 = rng.CDF(d1);
+//    double N2 = rng.CDF(d2);
+//
+//    return (S_ * exp((b_ - r_) * T_) * N1) - (K_ * exp(-r_ * T_) * N2);
+//}
+//
+//**
+// * Calculates the put price using the Black-Scholes formula
+// * @param T_ Expiry
+// * @param sig_ Volatility
+// * @param r_ Risk-free rate
+// * @param S_ Price of underlying
+// * @param K_ String price
+// * @param b_ Cost of carry
+// * @return The put option price
+// */
+//double EuropeanOption::putPrice(double T_, double sig_, double r_, double S_, double K_, double b_) {
+//    double tmp = sig_ * sqrt(T_);
+//
+//    double d1 = (log(S_/K_) + (b_ + (sig_ * sig_) * 0.5) * T_ ) / tmp;
+//    double d2 = d1 - tmp;
+//
+//    RNG rng;
+//    double N1 = rng.CDF(-d1);
+//    double N2 = rng.CDF(-d2);
+//
+//    return (K_ * exp(-r_ * T_) * N2) - (S_ * exp((b_ - r_) * T_) * N1);
+//}

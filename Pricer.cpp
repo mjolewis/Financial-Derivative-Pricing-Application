@@ -105,12 +105,12 @@ double Pricer<Input_, RNG_, Instrument_>::price() {
     double K = optionData.get<4>();                          // Strike price
     double b = optionData.get<5>();                          // Cost of carry
     std::string optType = optionData.get<6>();               // Put or Call
-    std::string uName = optionData.get<7>();                 // European or American
+    std::string optFlavor = optionData.get<7>();             // European or American
 
-    if (optType == "Call" && uName == "European") {
-        optionPrice = Instrument_::callPrice(T, sig, r, S, K, b);
-    } else if (optType == "Put" && uName == "European") {
-        optionPrice = Instrument_::putPrice(T, sig, r, S, K, b);
+    if (optType == "Call") {
+        optionPrice = callPrice(T, sig, r, S, K, b, optFlavor);
+    } else if (optType == "Put") {
+        optionPrice = putPrice(T, sig, r, S, K, b, optFlavor);
     }
     return optionPrice;
 }
@@ -123,6 +123,45 @@ double Pricer<Input_, RNG_, Instrument_>::price() {
 template<typename Input_, typename RNG_, typename Instrument_>
 void Pricer<Input_, RNG_, Instrument_>::setOptionData(const OptionData &optionData_) {
     optionData = optionData_;
+}
+
+// Calculates the call price using the Black-Scholes formula
+template<typename Input_, typename RNG_, typename Instrument_>
+void Pricer<Input_, RNG_, Instrument_>::callPrice(double T_, double sig_, double r_, double S_, double K_, double b_, std::string& optFlavor_) {
+
+    if (optFlavor_ == "European") {
+        double tmp = sig_ * sqrt(T_);
+
+        double d1 = (log(S_/K_) + (b_ + (sig_ * sig_) * 0.5) * T_ ) / tmp;
+        double d2 = d1 - tmp;
+
+        double N1 = RNG_::CDF(d1);
+        double N2 = RNG_::CDF(d2);
+
+        optionPrice = (S_ * exp((b_ - r_) * T_) * N1) - (K_ * exp(-r_ * T_) * N2);
+    } else if (optFlavor_ == "American") {
+        //todo
+    }
+}
+
+
+// Calculates the put price using the Black-Scholes formula
+template<typename Input_, typename RNG_, typename Instrument_>
+void Pricer<Input_, RNG_, Instrument_>::putPrice(double T_, double sig_, double r_, double S_, double K_, double b_, std::string& optFlavor_) {
+
+    if (optFlavor_ == "European") {
+        double tmp = sig_ * sqrt(T_);
+
+        double d1 = (log(S_/K_) + (b_ + (sig_ * sig_) * 0.5) * T_ ) / tmp;
+        double d2 = d1 - tmp;
+
+        double N1 = RNG_::CDF(-d1);
+        double N2 = RNG_::CDF(-d2);
+
+        optionPrice = (K_ * exp(-r_ * T_) * N2) - (S_ * exp((b_ - r_) * T_) * N1);
+    } else if (optFlavor_ == "American") {
+        //todo
+    }
 }
 
 #endif

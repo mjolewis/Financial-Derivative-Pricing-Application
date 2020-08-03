@@ -25,16 +25,11 @@ public:
 
     // Constructors and Destructors
     EuropeanOption();
-
     EuropeanOption(const EuropeanOption &source);
-
     virtual ~EuropeanOption();
 
     // Operator overloading
     EuropeanOption &operator=(const EuropeanOption &source);
-
-    double callPrice(double T_, double sig_, double r_, double S_, double K_, double b_);
-    double putPrice(double T_, double sig_, double r_, double S_, double K_, double b_);
 };
 
 
