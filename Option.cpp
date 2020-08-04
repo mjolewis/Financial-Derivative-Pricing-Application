@@ -13,6 +13,19 @@
  */
 Option::Option() : T(0.25), sig(0.3), r(0.08), S(60), K(65), b(r), optType("Call"), optFlavor("European"), uName("Default") {}
 
+/**
+ * Initialize a new Option
+ * @param T_ Time to expiry
+ * @param sig_ Volatility
+ * @param r_ Risk free rate
+ * @param S_ Current price of underlying
+ * @param K_ Strike price
+ * @param b_ Cost of carry
+ * @param optType_ Call or Put
+ * @param optFlavor_ European or American
+ * @param uName_ Name of underlying asset
+ * @throws OutOfMemoryError Indicates insufficient memory for this Option
+ */
 Option::Option(double T_, double sig_, double r_, double S_, double K_, double b_, std::string& optType_, std::string& optFlavor_, std::string& uName_) {
     T = T_;
     sig = sig_;
@@ -63,6 +76,31 @@ Option &Option::operator=(const Option &source) {
     return *this;
 }
 
+/**
+ * A mechanism to calculate the call (or put) price for a corresponding put (or call) price
+ * @param optionPrice
+ * @param optType_ Call or Put. The default value is a Call
+ * @return The price that satisfies the put-call parity relationship
+ */
+double Option::putCallParity(double optionPrice, const std::string& optType_) const {
+    if (optType_ == "Put" || optType_ == "put") {
+        return optionPrice + S - (K * exp(-r * T));
+    } else {
+        return optionPrice + (K * exp(-r * T)) - S;
+    }
+}
+
+/**
+ * Mechanism to check if a given set of call (C) and put (P) prices satisfy parity
+ * @param putPrice
+ * @param callPrice
+ * @return True if the relationship is satisfied. Otherwise false
+ */
+bool Option::putCallParity(double callPrice, double putPrice) const {
+    return putCallParity(callPrice, putPrice, T, K, r, S);
+}
+
+// Getters
 double Option::expiry() const { return T; }
 double Option::vol() const { return sig; }
 double Option::riskFree() const { return r; }
@@ -72,3 +110,19 @@ double Option::carry() const { return b; }
 const std::string & Option::type() const { return optType; }
 const std::string & Option::flavor() const { return optFlavor; }
 const std::string & Option::underlying() const { return uName; }
+
+// Setters
+void Option::expiry(double T_) { T = T_;}
+void Option::vol(double sig_) { sig = sig_; }
+void Option::riskFree(double r_) { r = r_; }
+void Option::spot(double S_) { S = S_; }
+void Option::strike(double K_) {K = K_; }
+void Option::carry(double b_) { b = b_; }
+void Option::type(const std::string &optType_) { optType = optType_; }
+void Option::flavor(const std::string &optFlavor_) { optFlavor = optFlavor_; }
+void Option::underlying(const std::string &uName_) { uName = uName_; }
+
+// Mechanism to check if a given set of call (C) and put (P) prices satisfy parity (tolerance = 1e-5)
+bool Option::putCallParity(double C, double P, double T_, double K, double r_, double S) {
+    return ((C + (K * exp(-r_ * T_))) - (P + S)) <= 1e-5;
+}
