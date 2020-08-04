@@ -122,7 +122,8 @@ void Pricer<Input_, RNG_, Instrument_>::setOptionData(const OptionData &optionDa
 
 // Calculates the call price using the Black-Scholes formula
 template<typename Input_, typename RNG_, typename Instrument_>
-double Pricer<Input_, RNG_, Instrument_>::callPrice(double T_, double sig_, double r_, double S_, double K_, double b_, std::string& optFlavor_) {
+double Pricer<Input_, RNG_, Instrument_>::callPrice(double T_, double sig_,
+        double r_, double S_, double K_, double b_, std::string& optFlavor_) {
 
     if (optFlavor_ == "European") {
         double tmp = sig_ * sqrt(T_);
@@ -144,7 +145,8 @@ double Pricer<Input_, RNG_, Instrument_>::callPrice(double T_, double sig_, doub
 
 // Calculates the put price using the Black-Scholes formula
 template<typename Input_, typename RNG_, typename Instrument_>
-double Pricer<Input_, RNG_, Instrument_>::putPrice(double T_, double sig_, double r_, double S_, double K_, double b_, std::string& optFlavor_) {
+double Pricer<Input_, RNG_, Instrument_>::putPrice(double T_, double sig_,
+        double r_, double S_, double K_, double b_, std::string& optFlavor_) {
 
     if (optFlavor_ == "European") {
         double tmp = sig_ * sqrt(T_);
@@ -161,6 +163,12 @@ double Pricer<Input_, RNG_, Instrument_>::putPrice(double T_, double sig_, doubl
     }
 
     return optionPrice;
+}
+
+template<typename Input_, typename RNG_, typename Instrument_>
+bool Pricer<Input_, RNG_, Instrument_>::putCallParity(double putPrice, double callPrice) const {
+
+    return false;
 }
 
 #endif
