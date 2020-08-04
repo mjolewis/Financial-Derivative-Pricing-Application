@@ -48,8 +48,6 @@ public:
     double price();
     double callPrice(double T_, double sig_, double r_, double S_, double K_, double b_, std::string& optFlavor_);
     double putPrice(double T_, double sig_, double r_, double S_, double K_, double b_, std::string& optFlavor_);
-
-    bool putCallParity(double putPrice, double callPrice) const;
 };
 
 #ifndef PRICER_CPP
