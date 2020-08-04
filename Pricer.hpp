@@ -9,8 +9,9 @@
 #ifndef PRICER_HPP
 #define PRICER_HPP
 
-#include <boost/tuple/tuple_io.hpp>
 #include <vector>
+#include <boost/tuple/tuple_io.hpp>
+
 #include "Input.hpp"
 
 typedef  boost::tuple<double, double, double, double, double, double, std::string, std::string> OptionData;
@@ -47,6 +48,8 @@ public:
     double price();
     double callPrice(double T_, double sig_, double r_, double S_, double K_, double b_, std::string& optFlavor_);
     double putPrice(double T_, double sig_, double r_, double S_, double K_, double b_, std::string& optFlavor_);
+
+    bool putCallParity(double putPrice, double callPrice) const;
 };
 
 #ifndef PRICER_CPP
