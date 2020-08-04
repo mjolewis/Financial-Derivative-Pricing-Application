@@ -165,10 +165,4 @@ double Pricer<Input_, RNG_, Instrument_>::putPrice(double T_, double sig_,
     return optionPrice;
 }
 
-template<typename Input_, typename RNG_, typename Instrument_>
-bool Pricer<Input_, RNG_, Instrument_>::putCallParity(double putPrice, double callPrice) const {
-
-    return false;
-}
-
 #endif
