@@ -61,8 +61,8 @@ public:
                   << "\nStock price: " << S
                   << "\nStrike price: " << K
                   << "\nCost of carry: " << b
-                  << "\nExact Call Price: " << pricer.callPrice(T, sig, r, S, K, b, optFlavor)
-                  << "\nExact Put Price: " << pricer.putPrice(T, sig, r, S, K, b, optFlavor)
+                  << "\nExact Call Price: " << pricer.price(T, sig, r, S, K, b, call, optFlavor)
+                  << "\nExact Put Price: " << pricer.price(T, sig, r, S, K, b, put, optFlavor)
                   << "\nCall Price determined by Put-Call Parity: " << option1.putCallParity(5.84628, put)
                   << "\nPut Price determined by Put-Call Parity: " << option1.putCallParity(2.13337, call)
                   << "\nSatisfies Put-Call Parity: " << option1.putCallParity(2.13337, 5.84628)
@@ -86,8 +86,8 @@ public:
                   << "\nStock price: " << S
                   << "\nStrike price: " << K
                   << "\nCost of carry: " << b
-                  << "\nExact Call Price: " << pricer.callPrice(T, sig, r, S, K, b, optFlavor)
-                  << "\nExact Put Price: " << pricer.putPrice(T, sig, r, S, K, b, optFlavor)
+                  << "\nExact Call Price: " << pricer.price(T, sig, r, S, K, b, call, optFlavor)
+                  << "\nExact Put Price: " << pricer.price(T, sig, r, S, K, b, put, optFlavor)
                   << "\nCall Price determined by Put-Call Parity: " << option2.putCallParity(7.96557, put)
                   << "\nPut Price determined by Put-Call Parity: " << option2.putCallParity(7.96557, call)
                   << "\nSatisfies Put-Call Parity: " << option2.putCallParity(2.13337, 5.84628)
@@ -111,8 +111,8 @@ public:
                   << "\nStock price: " << S
                   << "\nStrike price: " << K
                   << "\nCost of carry: " << b
-                  << "\nExact Call Price: " << pricer.callPrice(T, sig, r, S, K, b, optFlavor)
-                  << "\nExact Put Price: " << pricer.putPrice(T, sig, r, S, K, b, optFlavor)
+                  << "\nExact Call Price: " << pricer.price(T, sig, r, S, K, b, call, optFlavor)
+                  << "\nExact Put Price: " << pricer.price(T, sig, r, S, K, b, put, optFlavor)
                   << "\nCall Price determined by Put-Call Parity: " << option3.putCallParity(4.07326, put)
                   << "\nPut Price determined by Put-Call Parity: " << option3.putCallParity(0.204058, call)
                   << "\nSatisfies Put-Call Parity: " << option3.putCallParity(0.204058, 4.07326)
@@ -136,8 +136,8 @@ public:
                   << "\nStock price: " << S
                   << "\nStrike price: " << K
                   << "\nCost of carry: " << b
-                  << "\nExact Call Price: " << pricer.callPrice(T, sig, r, S, K, b, optFlavor)
-                  << "\nExact Put Price: " << pricer.putPrice(T, sig, r, S, K, b, optFlavor)
+                  << "\nExact Call Price: " << pricer.price(T, sig, r, S, K, b, call, optFlavor)
+                  << "\nExact Put Price: " << pricer.price(T, sig, r, S, K, b, put, optFlavor)
                   << "\nCall Price determined by Put-Call Parity: " << option4.putCallParity(1.2475, put)
                   << "\nPut Price determined by Put-Call Parity: " << option4.putCallParity(92.1757, call)
                   << "\nSatisfies Put-Call Parity: " << option4.putCallParity(92.1757, 1.2475)

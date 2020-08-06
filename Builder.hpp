@@ -7,9 +7,9 @@
 #ifndef BUILDER_HPP
 #define BUILDER_HPP
 
-template<typename Input_, typename RNG_, typename Instrument_,
+template<typename Input_, typename RNG_, typename Mesher_,
 template<typename, typename, typename> class Pricer_>
-class Builder : public Pricer_<Input_, RNG_, Instrument_> {
+class Builder : public Pricer_<Input_, RNG_, Mesher_> {
 public:
     // Constructors and Destructors
     Builder();
