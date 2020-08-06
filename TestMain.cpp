@@ -14,14 +14,14 @@
 int main() {
 
     // Hard-coded test cases
-    TestBatches batchTests;
-    batchTests.RunTest();
+//    TestBatches batchTests;
+//    batchTests.RunTest();
 
     // Test Builder Pattern, which allows the user to input option data
 //    TestBuilder builderTest;
 //    builderTest.RunTest();
 
     // Test extras
-//    TestExtras extrasTest;
-//    extrasTest.RunTest();
+    TestExtras extrasTest;
+    extrasTest.RunTest();
 }
