@@ -66,6 +66,12 @@ Pricer<Input_, RNG_, Mesher_> &Pricer<Input_, RNG_, Mesher_>::operator=
     return *this;
 }
 
+template<typename Input_, typename RNG_, typename Mesher_>
+void Pricer<Input_, RNG_, Mesher_>::getMeshPoints() {
+    std::vector<double> meshData = Input_::getMeshFactor();
+    meshData = Mesher_::Mesher(meshData[0], meshData[1], meshData[2]);
+}
+
 /**
  * Accessor function that returns the option data
  * @return A {@link boost::tuple<>} containing the core option data (e.g. Expiry, sig, r, S, K, optType)
@@ -85,7 +91,9 @@ void Pricer<Input_, RNG_, Mesher_>::getOptionInput() { optionData = Input_::getO
  * @return A {@link std::vector} of option prices
  */
 template<typename Input_, typename RNG_, typename Mesher_>
-std::vector<double> Pricer<Input_, RNG_, Mesher_>::getOptionPrices() const { return optionPrices; }
+const std::vector<std::vector<double> >& Pricer<Input_, RNG_, Mesher_>::getOptionPrices() const {
+    return optionPrices;
+}
 
 /**
  * The core pricing engine that uses the Black-Scholes formula to calculate an exact solution. Note that this version
@@ -95,20 +103,36 @@ std::vector<double> Pricer<Input_, RNG_, Mesher_>::getOptionPrices() const { ret
 template<typename Input_, typename RNG_, typename Mesher_>
 double Pricer<Input_, RNG_, Mesher_>::price() {
 
-    getOptionInput();                                        // Get option data from the user
+    getOptionInput();                                      // Provide a console interface to dynamically get option data
 
     // Required option data
-    double T = optionData.get<0>();                          // Expiry time/maturity. E.g. T = 1 means one year
-    double sig = optionData.get<1>();                        // Volatility
-    double r = optionData.get<2>();                          // Risk-free interest rate
-    double S = optionData.get<3>();                          // Spot price
-    double K = optionData.get<4>();                          // Strike price
-    double b = optionData.get<5>();                          // Cost of carry
-    std::string optType = optionData.get<6>();               // Put or Call
-    std::string optFlavor = optionData.get<7>();             // European or American
+    double T = optionData.get<0>();                        // Expiry time/maturity. E.g. T = 1 means one year
+    double sig = optionData.get<1>();                      // Volatility
+    double r = optionData.get<2>();                        // Risk-free interest rate
+    double S = optionData.get<3>();                        // Spot price
+    double K = optionData.get<4>();                        // Strike price
+    double b = optionData.get<5>();                        // Cost of carry
+    std::string optType = optionData.get<6>();             // Put or Call
+    std::string optFlavor = optionData.get<7>();           // European or American
 
     optionPrice = price(T, sig, r, S, K, b, optType, optFlavor);
     return optionPrice;
+}
+
+/**
+ *
+ * @tparam Input_
+ * @tparam RNG_
+ * @tparam Mesher_
+ * @param matrix
+ * @return
+ */
+template<typename Input_, typename RNG_, typename Mesher_>
+const std::vector<std::vector<double> > Pricer<Input_, RNG_, Mesher_>::price(const std::vector<std::vector<double> >& matrix) {
+
+    getMeshPoints();                                       // Provide a console interface to dynamically get mesh data
+
+
 }
 
 /**

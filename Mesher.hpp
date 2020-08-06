@@ -11,16 +11,17 @@
 
 class Mesher {
 private:
-    double a, b;                                      // Interval
+    double a, b;                                                     // Interval
 public:
     Mesher();
-    Mesher(double A, double B);                       // Domain of integration
+    Mesher(double A, double B);                                      // Domain of integration
     Mesher(const Mesher& mesher);
     virtual ~Mesher();
 
     Mesher& operator=(const Mesher& mesher);
 
-    std::vector<double> xarr(int J) const;            // Vector of mesh points
+    std::vector<double> xarr(int J) const;                           // Vector of mesh points
+    std::vector<double> xarr(double a_, double b_, int J) const;     // Vector of mesh points
 };
 
 
