@@ -49,7 +49,7 @@ Mesher & Mesher::operator=(const Mesher &mesher) {
 
 /**
  * Create a vector of mesh points, which can be used when simulating option prices
- * @param j The factor used to determine the distance between mesh points
+ * @param J The factor used to determine the distance between mesh points
  * @return A {@link std::vector} containing mesh points
  */
 std::vector<double> Mesher::xarr(int J) const {
@@ -61,6 +61,30 @@ std::vector<double> Mesher::xarr(int J) const {
     std::vector<double> result(size, start);
     result[0] = a;
     result[J - 1] = b;
+
+    for (unsigned int j = 1; j < size; ++j) {
+        result[j] = result[j - 1] + h;
+    }
+
+    return result;
+}
+
+/**
+ * Create a vector of mesh points, which can be used when simulating option prices
+ * @param a_ Domain of integration minimum value
+ * @param b_ Domain of integration maximum value
+ * @param J The factor used to determine the distance between mesh points
+ * @return A {@link std::vector} containing mesh points
+ */
+std::vector<double> Mesher::xarr(double a_, double b_, int J) const {
+    double h = (b_ - a_) / double (J);
+
+    int size = J;
+    int start = 1;
+
+    std::vector<double> result(size, start);
+    result[0] = a_;
+    result[J - 1] = b_;
 
     for (unsigned int j = 1; j < size; ++j) {
         result[j] = result[j - 1] + h;

@@ -77,6 +77,80 @@ Input &Input::operator=(const Input &source) {
     return *this;
 }
 
+const std::vector<double>& Input::getMeshData() {
+    double a, b;
+    int J;
+
+    std::cout << "\nEnter the required mesh data:\n";
+
+    // Get parameters
+    try {
+        std::cout << "Domain of integration min value: ";
+        std::cin >> a;
+
+        // Handle input errors and crashes gracefully
+        if (a < 0 || !std::cin) {
+
+            // Clear the error flag
+            std::cin.clear();
+
+            // Ignore input up to stream size or new line (whichever comes first)
+            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+
+            // Set a default value
+            std::cout << "Incorrect input. Setting default value to 0\n";
+            a = 0;
+
+            // Add value to end of vector
+            meshData.push_back(0);
+        }
+
+        std::cout << "Domain of integration max value: ";
+        std::cin >> b;
+
+        // Handle input errors and crashes gracefully
+        if (b < 0 || b < a || !std::cin) {
+
+            // Clear the error flag
+            std::cin.clear();
+
+            // Ignore input up to stream size or new line (whichever comes first)
+            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+
+            // Set a default value
+            std::cout << "Incorrect input. Setting default value to 1\n";
+            b = 1;
+
+            // Add value to end of vector
+            meshData.push_back(b);
+        }
+
+        std::cout << "Factor: ";
+        std::cin >> J;
+
+        // Handle input errors and crashes gracefully
+        if (J < 0 || !std::cin) {
+
+            // Clear the error flag
+            std::cin.clear();
+
+            // Ignore input up to stream size or new line (whichever comes first)
+            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+
+            // Set a default value
+            std::cout << "Incorrect input. Setting default value to 100\n";
+            J = 100;
+
+            // Add value to end of vector
+            meshData.push_back(J);
+        }
+    } catch (std::exception e) {
+        std::cout << e.what() << std::endl;
+    }
+
+    return meshData;
+}
+
 /**
  * Accessor that retrieves OptionData
  * @return A {@link boost::tuple<>} representing core option data (e.g. Expiry, Sig, r, S, K, b, optType, optFlavor)
@@ -158,7 +232,7 @@ OptionData Input::getOptionInput() {
             std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 
             // Set a default value
-            std::cout << "Incorrect input. Setting default stock price to $65\n";
+            std::cout << "Incorrect input. Setting default stock price to $60\n";
             S = 60;                              // Pg. 37 of Intro to C++ for Financial Engineers by Dr. Duffy
         }
 
@@ -173,6 +247,9 @@ OptionData Input::getOptionInput() {
 
             // Ignore input up to stream size or new line (whichever comes first)
             std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+
+            // Set a default value
+            std::cout << "Incorrect input. Setting default stock price to $65\n";
             K = 65;                              // Pg. 37 of Intro to C++ for Financial Engineers by Dr. Duffy
         }
 
@@ -187,6 +264,7 @@ OptionData Input::getOptionInput() {
 
             // Ignore input up to stream size or new line (whichever comes first)
             std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+            std::cout << "Incorrect input. Setting default beta to risk-free rate\n";
             b = r;                              // Pg. 37 of Intro to C++ for Financial Engineers by Dr. Duffy
         }
 
@@ -203,6 +281,9 @@ OptionData Input::getOptionInput() {
 
                 // Ignore input up to stream size or new line (whichever comes first)
                 std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+
+                // Set a default value
+                std::cout << "Incorrect input. Setting default to a Call option\n";
                 optType = "Call";                // Pg. 37 of Intro to C++ for Financial Engineers by Dr. Duffy
             }
         }
@@ -221,6 +302,9 @@ OptionData Input::getOptionInput() {
 
                 // Ignore input up to stream size or new line (whichever comes first)
                 std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+
+                // Set a default value
+                std::cout << "Incorrect input. Setting default to a European option\n";
                 optFlavor = "European";              // Pg. 37 of Intro to C++ for Financial Engineers by Dr. Duffy
             }
         }

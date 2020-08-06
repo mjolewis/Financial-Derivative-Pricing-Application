@@ -25,8 +25,11 @@ private:
     double S;                                    // Spot price
     double K;                                    // Strike price
     double b;                                    // Cost of carry; b = r for Black-Scholes equity option model
+
+    // Model parameters
     std::string optType;                         // Call or Put
     std::string optFlavor;                       // European or American
+    std::vector<double> meshData;                // The domain of integration and factor
 public:
     // Constructors and destructor
     Input();
@@ -39,8 +42,9 @@ public:
     Input &operator=(const Input &source);
 
     // Getters
+    const std::vector<double>& getMeshData();    // Provide a console interface to dynamically get mesh data
     OptionData getOptionData() const;            // Simple getter that returns the option object
-    OptionData getOptionInput();                 // Provides a UI that allows a user to dynamically provide option data
+    OptionData getOptionInput();                 // Provide a console interface to dynamically get option data
 
     // Setters
     void setOptionData(double T_, double sig_, double r_, double S_, double K_, double b_, const std::string &optType_, const std::string &optFlavor_);
