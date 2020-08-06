@@ -19,8 +19,8 @@
  * Initialize a new Pricer object
  * @throws OutOfMemoryException Indicates insufficient memory for this new Pricer object
  */
-template<typename Input_, typename RNG_, typename Instrument_>
-Pricer<Input_, RNG_, Instrument_>::Pricer() : Input_(), RNG_(), Instrument_() {}
+template<typename Input_, typename RNG_, typename Mesher_>
+Pricer<Input_, RNG_, Mesher_>::Pricer() : Input_(), RNG_(), Mesher_() {}
 
 /**
  * Initialize a new Pricer object with the specified parameters
@@ -28,33 +28,38 @@ Pricer<Input_, RNG_, Instrument_>::Pricer() : Input_(), RNG_(), Instrument_() {}
  * volatility, risk-free rate, spot price, strike price, option type)
  * @throws OutOfMemoryError Indicates insufficient memory for this new Pricer
  */
-template<typename Input_, typename RNG_, typename Instrument_>
-Pricer<Input_, RNG_, Instrument_>::Pricer(const OptionData &optionData_) : Input_(), RNG_(), Instrument_(), optionData(optionData_) {}
+template<typename Input_, typename RNG_, typename Mesher_>
+Pricer<Input_, RNG_, Mesher_>::Pricer(const OptionData &optionData_) : Input_(), RNG_(), Mesher_(), optionData(optionData_) {}
 
 /**
  * Initialize a deep copy of the specified source
  * @param source A Pricer that will be deeply copied
  * @throws OutOfMemoryError Indicates insufficient memory for this new Pricer
  */
-template<typename Input_, typename RNG_, typename Instrument_>
-Pricer<Input_, RNG_, Instrument_>::Pricer(const Pricer &source) : Input_(), RNG_(), Instrument_(), optionData(source.optionData) {}
+template<typename Input_, typename RNG_, typename Mesher_>
+Pricer<Input_, RNG_, Mesher_>::Pricer(const Pricer &source) : Input_(), RNG_(), Mesher_(), optionData(source.optionData) {}
 
 /**
  * Destroy's this Pricer
  */
-template<typename Input_, typename RNG_, typename Instrument_>
-Pricer<Input_, RNG_, Instrument_>::~Pricer() {}
+template<typename Input_, typename RNG_, typename Mesher_>
+Pricer<Input_, RNG_, Mesher_>::~Pricer() {}
 
 /**
  * Create a deep copy of the source Pricer
  * @param source A Pricer that will be deeply copied
  * @return A reference to this Pricer
  */
-template<typename Input_, typename RNG_, typename Instrument_>
-Pricer<Input_, RNG_, Instrument_> &Pricer<Input_, RNG_, Instrument_>::operator=
-        (const Pricer<Input_, RNG_, Instrument_> &source) {
+template<typename Input_, typename RNG_, typename Mesher_>
+Pricer<Input_, RNG_, Mesher_> &Pricer<Input_, RNG_, Mesher_>::operator=
+        (const Pricer<Input_, RNG_, Mesher_> &source) {
     // Avoid self assign
     if (this == &source) { return *this; }
+
+    // Call base class assignment
+    Input_::operator=(source);
+    RNG_::operator=(source);
+    Mesher_::operator=(source);
 
     optionData = source.optionData;
 
@@ -65,32 +70,32 @@ Pricer<Input_, RNG_, Instrument_> &Pricer<Input_, RNG_, Instrument_>::operator=
  * Accessor function that returns the option data
  * @return A {@link boost::tuple<>} containing the core option data (e.g. Expiry, sig, r, S, K, optType)
  */
-template<typename Input_, typename RNG_, typename Instrument_>
-const OptionData &Pricer<Input_, RNG_, Instrument_>::getOptionData() const { return optionData; }
+template<typename Input_, typename RNG_, typename Mesher_>
+const OptionData &Pricer<Input_, RNG_, Mesher_>::getOptionData() const { return optionData; }
 
 
 /**
  * Leverages Input.cpp to provide a console UI, allowing the user to dynamically input option data
- * @tparam Input_
- * @tparam RNG_
- * @tparam Instrument_
  */
-template<typename Input_, typename RNG_, typename Instrument_>
-void Pricer<Input_, RNG_, Instrument_>::getOptionInput() { optionData = Input_::getOptionInput();}
+template<typename Input_, typename RNG_, typename Mesher_>
+void Pricer<Input_, RNG_, Mesher_>::getOptionInput() { optionData = Input_::getOptionInput();}
 
 /**
  * Accessor function that returns the option prices
  * @return A {@link std::vector} of option prices
  */
-template<typename Input_, typename RNG_, typename Instrument_>
-std::vector<double> Pricer<Input_, RNG_, Instrument_>::getOptionPrices() const { return optionPrices; }
+template<typename Input_, typename RNG_, typename Mesher_>
+std::vector<double> Pricer<Input_, RNG_, Mesher_>::getOptionPrices() const { return optionPrices; }
 
 /**
- * The core pricing engine that uses the Black-Scholes formula to price various types of options
+ * The core pricing engine that uses the Black-Scholes formula to calculate an exact solution. Note that this version
+ * gets the option parameters from the user by providing a console UI
  * @return The price of the option
  */
-template<typename Input_, typename RNG_, typename Instrument_>
-double Pricer<Input_, RNG_, Instrument_>::price() {
+template<typename Input_, typename RNG_, typename Mesher_>
+double Pricer<Input_, RNG_, Mesher_>::price() {
+
+    getOptionInput();                                        // Get option data from the user
 
     // Required option data
     double T = optionData.get<0>();                          // Expiry time/maturity. E.g. T = 1 means one year
@@ -102,11 +107,49 @@ double Pricer<Input_, RNG_, Instrument_>::price() {
     std::string optType = optionData.get<6>();               // Put or Call
     std::string optFlavor = optionData.get<7>();             // European or American
 
-    if (optType == "Call") {
-        optionPrice = callPrice(T, sig, r, S, K, b, optFlavor);
-    } else if (optType == "Put") {
-        optionPrice = putPrice(T, sig, r, S, K, b, optFlavor);
+    optionPrice = price(T, sig, r, S, K, b, optType, optFlavor);
+    return optionPrice;
+}
+
+/**
+ * The core pricing engine that uses the Black-Scholes formula to price various types of options
+ * @param T_ Expiry
+ * @param sig_ Volatility
+ * @param r_ Risk-free rate
+ * @param S_ Spot price
+ * @param K_ Strike price
+ * @param b_ Cost of carry
+ * @param optType_ Put or Call
+ * @param optFlavor_ European or American
+ * @return The price of the option
+ */
+template<typename Input_, typename RNG_, typename Mesher_>
+double Pricer<Input_, RNG_, Mesher_>::price(double T_, double sig_,
+                                            double r_, double S_, double K_, double b_,
+                                            std::string& optType_, std::string& optFlavor_) {
+
+    double tmp = sig_ * sqrt(T_);
+    double d1 = (log(S_/K_) + (b_ + (sig_ * sig_) * 0.5) * T_ ) / tmp;
+    double d2 = d1 - tmp;
+
+    if (optType_ == "Call" && optFlavor_ == "European") {
+
+        double N1 = RNG_::CDF(d1);
+        double N2 = RNG_::CDF(d2);
+        optionPrice = (S_ * exp((b_ - r_) * T_) * N1) - (K_ * exp(-r_ * T_) * N2);
+
+    } else if (optType_ == "Put" && optFlavor_ == "European") {
+
+        double N1 = RNG_::CDF(-d1);
+        double N2 = RNG_::CDF(-d2);
+        optionPrice = (K_ * exp(-r_ * T_) * N2) - (S_ * exp((b_ - r_) * T_) * N1);
+
+    } else if (optType_ == "Call" && optFlavor_ == "American") {
+        //todo
+    } else {
+        //todo
     }
+
     return optionPrice;
 }
 
@@ -115,54 +158,9 @@ double Pricer<Input_, RNG_, Instrument_>::price() {
  * @param optionData_ A {@link boost::tuple<>} containing the core option data (e.g. Expiry, sig, r, S, K,
  * optType)
  */
-template<typename Input_, typename RNG_, typename Instrument_>
-void Pricer<Input_, RNG_, Instrument_>::setOptionData(const OptionData &optionData_) {
+template<typename Input_, typename RNG_, typename Mesher_>
+void Pricer<Input_, RNG_, Mesher_>::setOptionData(const OptionData &optionData_) {
     optionData = optionData_;
-}
-
-// Calculates the call price using the Black-Scholes formula
-template<typename Input_, typename RNG_, typename Instrument_>
-double Pricer<Input_, RNG_, Instrument_>::callPrice(double T_, double sig_,
-        double r_, double S_, double K_, double b_, std::string& optFlavor_) {
-
-    if (optFlavor_ == "European") {
-        double tmp = sig_ * sqrt(T_);
-
-        double d1 = (log(S_/K_) + (b_ + (sig_ * sig_) * 0.5) * T_ ) / tmp;
-        double d2 = d1 - tmp;
-
-        double N1 = RNG_::CDF(d1);
-        double N2 = RNG_::CDF(d2);
-
-        optionPrice = (S_ * exp((b_ - r_) * T_) * N1) - (K_ * exp(-r_ * T_) * N2);
-    } else if (optFlavor_ == "American") {
-        //todo
-    }
-
-    return optionPrice;
-}
-
-
-// Calculates the put price using the Black-Scholes formula
-template<typename Input_, typename RNG_, typename Instrument_>
-double Pricer<Input_, RNG_, Instrument_>::putPrice(double T_, double sig_,
-        double r_, double S_, double K_, double b_, std::string& optFlavor_) {
-
-    if (optFlavor_ == "European") {
-        double tmp = sig_ * sqrt(T_);
-
-        double d1 = (log(S_/K_) + (b_ + (sig_ * sig_) * 0.5) * T_ ) / tmp;
-        double d2 = d1 - tmp;
-
-        double N1 = RNG_::CDF(-d1);
-        double N2 = RNG_::CDF(-d2);
-
-        optionPrice = (K_ * exp(-r_ * T_) * N2) - (S_ * exp((b_ - r_) * T_) * N1);
-    } else if (optFlavor_ == "American") {
-        //todo
-    }
-
-    return optionPrice;
 }
 
 #endif

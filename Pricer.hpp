@@ -16,8 +16,8 @@
 
 typedef  boost::tuple<double, double, double, double, double, double, std::string, std::string> OptionData;
 
-template<typename Input_, typename RNG_, typename Instrument_>
-class Pricer : public Input_, public RNG_, public Instrument_ {
+template<typename Input_, typename RNG_, typename Mesher_>
+class Pricer : public Input_, public RNG_, public Mesher_ {
 
 private:
     OptionData optionData;                            // Holds the option data; Provided via Input.cpp
@@ -46,8 +46,7 @@ public:
 
     // Core Pricing engine that implements the Black-Scholes pricing formula
     double price();
-    double callPrice(double T_, double sig_, double r_, double S_, double K_, double b_, std::string& optFlavor_);
-    double putPrice(double T_, double sig_, double r_, double S_, double K_, double b_, std::string& optFlavor_);
+    double price(double T_, double sig_, double r_, double S_, double K_, double b_, std::string& optType, std::string& optFlavor_);
 };
 
 #ifndef PRICER_CPP

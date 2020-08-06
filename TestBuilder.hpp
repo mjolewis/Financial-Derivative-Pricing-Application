@@ -13,6 +13,7 @@
 
 #include "Builder.hpp"
 #include "Input.hpp"
+#include "Mesher.hpp"
 #include "Pricer.hpp"
 #include "RNG.hpp"
 #include "Option.hpp"
@@ -30,7 +31,7 @@ public:
         std::cout << "\t\tAuthored By: Michael Lewis\n";
         std::cout << "\n-------------------------------------------------------------------" << std::endl;
 
-        Builder<Input, RNG, Option, Pricer> Builder;
+        Builder<Input, RNG, Mesher, Pricer> Builder;
         Builder.Build();
 
         std::cout << "\n-------------------------------------------------------------------\n\n";

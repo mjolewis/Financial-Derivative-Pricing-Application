@@ -18,10 +18,10 @@ int main() {
 //    batchTests.RunTest();
 
     // Test Builder Pattern, which allows the user to input option data
-//    TestBuilder builderTest;
-//    builderTest.RunTest();
+    TestBuilder builderTest;
+    builderTest.RunTest();
 
     // Test extras
-    TestExtras extrasTest;
-    extrasTest.RunTest();
+//    TestExtras extrasTest;
+//    extrasTest.RunTest();
 }
