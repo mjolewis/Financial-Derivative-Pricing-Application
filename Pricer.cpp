@@ -67,7 +67,7 @@ Pricer<Input_, RNG_, Mesher_> &Pricer<Input_, RNG_, Mesher_>::operator=
 }
 
 template<typename Input_, typename RNG_, typename Mesher_>
-void Pricer<Input_, RNG_, Mesher_>::getMeshPoints() {
+void Pricer<Input_, RNG_, Mesher_>::getMeshPoints(const std::string& property) {
     std::vector<double> meshData = Input_::getMeshFactor();
     meshData = Mesher_::Mesher(meshData[0], meshData[1], meshData[2]);
 }
@@ -120,19 +120,27 @@ double Pricer<Input_, RNG_, Mesher_>::price() {
 }
 
 /**
- *
- * @tparam Input_
- * @tparam RNG_
- * @tparam Mesher_
- * @param matrix
- * @return
+ * Receives a matrix of options and prices each of of them
+ * @param matrix Option parameters
+ * @return A matrix of option prices
  */
 template<typename Input_, typename RNG_, typename Mesher_>
-const std::vector<std::vector<double> > Pricer<Input_, RNG_, Mesher_>::price(const std::vector<std::vector<double> >& matrix) {
+const std::vector<std::vector<double> > Pricer<Input_, RNG_, Mesher_>::price(
+        const std::vector<std::vector<double> >& matrix, const std::string& optType_, const std::string& optFlavor_) {
 
-    getMeshPoints();                                       // Provide a console interface to dynamically get mesh data
+    for (int i = 0; i < matrix.size(); ++i) {
 
+        // Temporary vector for each new row
+        std::vector<double> row;
 
+        // Price the option
+        price(matrix[i][0], matrix[i][1], matrix[i][2], matrix[i][3], matrix[i][4], matrix[i][5], optType_, optFlavor_);
+
+        // Store the price
+        row.push_back(optionPrice);
+        optionPrices.push_back(row);
+    }
+    return optionPrices;
 }
 
 /**
@@ -148,9 +156,8 @@ const std::vector<std::vector<double> > Pricer<Input_, RNG_, Mesher_>::price(con
  * @return The price of the option
  */
 template<typename Input_, typename RNG_, typename Mesher_>
-double Pricer<Input_, RNG_, Mesher_>::price(double T_, double sig_,
-                                            double r_, double S_, double K_, double b_,
-                                            std::string& optType_, std::string& optFlavor_) {
+double Pricer<Input_, RNG_, Mesher_>::price(double T_, double sig_, double r_, double S_, double K_, double b_,
+                                            const std::string& optType_, const std::string& optFlavor_) {
 
     double tmp = sig_ * sqrt(T_);
     double d1 = (log(S_/K_) + (b_ + (sig_ * sig_) * 0.5) * T_ ) / tmp;

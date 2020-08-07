@@ -57,6 +57,7 @@ public:
     const std::string& type() const;
     const std::string& flavor() const;
     const std::string& underlying() const;
+    const boost::tuple<double, double, double, double, double, double, const std::string&, const std::string&, const std::string&> getOption() const;
 
     // Setters
     void expiry(double T_);

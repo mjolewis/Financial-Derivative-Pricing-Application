@@ -9,6 +9,8 @@
 
 #include <vector>
 
+#include "Option.hpp"
+
 class Mesher {
 private:
     double a, b;                                                     // Interval
@@ -22,7 +24,9 @@ public:
 
     std::vector<double> xarr(int J) const;                           // Vector of mesh points
     std::vector<double> xarr(double a_, double b_, int J) const;     // Vector of mesh points
-};
 
+    // Generate a matrix of option parameters by monotonically changing one parameter
+    std::vector<std::vector<double> > getMatrix(double a_, double b_, int J, const Option& option, const std::string& property);
+};
 
 #endif // MESHER_HPP

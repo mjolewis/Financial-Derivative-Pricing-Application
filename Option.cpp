@@ -111,6 +111,11 @@ const std::string & Option::type() const { return optType; }
 const std::string & Option::flavor() const { return optFlavor; }
 const std::string & Option::underlying() const { return uName; }
 
+// Package the entire option in one container
+const boost::tuple<double, double, double, double, double, double, const std::string &, const std::string &, const std::string &> Option::getOption() const {
+    return boost::make_tuple(T, sig, r, S, K, b, optType, optFlavor, uName);
+}
+
 // Setters
 void Option::expiry(double T_) { T = T_;}
 void Option::vol(double sig_) { sig = sig_; }

@@ -13,6 +13,7 @@
 #include <boost/tuple/tuple_io.hpp>
 
 #include "Input.hpp"
+#include "Instrument.hpp"
 
 typedef  boost::tuple<double, double, double, double, double, double, std::string, std::string> OptionData;
 
@@ -41,15 +42,17 @@ public:
     const OptionData& getOptionData() const;
     const std::vector<std::vector<double> >& getOptionPrices() const;
     void getOptionInput();                            // Uses Input.cpp to set up a console UI to input option data
-    void getMeshPoints();                             // Uses Mesher.cpp to generate a set of mesh points
+    void getMeshPoints(const std::string& property);  // Uses Mesher.cpp to generate a set of mesh points
 
     // Setters
     void setOptionData(const OptionData& optionData_);
 
-    // Core Pricing engine that implements the Black-Scholes pricing formula
+    // Core Pricing engines
     double price();
-    const std::vector<std::vector<double> > price(const std::vector<std::vector<double> >& matrix);
-    double price(double T_, double sig_, double r_, double S_, double K_, double b_, std::string& optType, std::string& optFlavor_);
+    const std::vector<std::vector<double> > price(const std::vector<std::vector<double> >& matrix,
+                                                  const std::string& optType_, const std::string& optFlavor_);
+    double price(double T_, double sig_, double r_, double S_, double K_, double b_,
+                                                  const std::string& optType, const std::string& optFlavor_);
 };
 
 #ifndef PRICER_CPP

@@ -16,7 +16,7 @@
  * @throws OutOfMemoryError Indicates insufficient memory for this new Builder
  */
 template<typename Input_, typename RNG_, typename Mesher_,
-template<typename, typename, typename> class Pricer_>
+        template<typename, typename, typename> class Pricer_>
 Builder<Input_, RNG_, Mesher_, Pricer_>::Builder() {}
 
 /**
@@ -24,14 +24,14 @@ Builder<Input_, RNG_, Mesher_, Pricer_>::Builder() {}
  * @throws OutOfMemoryError Indicates insufficient memory for this new Builder
  */
 template<typename Input_, typename RNG_, typename Mesher_,
-template<typename, typename, typename> class Pricer_>
+        template<typename, typename, typename> class Pricer_>
 Builder<Input_, RNG_, Mesher_, Pricer_>::Builder(const Builder<Input_, RNG_, Mesher_, Pricer_> &builder) {}
 
 /**
  * Destroy this Builder
  */
 template<typename Input_, typename RNG_, typename Mesher_,
-template<typename, typename, typename> class Pricer_>
+        template<typename, typename, typename> class Pricer_>
 Builder<Input_, RNG_, Mesher_, Pricer_>::~Builder<Input_, RNG_, Mesher_, Pricer_>() {}
 
 /**
@@ -59,7 +59,7 @@ Builder<Input_, RNG_, Mesher_, Pricer_> &Builder<Input_, RNG_, Mesher_, Pricer_>
  * Build and assemble the option pricer
  */
 template<typename Input_, typename RNG_, typename Mesher_,
-template<typename, typename, typename> class Pricer_>
+        template<typename, typename, typename> class Pricer_>
 void Builder<Input_, RNG_, Mesher_, Pricer_>::Build() {
 
     // Starts the pricing engine and gets option data from the user
