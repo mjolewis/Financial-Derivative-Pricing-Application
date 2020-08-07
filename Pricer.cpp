@@ -87,15 +87,6 @@ template<typename Input_, typename RNG_, typename Mesher_>
 void Pricer<Input_, RNG_, Mesher_>::getOptionInput() { optionData = Input_::getOptionInput();}
 
 /**
- * Accessor function that returns the option prices
- * @return A {@link std::vector} of option prices
- */
-template<typename Input_, typename RNG_, typename Mesher_>
-const std::vector<std::vector<double> >& Pricer<Input_, RNG_, Mesher_>::getOptionPrices() const {
-    return optionPrices;
-}
-
-/**
  * The core pricing engine that uses the Black-Scholes formula to calculate an exact solution. Note that this version
  * gets the option parameters from the user by providing a console UI
  * @return The price of the option
@@ -127,6 +118,9 @@ double Pricer<Input_, RNG_, Mesher_>::price() {
 template<typename Input_, typename RNG_, typename Mesher_>
 const std::vector<std::vector<double> > Pricer<Input_, RNG_, Mesher_>::price(
         const std::vector<std::vector<double> >& matrix, const std::string& optType_, const std::string& optFlavor_) {
+
+    // Create a new container for each new matrix
+    std::vector<std::vector<double> > optionPrices;
 
     for (int i = 0; i < matrix.size(); ++i) {
 
