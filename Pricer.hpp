@@ -25,9 +25,6 @@ private:
     OptionData optionData;                            // Holds the option data; Provided via Input.cpp
     double optionPrice;                               // Current option price
 
-    // Used for output only
-    std::vector<std::vector<double> > optionPrices;   // Output of option prices
-
 public:
     // Constructors and destructors
     Pricer();
@@ -40,7 +37,6 @@ public:
 
     // Getters
     const OptionData& getOptionData() const;
-    const std::vector<std::vector<double> >& getOptionPrices() const;
     void getOptionInput();                            // Uses Input.cpp to set up a console UI to input option data
     void getMeshPoints(const std::string& property);  // Uses Mesher.cpp to generate a set of mesh points
 

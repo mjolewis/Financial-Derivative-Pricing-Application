@@ -51,7 +51,8 @@ public:
 
         // Data containers
         std::vector<std::vector<double> > options;         // A matrix of option data
-        std::vector<std::vector<double> > optionPrices;    // A matrix of option prices
+        std::vector<std::vector<double> > callPrices;      // A matrix of call option prices
+        std::vector<std::vector<double> > putPrices;       // A matrix of put option prices
 
         // Batch 1
         T = 0.25;
@@ -63,7 +64,11 @@ public:
         optFlavor = "European";
         uName = "GS";
         Option option1(T, sig, r, S, K, b, call, optFlavor, uName);
+
+        // Generate price matrix
         options = mesher.getMatrix(0, 1, 100, option1, "T");
+        callPrices = pricer.price(options, call, optFlavor);
+        putPrices = pricer.price(options, put, optFlavor);
 
         std::cout << "\nBatch 1:"
                   << "\nExpiry: " << T
@@ -79,10 +84,11 @@ public:
                   << "\nSatisfies Put-Call Parity: " << option1.putCallParity(2.13337, 5.84628);
 
         // Iterate through the matrix and print the option prices
-        optionPrices = pricer.price(options, call, optFlavor);
-        std::cout << "\nPut option prices as a function of expiry: \n";
-        for (int i = 0; i < optionPrices.size(); ++i) {
-            std::cout << optionPrices[i][0] << "\n";
+        std::cout << "\nOption prices as a function of Expiry:";
+        std::cout << "\nCall\t\tPut";
+        std::cout << "\n------\t\t------\n";
+        for (int i = 0; i < callPrices.size(); ++i) {
+            std::cout << callPrices[i][0] << "\t\t" << putPrices[i][0] << "\n";
         }
 
         // Batch 2
@@ -95,7 +101,11 @@ public:
         optFlavor = "European";
         uName = "MS";
         Option option2(T, sig, r, S, K, b, call, optFlavor, uName);
+
+        // Generate price matrix
         options = mesher.getMatrix(0, 1, 100, option2, "sig");
+        callPrices = pricer.price(options, call, optFlavor);
+        putPrices = pricer.price(options, put, optFlavor);
 
         std::cout << "\nBatch 2:"
                   << "\nExpiry: " << T
@@ -111,10 +121,11 @@ public:
                   << "\nSatisfies Put-Call Parity: " << option2.putCallParity(2.13337, 5.84628);
 
         // Iterate through the matrix and print the option prices
-        optionPrices = pricer.price(options, call, optFlavor);
-        std::cout << "\nPut option prices as a function of vol: \n";
-        for (int i = 0; i < optionPrices.size(); ++i) {
-            std::cout << optionPrices[i][0] << "\n";
+        std::cout << "\nOption prices as a function of Vol:";
+        std::cout << "\nCall\t\tPut";
+        std::cout << "\n------\t\t------\n";
+        for (int i = 0; i < callPrices.size(); ++i) {
+            std::cout << callPrices[i][0] << "\t\t" << putPrices[i][0] << "\n";
         }
 
         // Batch 3
@@ -127,7 +138,11 @@ public:
         optFlavor = "European";
         uName = "C";
         Option option3(T, sig, r, S, K, b, call, optFlavor, uName);
+
+        // Generate price matrix
         options = mesher.getMatrix(0, 1, 100, option3, "r");
+        callPrices = pricer.price(options, call, optFlavor);
+        putPrices = pricer.price(options, put, optFlavor);
 
         std::cout << "\nBatch 3:"
                   << "\nExpiry: " << T
@@ -143,10 +158,11 @@ public:
                   << "\nSatisfies Put-Call Parity: " << option3.putCallParity(0.204058, 4.07326);
 
         // Iterate through the matrix and print the option prices
-        optionPrices = pricer.price(options, call, optFlavor);
-        std::cout << "\nPut option prices as a function of r: \n";
-        for (int i = 0; i < optionPrices.size(); ++i) {
-            std::cout << optionPrices[i][0] << "\n";
+        std::cout << "\nOption prices as a function of risk-free rate:";
+        std::cout << "\nCall\t\tPut";
+        std::cout << "\n------\t\t------\n";
+        for (int i = 0; i < callPrices.size(); ++i) {
+            std::cout << callPrices[i][0] << "\t\t" << putPrices[i][0] << "\n";
         }
 
         // Batch 4
@@ -159,7 +175,11 @@ public:
         optFlavor = "European";
         uName = "JPM";
         Option option4(T, sig, r, S, K, b, call, optFlavor, uName);
+
+        // Generate price matrix
         options = mesher.getMatrix(0, 1, 100, option4, "S");
+        callPrices = pricer.price(options, call, optFlavor);
+        putPrices = pricer.price(options, put, optFlavor);
 
         std::cout << "\nBatch 4:"
                   << "\nExpiry: " << T
@@ -175,10 +195,11 @@ public:
                   << "\nSatisfies Put-Call Parity: " << option4.putCallParity(92.1757, 1.2475);
 
         // Iterate through the matrix and print the option prices
-        optionPrices = pricer.price(options, call, optFlavor);
-        std::cout << "\nPut option prices as a function of the spot price: \n";
-        for (int i = 0; i < optionPrices.size(); ++i) {
-            std::cout << optionPrices[i][0] << "\n";
+        std::cout << "\nOption prices as a function of spot price:";
+        std::cout << "\nCall\t\tPut";
+        std::cout << "\n------\t\t------\n";
+        for (int i = 0; i < callPrices.size(); ++i) {
+            std::cout << callPrices[i][0] << "\t\t" << putPrices[i][0] << "\n";
         }
 
 
