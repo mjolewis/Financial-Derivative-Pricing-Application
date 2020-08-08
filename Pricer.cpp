@@ -124,15 +124,11 @@ const std::vector<std::vector<double> > Pricer<Input_, RNG_, Mesher_>::price(
 
     for (int i = 0; i < matrix.size(); ++i) {
 
-        // Temporary vector for each new row
-        std::vector<double> row;
-
         // Price the option
         price(matrix[i][0], matrix[i][1], matrix[i][2], matrix[i][3], matrix[i][4], matrix[i][5], optType_, optFlavor_);
 
         // Store the price
-        row.push_back(optionPrice);
-        optionPrices.push_back(row);
+        optionPrices.push_back({optionPrice});
     }
     return optionPrices;
 }
