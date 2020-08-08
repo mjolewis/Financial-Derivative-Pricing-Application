@@ -1,7 +1,7 @@
 /**********************************************************************************************************************
  * Function declarations for Pricer.hpp
  *
- * A financial derivatives pricing engine that employs the Black-Scholes formula with exact methods.
+ * A financial derivatives pricing and sensitivity engine that employs the Black-Scholes formula
  *
  * Created by Michael Lewis on 7/31/20.
  *********************************************************************************************************************/
@@ -24,6 +24,7 @@ private:
     std::vector<double> meshPoints;                   // Holds the mesh points provided by Mesher.cpp
     OptionData optionData;                            // Holds the option data; Provided via Input.cpp
     double optionPrice;                               // Current option price
+    double deltaPrice;                                // Call delta or Put delta price
 
 public:
     // Constructors and destructors
@@ -37,7 +38,6 @@ public:
 
     // Getters
     const OptionData& getOptionData() const;
-    void getOptionInput();                            // Uses Input.cpp to set up a console UI to input option data
     void getMeshPoints(const std::string& property);  // Uses Mesher.cpp to generate a set of mesh points
 
     // Setters
@@ -46,9 +46,16 @@ public:
     // Core Pricing engines
     double price();
     const std::vector<std::vector<double> > price(const std::vector<std::vector<double> >& matrix,
-                                                  const std::string& optType_, const std::string& optFlavor_);
+            const std::string& optType_ = "Call", const std::string& optFlavor_ = "European");
     double price(double T_, double sig_, double r_, double S_, double K_, double b_,
-                                                  const std::string& optType, const std::string& optFlavor_);
+            const std::string& optType = "Call", const std::string& optFlavor_ = "European");
+
+    // Option sensitivities (Greeks)
+    double delta(double T_, double sig_, double r_, double S_, double K_, double b_, const std::string& optType = "Call");
+    const std::vector<std::vector<double>> delta(const std::vector<std::vector<double>>& matrix, const std::string& optType_ = "Call");
+
+    double gamma(double T_, double sig_, double r_, double S_, double K_, double b_);
+    const std::vector<std::vector<double>> gamma(const std::vector<std::vector<double>> &matrix);
 };
 
 #ifndef PRICER_CPP

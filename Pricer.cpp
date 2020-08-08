@@ -1,7 +1,7 @@
 /**********************************************************************************************************************
  * Function definitions for Pricer.cpp
  *
- * A financial derivatives pricing engine that employs the Black-Scholes formula with exact methods.
+ * A financial derivatives pricing and sensitivity engine that employs the Black-Scholes formula
  *
  * Created by Michael Lewis on 7/31/20.
  *********************************************************************************************************************/
@@ -66,6 +66,102 @@ Pricer<Input_, RNG_, Mesher_> &Pricer<Input_, RNG_, Mesher_>::operator=
     return *this;
 }
 
+/**
+ *
+ * @param T_ Expiry
+ * @param sig_ Volatility
+ * @param r_ Risk-free rate
+ * @param S_ Spot price
+ * @param K_ Strike price
+ * @param b_ Cost of carry
+ * @param optType
+ * @return The call delta if optType is a call. Otherwise the put delta
+ */
+template<typename Input_, typename RNG_, typename Mesher_>
+double Pricer<Input_, RNG_, Mesher_>::delta(double T_, double sig_, double r_,
+        double S_, double K_, double b_, const std::string &optType) {
+
+    double tmp = sig_ * sqrt(T_);
+    double d1 = (log(S_/K_) + (b_ + (sig_ * sig_) * 0.5) * T_)/ tmp;
+
+    if (optType == "Put" || optType == "put") {return exp((b_ - r_) * T_) * (RNG_::CDF(d1) - 1.0);}
+
+    // optType is a call
+    return exp((b_ - r_) * T_) * RNG_::CDF(d1);
+}
+
+/**
+ *
+ * @return A call delta matrix (default) or a put delta matrix
+ */
+template<typename Input_, typename RNG_, typename Mesher_>
+const std::vector<std::vector<double> > Pricer<Input_, RNG_, Mesher_>::delta(
+        const std::vector<std::vector<double> >& matrix, const std::string& optType_) {
+
+    // Create a new container for each new matrix
+    std::vector<std::vector<double> > deltaPrices;
+
+    for (int i = 0; i < matrix.size(); ++i) {
+
+        // Calculate the call or put delta
+        deltaPrice = delta(matrix[i][0], matrix[i][1], matrix[i][2], matrix[i][3], matrix[i][4], matrix[i][5], optType_);
+
+        // Add deltaPrice to the output matrix
+        deltaPrices.push_back({deltaPrice});
+    }
+    return deltaPrices;
+}
+
+/**
+ * Gamma is the rate of change in an options delta per one point move in the underlying asset's price
+ * @param T_ Expiry
+ * @param sig_ Volatility
+ * @param r_ Risk-free rate
+ * @param S_ Spot price
+ * @param K_ Strike price
+ * @param b_ Cost of carry
+ * @return The rate of change with respect to the input parameters
+ */
+template<typename Input_, typename RNG_, typename Mesher_>
+double Pricer<Input_, RNG_, Mesher_>::gamma(double T_, double sig_, double r_, double S_, double K_, double b_) {
+    double tmp = sig_ * sqrt(T_);
+
+    double d1 = (log(S_/K_) + (b_ + (sig_ * sig_) * 0.5) * T_ ) / tmp;
+
+    double n1 = RNG_::PDF(d1);
+
+    return (n1 * exp((b_ - r_) * T_)) / (S_ * tmp);
+}
+
+/**
+ * Gamma is the rate of change in an options delta per one point move in the underlying asset's price
+ * @return A Gamma matrix
+ */
+template<typename Input_, typename RNG_, typename Mesher_>
+const std::vector<std::vector<double> > Pricer<Input_, RNG_, Mesher_>::gamma(const std::vector<std::vector<double> >& matrix) {
+
+    // Create a new container for each new matrix
+    std::vector<std::vector<double> > gammaMatrix;
+    double temp;
+
+    for (int i = 0; i < matrix.size(); ++i) {
+
+        // Calculate gamma
+        temp = gamma(matrix[i][0], matrix[i][1], matrix[i][2], matrix[i][3], matrix[i][4], matrix[i][5]);
+
+        // Add gamma to the output matrix
+        gammaMatrix.push_back({temp});
+    }
+    return gammaMatrix;
+}
+
+/**
+ *
+ * @tparam Input_
+ * @tparam RNG_
+ * @tparam Mesher_
+ * @param property
+ */
 template<typename Input_, typename RNG_, typename Mesher_>
 void Pricer<Input_, RNG_, Mesher_>::getMeshPoints(const std::string& property) {
     std::vector<double> meshData = Input_::getMeshFactor();
@@ -79,22 +175,15 @@ void Pricer<Input_, RNG_, Mesher_>::getMeshPoints(const std::string& property) {
 template<typename Input_, typename RNG_, typename Mesher_>
 const OptionData &Pricer<Input_, RNG_, Mesher_>::getOptionData() const { return optionData; }
 
-
-/**
- * Leverages Input.cpp to provide a console UI, allowing the user to dynamically input option data
- */
-template<typename Input_, typename RNG_, typename Mesher_>
-void Pricer<Input_, RNG_, Mesher_>::getOptionInput() { optionData = Input_::getOptionInput();}
-
 /**
  * The core pricing engine that uses the Black-Scholes formula to calculate an exact solution. Note that this version
- * gets the option parameters from the user by providing a console UI
- * @return The price of the option
+ * provides a console interface to dynamically get option data
+ * @return The option price
  */
 template<typename Input_, typename RNG_, typename Mesher_>
 double Pricer<Input_, RNG_, Mesher_>::price() {
 
-    getOptionInput();                                      // Provide a console interface to dynamically get option data
+    optionData = Input_::getOptionInput();                 // Provide a console interface to dynamically get option data
 
     // Required option data
     double T = optionData.get<0>();                        // Expiry time/maturity. E.g. T = 1 means one year
@@ -134,7 +223,7 @@ const std::vector<std::vector<double> > Pricer<Input_, RNG_, Mesher_>::price(
 }
 
 /**
- * The core pricing engine that uses the Black-Scholes formula to price various types of options
+ * The core pricing engine that uses the Black-Scholes formula
  * @param T_ Expiry
  * @param sig_ Volatility
  * @param r_ Risk-free rate
@@ -180,8 +269,6 @@ double Pricer<Input_, RNG_, Mesher_>::price(double T_, double sig_, double r_, d
  * optType)
  */
 template<typename Input_, typename RNG_, typename Mesher_>
-void Pricer<Input_, RNG_, Mesher_>::setOptionData(const OptionData &optionData_) {
-    optionData = optionData_;
-}
+void Pricer<Input_, RNG_, Mesher_>::setOptionData(const OptionData &optionData_) {optionData = optionData_;}
 
 #endif
