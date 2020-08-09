@@ -15,41 +15,25 @@
 #include <iostream>
 #include "Input.hpp"
 
-/**
- * Initialize a new Pricer object
- * @throws OutOfMemoryException Indicates insufficient memory for this new Pricer object
- */
+// Initialize a new Pricer
 template<typename Input_, typename RNG_, typename Mesher_>
 Pricer<Input_, RNG_, Mesher_>::Pricer() : Input_(), RNG_(), Mesher_() {}
 
-/**
- * Initialize a new Pricer object with the specified parameters
- * @param optionData_ A {@link boost::tuple} containing values to initialize core option data (e.g expiry,
- * volatility, risk-free rate, spot price, strike price, option type)
- * @throws OutOfMemoryError Indicates insufficient memory for this new Pricer
- */
+// Initialize a new Pricer where optionData is a boost::tuple with expiry, vol, risk-free, spot, strike, option type
 template<typename Input_, typename RNG_, typename Mesher_>
-Pricer<Input_, RNG_, Mesher_>::Pricer(const OptionData &optionData_) : Input_(), RNG_(), Mesher_(), optionData(optionData_) {}
+Pricer<Input_, RNG_, Mesher_>::Pricer(const OptionData &optionData_)
+        : Input_(), RNG_(), Mesher_(), optionData(optionData_) {}
 
-/**
- * Initialize a deep copy of the specified source
- * @param source A Pricer that will be deeply copied
- * @throws OutOfMemoryError Indicates insufficient memory for this new Pricer
- */
+// Initialize a deep copy of the source
 template<typename Input_, typename RNG_, typename Mesher_>
-Pricer<Input_, RNG_, Mesher_>::Pricer(const Pricer &source) : Input_(), RNG_(), Mesher_(), optionData(source.optionData) {}
+Pricer<Input_, RNG_, Mesher_>::Pricer(const Pricer &source)
+        : Input_(), RNG_(), Mesher_(), optionData(source.optionData) {}
 
-/**
- * Destroy's this Pricer
- */
+// Destroy this Pricer
 template<typename Input_, typename RNG_, typename Mesher_>
 Pricer<Input_, RNG_, Mesher_>::~Pricer() {}
 
-/**
- * Create a deep copy of the source Pricer
- * @param source A Pricer that will be deeply copied
- * @return A reference to this Pricer
- */
+// Create a deep copy of the source
 template<typename Input_, typename RNG_, typename Mesher_>
 Pricer<Input_, RNG_, Mesher_> &Pricer<Input_, RNG_, Mesher_>::operator=
         (const Pricer<Input_, RNG_, Mesher_> &source) {
@@ -66,6 +50,22 @@ Pricer<Input_, RNG_, Mesher_> &Pricer<Input_, RNG_, Mesher_>::operator=
     return *this;
 }
 
+/* ********************************************************************************************************************
+ * Getters and Setters
+ *********************************************************************************************************************/
+
+// optionData is a boost::tuple
+template<typename Input_, typename RNG_, typename Mesher_>
+const OptionData &Pricer<Input_, RNG_, Mesher_>::getOptionData() const { return optionData; }
+
+// Mutator function that assigns the parameter to this objects optionData member(e.g. Expiry, sig, r, S, K,
+template<typename Input_, typename RNG_, typename Mesher_>
+void Pricer<Input_, RNG_, Mesher_>::setOptionData(const OptionData &optionData_) { optionData = optionData_; }
+
+/* ********************************************************************************************************************
+ * Option sensitivities (Greeks)
+ *********************************************************************************************************************/
+
 /**
  *
  * @param T_ Expiry
@@ -79,12 +79,12 @@ Pricer<Input_, RNG_, Mesher_> &Pricer<Input_, RNG_, Mesher_>::operator=
  */
 template<typename Input_, typename RNG_, typename Mesher_>
 double Pricer<Input_, RNG_, Mesher_>::delta(double T_, double sig_, double r_,
-        double S_, double K_, double b_, const std::string &optType) {
+                                            double S_, double K_, double b_, const std::string &optType) const {
 
     double tmp = sig_ * sqrt(T_);
-    double d1 = (log(S_/K_) + (b_ + (sig_ * sig_) * 0.5) * T_)/ tmp;
+    double d1 = (log(S_ / K_) + (b_ + (sig_ * sig_) * 0.5) * T_) / tmp;
 
-    if (optType == "Put" || optType == "put") {return exp((b_ - r_) * T_) * (RNG_::CDF(d1) - 1.0);}
+    if (optType == "Put" || optType == "put") { return exp((b_ - r_) * T_) * (RNG_::CDF(d1) - 1.0); }
 
     // optType is a call
     return exp((b_ - r_) * T_) * RNG_::CDF(d1);
@@ -95,20 +95,58 @@ double Pricer<Input_, RNG_, Mesher_>::delta(double T_, double sig_, double r_,
  * @return A call delta matrix (default) or a put delta matrix
  */
 template<typename Input_, typename RNG_, typename Mesher_>
-const std::vector<std::vector<double> > Pricer<Input_, RNG_, Mesher_>::delta(
-        const std::vector<std::vector<double> >& matrix, const std::string& optType_) {
+std::vector<std::vector<double>>
+Pricer<Input_, RNG_, Mesher_>::delta(const std::vector<std::vector<double> > &matrix, const std::string &optType_) {
 
-    // Create a new container for each new matrix
-    std::vector<std::vector<double> > deltaPrices;
+    std::vector<std::vector<double> > deltaPrices;              // A container of delta approximations
 
     for (int i = 0; i < matrix.size(); ++i) {
 
         // Calculate the call or put delta
-        deltaPrice = delta(matrix[i][0], matrix[i][1], matrix[i][2], matrix[i][3], matrix[i][4], matrix[i][5], optType_);
+        deltaPrice = delta(matrix[i][0], matrix[i][1], matrix[i][2], matrix[i][3], matrix[i][4], matrix[i][5],
+                           optType_);
 
         // Add deltaPrice to the output matrix
         deltaPrices.push_back({deltaPrice});
     }
+    return deltaPrices;
+}
+
+/**
+ * Approximate option delta using the divided differences method
+ * @param h
+ * @param option An option with T, sig, r, S, K, b, optType, and optFlavor
+ * @return The delta call or delta put, which depends on the type of option provided
+ */
+template<typename Input_, typename RNG_, typename Mesher_>
+double Pricer<Input_, RNG_, Mesher_>::delta(double h, const std::string &optType, const std::string& optFlavor,
+        const std::vector<double>& option) {
+
+    // Input for divided differences numerator
+    double S1 = option[3] + h;
+    double S2 = option[3] - h;
+
+    // Placeholders for final numerator values
+    double LHS = price(option[0], option[1], option[2], S1, option[4], option[5], optType, optFlavor);
+    double RHS = price(option[0], option[1], option[2], S2, option[4], option[5], optType, optFlavor);
+
+    // Divided differences method
+    deltaPrice = (LHS - RHS) / (2 * h);
+
+    return deltaPrice;
+}
+
+template<typename Input_, typename RNG_, typename Mesher_>
+std::vector<std::vector<double>> Pricer<Input_, RNG_, Mesher_>::delta(double h, const std::string &optType,
+        const std::string& optFlavor, const std::vector<std::vector<double> > &matrix) {
+
+    // Container for divided differences results
+    std::vector<std::vector<double>> deltaPrices;
+
+    for (const auto & i : matrix) {
+        deltaPrices.push_back({delta(h, optType, optFlavor, i)});
+    }
+
     return deltaPrices;
 }
 
@@ -123,10 +161,10 @@ const std::vector<std::vector<double> > Pricer<Input_, RNG_, Mesher_>::delta(
  * @return The rate of change with respect to the input parameters
  */
 template<typename Input_, typename RNG_, typename Mesher_>
-double Pricer<Input_, RNG_, Mesher_>::gamma(double T_, double sig_, double r_, double S_, double K_, double b_) {
+double Pricer<Input_, RNG_, Mesher_>::gamma(double T_, double sig_, double r_, double S_, double K_, double b_) const {
     double tmp = sig_ * sqrt(T_);
 
-    double d1 = (log(S_/K_) + (b_ + (sig_ * sig_) * 0.5) * T_ ) / tmp;
+    double d1 = (log(S_ / K_) + (b_ + (sig_ * sig_) * 0.5) * T_) / tmp;
 
     double n1 = RNG_::PDF(d1);
 
@@ -138,7 +176,8 @@ double Pricer<Input_, RNG_, Mesher_>::gamma(double T_, double sig_, double r_, d
  * @return A Gamma matrix
  */
 template<typename Input_, typename RNG_, typename Mesher_>
-const std::vector<std::vector<double> > Pricer<Input_, RNG_, Mesher_>::gamma(const std::vector<std::vector<double> >& matrix) {
+std::vector<std::vector<double>>
+Pricer<Input_, RNG_, Mesher_>::gamma(const std::vector<std::vector<double> > &matrix) const {
 
     // Create a new container for each new matrix
     std::vector<std::vector<double> > gammaMatrix;
@@ -156,24 +195,28 @@ const std::vector<std::vector<double> > Pricer<Input_, RNG_, Mesher_>::gamma(con
 }
 
 /**
- *
- * @tparam Input_
- * @tparam RNG_
- * @tparam Mesher_
- * @param property
+ * Measures an option's sensitivity to implied volatility. It is the change in the option price for a one-point change
+ * in implied volatility
+ * @param T_ Expiry
+ * @param sig_ Volatility
+ * @param r_ Risk-free rate
+ * @param S_ Spot price
+ * @param K_ Strike price
+ * @param b_ Cost of carry
+ * @return The rate of change in the option price with respect to volatility
  */
 template<typename Input_, typename RNG_, typename Mesher_>
-void Pricer<Input_, RNG_, Mesher_>::getMeshPoints(const std::string& property) {
-    std::vector<double> meshData = Input_::getMeshFactor();
-    meshData = Mesher_::Mesher(meshData[0], meshData[1], meshData[2]);
+double Pricer<Input_, RNG_, Mesher_>::vega(double T_, double sig_, double r_, double S_, double K_, double b_) const {
+    double tmp = sig_ * sqrt(T_);
+
+    double d1 = (log(S_ / K_) + (b_ + (sig_ * sig_) * 0.5) * T_) / tmp;
+
+    return (S_ * exp((b_ - r_) * T_) * RNG_::PDF(d1) * sqrt(T_));
 }
 
-/**
- * Accessor function that returns the option data
- * @return A {@link boost::tuple<>} containing the core option data (e.g. Expiry, sig, r, S, K, optType)
- */
-template<typename Input_, typename RNG_, typename Mesher_>
-const OptionData &Pricer<Input_, RNG_, Mesher_>::getOptionData() const { return optionData; }
+/* ********************************************************************************************************************
+ * Core pricing functions
+ *********************************************************************************************************************/
 
 /**
  * The core pricing engine that uses the Black-Scholes formula to calculate an exact solution. Note that this version
@@ -205,8 +248,8 @@ double Pricer<Input_, RNG_, Mesher_>::price() {
  * @return A matrix of option prices
  */
 template<typename Input_, typename RNG_, typename Mesher_>
-const std::vector<std::vector<double> > Pricer<Input_, RNG_, Mesher_>::price(
-        const std::vector<std::vector<double> >& matrix, const std::string& optType_, const std::string& optFlavor_) {
+std::vector<std::vector<double> > Pricer<Input_, RNG_, Mesher_>::price(
+        const std::vector<std::vector<double> > &matrix, const std::string &optType_, const std::string &optFlavor_) {
 
     // Create a new container for each new matrix
     std::vector<std::vector<double> > optionPrices;
@@ -236,10 +279,10 @@ const std::vector<std::vector<double> > Pricer<Input_, RNG_, Mesher_>::price(
  */
 template<typename Input_, typename RNG_, typename Mesher_>
 double Pricer<Input_, RNG_, Mesher_>::price(double T_, double sig_, double r_, double S_, double K_, double b_,
-                                            const std::string& optType_, const std::string& optFlavor_) {
+                                            const std::string &optType_, const std::string &optFlavor_) {
 
     double tmp = sig_ * sqrt(T_);
-    double d1 = (log(S_/K_) + (b_ + (sig_ * sig_) * 0.5) * T_ ) / tmp;
+    double d1 = (log(S_ / K_) + (b_ + (sig_ * sig_) * 0.5) * T_) / tmp;
     double d2 = d1 - tmp;
 
     if (optType_ == "Call" && optFlavor_ == "European") {
@@ -262,13 +305,5 @@ double Pricer<Input_, RNG_, Mesher_>::price(double T_, double sig_, double r_, d
 
     return optionPrice;
 }
-
-/**
- * Mutator function that assigns the parameter to this objects optionData member
- * @param optionData_ A {@link boost::tuple<>} containing the core option data (e.g. Expiry, sig, r, S, K,
- * optType)
- */
-template<typename Input_, typename RNG_, typename Mesher_>
-void Pricer<Input_, RNG_, Mesher_>::setOptionData(const OptionData &optionData_) {optionData = optionData_;}
 
 #endif

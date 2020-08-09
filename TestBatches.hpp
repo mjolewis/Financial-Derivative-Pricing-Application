@@ -13,6 +13,7 @@
 #include <iostream>
 
 #include "Input.hpp"
+#include "Matrix.hpp"
 #include "Mesher.hpp"
 #include "Option.hpp"
 #include "Pricer.hpp"
@@ -40,22 +41,26 @@ public:
         double b;                                          // Cost of carry
 
         // Supplemental model data
-        std::string call = "Call";                         // Call option
-        std::string put = "Put";                           // Put option
-        std::string optFlavor;                             // European or American
-        std::string uName;                                 // Underlying
+        std::string call = "Call";                                   // Call option
+        std::string put = "Put";                                     // Put option
+        std::string optFlavor;                                       // European or American
+        std::string uName;                                           // Underlying
 
         // Access to functionality
-        Pricer<Input, RNG, Option> pricer;                 // Pricing engine
-        Mesher mesher;                                     // Generate mesh points
+        Matrix matrix;                                               // Generate the matrix of options
+        Mesher mesher;                                               // Generate mesh points
+        Pricer<Input, RNG, Mesher> pricer;                           // Pricing engine
 
         // Data containers
-        std::vector<std::vector<double>> options;         // A matrix of option data
-        std::vector<std::vector<double>> callPrices;      // A matrix of call option prices
-        std::vector<std::vector<double>> putPrices;       // A matrix of put option prices
-        std::vector<std::vector<double>> callDelta;       // A matrix of call delta prices
-        std::vector<std::vector<double>> putDelta;        // A matrix of put delta prices
-        std::vector<std::vector<double>> gamma;           // A matrix of gamma
+        std::vector<double> mesh;                                    // A vector of mesh points
+        std::vector<std::vector<double>> options;                    // A matrix of option data
+        std::vector<std::vector<double>> callPrices;                 // A matrix of call option prices
+        std::vector<std::vector<double>> putPrices;                  // A matrix of put option prices
+        std::vector<std::vector<double>> callDelta;                  // A matrix of call delta prices
+        std::vector<std::vector<double>> callDeltaApproximates;      // A matrix of divided differences call deltas
+        std::vector<std::vector<double>> putDelta;                   // A matrix of put delta prices
+        std::vector<std::vector<double>> putDeltaApproximates;       // A matrix of divided differences put deltas
+        std::vector<std::vector<double>> gamma;                      // A matrix of gamma
 
         // Batch 1
         T = 0.25;
@@ -68,12 +73,16 @@ public:
         uName = "GS";
         Option option1(T, sig, r, S, K, b, call, optFlavor, uName);
 
-        // Generate price matrix
-        options = mesher.getMatrix(0, 1, 100, option1, "S");
+        // Generate option matrix
+        mesh = mesher.xarr(S, K, .5);
+        options = matrix.getMatrix(mesh, option1, "S");
+
         callPrices = pricer.price(options, call, optFlavor);
         putPrices = pricer.price(options, put, optFlavor);
         callDelta = pricer.delta(options, call);
+        callDeltaApproximates = pricer.delta(.01, call, optFlavor, options);
         putDelta = pricer.delta(options, put);
+        putDeltaApproximates = pricer.delta(.01, put, optFlavor, options);
 
         std::cout << "\nBatch 1:"
                   << "\nExpiry: " << T
@@ -90,11 +99,12 @@ public:
 
         // Iterate through the matrix and print the option prices and sensitivities
         std::cout << "\nOption prices and sensitivities as a function of spot price:";
-        std::cout << "\nCall Price\t\tPut Price\t\tCall Delta\t\tPut Delta";
-        std::cout << "\n---------\t\t---------\t\t---------\t\t---------\n";
+        std::cout << "\nCall Price\t\tPut Price\t\tCall Delta\t\tCall Delta Appox.\t\tPut Delta\t\tPut Delta Approx";
+        std::cout << "\n-------------\t\t-------------\t\t-------------\t\t-------------\t\t-------------\t\t-------------\n";
         for (int i = 0; i < callPrices.size(); ++i) {
             std::cout << callPrices[i][0] << "\t\t\t" << putPrices[i][0] << "\t\t\t"
-                      << callDelta[i][0] << "\t\t\t" << putDelta[i][0] << "\n";
+                      << callDelta[i][0] << "\t\t" << callDeltaApproximates[i][0] << "\t\t"
+                      << putDelta[i][0] << "\t\t" << putDeltaApproximates[i][0] << "\n";
         }
 
         // Batch 2
@@ -108,12 +118,16 @@ public:
         uName = "MS";
         Option option2(T, sig, r, S, K, b, call, optFlavor, uName);
 
-        // Generate price matrix
-        options = mesher.getMatrix(0, 1, 100, option2, "S");
+        // Generate option matrix
+        mesh = mesher.xarr(S, K, .5);
+        options = matrix.getMatrix(mesh, option2, "S");
+
         callPrices = pricer.price(options, call, optFlavor);
         putPrices = pricer.price(options, put, optFlavor);
         callDelta = pricer.delta(options, call);
+        callDeltaApproximates = pricer.delta(.01, call, optFlavor, options);
         putDelta = pricer.delta(options, put);
+        putDeltaApproximates = pricer.delta(.01, put, optFlavor, options);
 
         std::cout << "\nBatch 2:"
                   << "\nExpiry: " << T
@@ -130,11 +144,12 @@ public:
 
         // Iterate through the matrix and print the option prices and sensitivities
         std::cout << "\nOption prices and sensitivities as a function of spot price:";
-        std::cout << "\nCall Price\t\tPut Price\t\tCall Delta\t\tPut Delta";
-        std::cout << "\n---------\t\t---------\t\t---------\t\t---------\n";
+        std::cout << "\nCall Price\t\tPut Price\t\tCall Delta\t\tCall Delta Appox.\t\tPut Delta\t\tPut Delta Approx";
+        std::cout << "\n-------------\t\t-------------\t\t-------------\t\t-------------\t\t-------------\t\t-------------\n";
         for (int i = 0; i < callPrices.size(); ++i) {
             std::cout << callPrices[i][0] << "\t\t\t" << putPrices[i][0] << "\t\t\t"
-                      << callDelta[i][0] << "\t\t\t" << putDelta[i][0] << "\n";
+                      << callDelta[i][0] << "\t\t" << callDeltaApproximates[i][0] << "\t\t"
+                      << putDelta[i][0] << "\t\t" << putDeltaApproximates[i][0] << "\n";
         }
 
         // Batch 3
@@ -148,12 +163,16 @@ public:
         uName = "C";
         Option option3(T, sig, r, S, K, b, call, optFlavor, uName);
 
-        // Generate price matrix
-        options = mesher.getMatrix(0, 1, 100, option3, "S");
+        // Generate option matrix
+        mesh = mesher.xarr(S, K, .5);
+        options = matrix.getMatrix(mesh, option3, "S");
+
         callPrices = pricer.price(options, call, optFlavor);
         putPrices = pricer.price(options, put, optFlavor);
         callDelta = pricer.delta(options, call);
+        callDeltaApproximates = pricer.delta(.01, call, optFlavor, options);
         putDelta = pricer.delta(options, put);
+        putDeltaApproximates = pricer.delta(.01, put, optFlavor, options);
 
         std::cout << "\nBatch 3:"
                   << "\nExpiry: " << T
@@ -170,11 +189,12 @@ public:
 
         // Iterate through the matrix and print the option prices and sensitivities
         std::cout << "\nOption prices and sensitivities as a function of spot price:";
-        std::cout << "\nCall Price\t\tPut Price\t\tCall Delta\t\tPut Delta";
-        std::cout << "\n---------\t\t---------\t\t---------\t\t---------\n";
+        std::cout << "\nCall Price\t\tPut Price\t\tCall Delta\t\tCall Delta Appox.\t\tPut Delta\t\tPut Delta Approx";
+        std::cout << "\n-------------\t\t-------------\t\t-------------\t\t-------------\t\t-------------\t\t-------------\n";
         for (int i = 0; i < callPrices.size(); ++i) {
             std::cout << callPrices[i][0] << "\t\t\t" << putPrices[i][0] << "\t\t\t"
-                      << callDelta[i][0] << "\t\t\t" << putDelta[i][0] << "\n";
+                      << callDelta[i][0] << "\t\t" << callDeltaApproximates[i][0] << "\t\t"
+                      << putDelta[i][0] << "\t\t" << putDeltaApproximates[i][0] << "\n";
         }
 
         // Batch 4
@@ -188,12 +208,16 @@ public:
         uName = "JPM";
         Option option4(T, sig, r, S, K, b, call, optFlavor, uName);
 
-        // Generate price matrix
-        options = mesher.getMatrix(0, 1, 100, option4, "S");
+        // Generate option matrix
+        mesh = mesher.xarr(S, K, .5);
+        options = matrix.getMatrix(mesh, option4, "S");
+
         callPrices = pricer.price(options, call, optFlavor);
         putPrices = pricer.price(options, put, optFlavor);
         callDelta = pricer.delta(options, call);
+        callDeltaApproximates = pricer.delta(.01, call, optFlavor, options);
         putDelta = pricer.delta(options, put);
+        putDeltaApproximates = pricer.delta(.01, put, optFlavor, options);
 
         std::cout << "\nBatch 4:"
                   << "\nExpiry: " << T
@@ -210,11 +234,12 @@ public:
 
         // Iterate through the matrix and print the option prices and sensitivities
         std::cout << "\nOption prices and sensitivities as a function of spot price:";
-        std::cout << "\nCall Price\t\tPut Price\t\tCall Delta\t\tPut Delta";
-        std::cout << "\n---------\t\t---------\t\t---------\t\t---------\n";
+        std::cout << "\nCall Price\t\tPut Price\t\tCall Delta\t\tCall Delta Appox.\t\tPut Delta\t\tPut Delta Approx";
+        std::cout << "\n-------------\t\t-------------\t\t-------------\t\t-------------\t\t-------------\t\t-------------\n";
         for (int i = 0; i < callPrices.size(); ++i) {
             std::cout << callPrices[i][0] << "\t\t\t" << putPrices[i][0] << "\t\t\t"
-                      << callDelta[i][0] << "\t\t\t" << putDelta[i][0] << "\n";
+                      << callDelta[i][0] << "\t\t" << callDeltaApproximates[i][0] << "\t\t"
+                      << putDelta[i][0] << "\t\t" << putDeltaApproximates[i][0] << "\n";
         }
 
 
