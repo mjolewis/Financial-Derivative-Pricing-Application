@@ -4,11 +4,7 @@
  * Created by Michael Lewis on 8/5/20.
  *********************************************************************************************************************/
 
-#include <string>
-#include <iostream>
-
 #include "Mesher.hpp"
-#include "Option.hpp"
 
 /**
  * Initialize a new Mesher
@@ -80,7 +76,7 @@ std::vector<double> Mesher::xarr(int J) const {
  * @param J The factor used to determine the distance between mesh points
  * @return A {@link std::vector} containing mesh points
  */
-std::vector<double> Mesher::xarr(double a_, double b_, int J) const {
+std::vector<double> Mesher::xarr(double a_, double b_, int J) {
     double h = (b_ - a_) / double (J);
 
     int size = J;
@@ -98,79 +94,25 @@ std::vector<double> Mesher::xarr(double a_, double b_, int J) const {
 }
 
 /**
- * Create a matrix of option parameters. Each row will variate one parameter by a monotonically increasing amount
- * @param a_ Domain of integration minimum value
- * @param b_ Domain of integration maximum value
- * @param J The factor used to determine the distance between mesh points
- * @param optionData The initial option parameters
- * @param property The variate parameter, which should be represented by the variate symbol (e.g. T, sig, r, S, K, b)
- * @return A {@link std::vector<std::vector<double> > of option parameters
+ * Create a vector of mesh points
+ * @param start Initial value of the property
+ * @param stop Ending value for the property
+ * @param step The distance between mesh points
+ * @return A {@link std::vector} containing mesh points
  */
-std::vector<std::vector<double> >Mesher::getMatrix(double a_, double b_, int J, const Option& option, const std::string& property) {
+std::vector<double> Mesher::xarr(double start, double stop, double step) {
 
-    // Create the output matrix
-    std::vector<std::vector<double> > matrix;
+    double steps = (stop - start) / step;
 
-    // Add the inner vector to the first row of the matrix
-    matrix.push_back({option.expiry(), option.vol(), option.riskFree(),
-                                   option.spot(), option.strike(), option.carry()});
+    // Create the container and add the start point
+    std::vector<double> result;
+    result.push_back(start);
 
-    // Generate mesh points
-    std::vector<double> meshPoints = xarr(a_, b_, J);
-
-    // Use the mesh points to modify property by a monotonically increasing amount
-    if (property == "T" || property == "t" || property == "Expiry" || property == "expiry") {
-        for (int i = 1; i < meshPoints.size(); ++i) {
-
-            // Monotonically increase expiry and add the new option to a new row in the matrix
-            matrix.push_back({option.expiry() + meshPoints[i],
-                              option.vol(), option.riskFree(),
-                              option.spot(), option.strike(), option.carry()});
-        }
-    } else if (property == "Sig" || property == "sig" || property == "Volatility" || property == "volatility" ) {
-        for (int i = 1; i < meshPoints.size(); ++i) {
-
-            // Monotonically increase vol and add the new option to a new row in the matrix
-            matrix.push_back({option.expiry(), option.vol() + meshPoints[i],
-                              option.riskFree(), option.spot(),
-                              option.strike(), option.carry()});
-        }
-    } else if (property == "R" || property == "r" || property == "Risk-free" || property == "risk-free" ) {
-        for (int i = 1; i < meshPoints.size(); ++i) {
-
-            // Monotonically increase risk free rate and add the new option to a new row in the matrix
-            matrix.push_back({option.expiry(), option.vol(),
-                              option.riskFree() + meshPoints[i],
-                              option.spot(), option.strike(),
-                              option.carry()});
-        }
-    } else if (property == "S" || property == "s" || property == "Spot" || property == "spot" ) {
-        for (int i = 1; i < meshPoints.size(); ++i) {
-
-            // Monotonically increase spot price and add the new option to a new row in the matrix
-            matrix.push_back({option.expiry(), option.vol(),
-                              option.riskFree(),
-                              option.spot() + meshPoints[i],
-                              option.strike(), option.carry()});
-        }
-    } else if (property == "K" || property == "k" || property == "Strike" || property == "strike" ) {
-        for (int i = 1; i < meshPoints.size(); ++i) {
-
-            // Monotonically increase strike price and add the new option to a new row in the matrix
-            matrix.push_back({option.expiry(), option.vol(),
-                              option.riskFree(), option.spot(),
-                              option.strike() + meshPoints[i],
-                              option.carry()});
-        }
-    } else if (property == "B" || property == "b" || property == "Beta" || property == "beta" ) {
-        for (int i = 1; i < meshPoints.size(); ++i) {
-
-            // Monotonically increase beta and add the new option to a new row in the matrix
-            matrix.push_back({option.expiry(), option.vol(),
-                              option.riskFree(), option.spot(),
-                              option.strike(), option.carry() + meshPoints[i]});
-        }
+    double curr = start;
+    for (int i = 0; i < steps; ++i) {
+        curr += step;
+        result.push_back(curr);
     }
 
-    return matrix;
+    return result;
 }

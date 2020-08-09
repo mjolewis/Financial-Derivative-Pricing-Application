@@ -22,11 +22,10 @@ public:
 
     Mesher& operator=(const Mesher& mesher);
 
-    std::vector<double> xarr(int J) const;                           // Vector of mesh points
-    std::vector<double> xarr(double a_, double b_, int J) const;     // Vector of mesh points
-
-    // Generate a matrix of option parameters by monotonically changing one parameter
-    std::vector<std::vector<double> > getMatrix(double a_, double b_, int J, const Option& option, const std::string& property);
+    // Vectors of mesh points
+    std::vector<double> xarr(int J) const;
+    std::vector<double> xarr(double a_, double b_, int J);
+    std::vector<double> xarr(double start, double stop, double step);
 };
 
 #endif // MESHER_HPP

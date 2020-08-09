@@ -49,7 +49,7 @@ RNG &RNG::operator=(const RNG &source) {
  * Generate N(x) for Black-Scholes Pricer
  * @return Probability that X will take on a value less than or equal to x
  */
-double RNG::CDF(double x) {
+double RNG::CDF(double x) const {
     boost::math::normal norm;
     return boost::math::cdf(norm, x);
 }
@@ -58,7 +58,7 @@ double RNG::CDF(double x) {
  * Generate n(x) for Black-Scholes Pricer
  * @return Probability that X will take on a value greater than x
  */
-double RNG::PDF(double x) {
+double RNG::PDF(double x) const {
     boost::math::normal norm;
     return boost::math::pdf(norm, x);
 }
