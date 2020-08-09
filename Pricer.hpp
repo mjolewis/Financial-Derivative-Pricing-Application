@@ -43,16 +43,16 @@ public:
     double price();
     std::vector<std::vector<double>>
     price(const std::vector<std::vector<double> >& matrix,
-            const std::string& optType_ = "Call", const std::string& optFlavor_ = "European") const;
-    double price(double T_, double sig_, double r_, double S_, double K_, double b_,
-            const std::string& optType = "Call", const std::string& optFlavor_ = "European") const;
+            const std::string& optType = "Call", const std::string& optFlavor = "European") const;
+    double price(double T, double sig, double r, double S, double K, double b,
+            const std::string& optType = "Call", const std::string& optFlavor = "European") const;
 
     // Exact solutions for option sensitivities (Greeks)
-    double delta(double T_, double sig_, double r_, double S_, double K_, double b_, const std::string& optType = "Call") const;
-    std::vector<std::vector<double>> delta(const std::vector<std::vector<double>>& matrix, const std::string& optType_ = "Call") const;
-    double gamma(double T_, double sig_, double r_, double S_, double K_, double b_) const;
+    double delta(double T, double sig, double r, double S, double K, double b, const std::string& optType = "Call") const;
+    std::vector<std::vector<double>> delta(const std::vector<std::vector<double>>& matrix, const std::string& optType = "Call") const;
+    double gamma(double T, double sig, double r, double S, double K, double b) const;
     std::vector<std::vector<double>> gamma(const std::vector<std::vector<double>>& matrix) const;
-    double vega(double T_, double sig_, double r_, double S_, double K_, double b_) const;
+    double vega(double T, double sig, double r, double S, double K, double b) const;
 
     // Divided differences method for option sensitivities (Greeks)
     double delta(double h, const std::vector<double>& option, const std::string &optType = "Call",

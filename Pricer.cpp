@@ -67,26 +67,25 @@ void Pricer<Input_, RNG_, Mesher_>::setOptionData(const OptionData &optionData_)
 /**
  * Calculate closed form solution for Delta
  * @note Delta is the change in the option’s price or premium due to the change in the Underlying futures price
- * @param T_ Expiry
- * @param sig_ Volatility
- * @param r_ Risk-free rate
- * @param S_ Spot price
- * @param K_ Strike price
- * @param b_ Cost of carry
+ * @param T Expiry
+ * @param sig Volatility
+ * @param r Risk-free rate
+ * @param S Spot price
+ * @param K Strike price
+ * @param b Cost of carry
  * @param optType
  * @return The call delta if optType is a call. Otherwise the put delta
  */
 template<typename Input_, typename RNG_, typename Mesher_>
-double Pricer<Input_, RNG_, Mesher_>::delta(double T_, double sig_, double r_, double S_,
-                                            double K_, double b_, const std::string &optType) const {
+double Pricer<Input_, RNG_, Mesher_>::delta(double T, double sig, double r, double S,
+                                            double K, double b, const std::string &optType) const {
 
-    double tmp = sig_ * sqrt(T_);
-    double d1 = (log(S_ / K_) + (b_ + (sig_ * sig_) * 0.5) * T_) / tmp;
+    double d1 = (log(S / K) + (b + (sig * sig) * 0.5) * T) / (sig * sqrt(T));
 
-    if (optType == "Put" || optType == "put") { return exp((b_ - r_) * T_) * (RNG_::CDF(d1) - 1.0); }
+    if (optType == "Put" || optType == "put") { return exp((b - r) * T) * (RNG_::CDF(d1) - 1.0); }
 
     // optType is a call
-    return exp((b_ - r_) * T_) * RNG_::CDF(d1);
+    return exp((b - r) * T) * RNG_::CDF(d1);
 }
 
 /**
@@ -98,13 +97,13 @@ double Pricer<Input_, RNG_, Mesher_>::delta(double T_, double sig_, double r_, d
  */
 template<typename Input_, typename RNG_, typename Mesher_>
 std::vector<std::vector<double>>
-Pricer<Input_, RNG_, Mesher_>::delta(const std::vector<std::vector<double> > &matrix, const std::string &optType_) const {
+Pricer<Input_, RNG_, Mesher_>::delta(const std::vector<std::vector<double> > &matrix, const std::string &optType) const {
 
     std::vector<std::vector<double> > deltas;              // A container of delta approximations
 
     // Calculate exact deltas and store in the output matrix
     for (const auto & i : matrix) {
-        deltas.push_back({delta(i[0], i[1], i[2], i[3], i[4], i[5], optType_)});
+        deltas.push_back({delta(i[0], i[1], i[2], i[3], i[4], i[5], optType)});
     }
     return deltas;
 }
@@ -160,23 +159,23 @@ Pricer<Input_, RNG_, Mesher_>::delta(double h, const std::vector<std::vector<dou
 /**
  * Calculate closed form solution for Gamma
  * @note Gamma is the rate of change in an options delta per one point move in the underlying asset's price
- * @param T_ Expiry
- * @param sig_ Volatility
- * @param r_ Risk-free rate
- * @param S_ Spot price
- * @param K_ Strike price
- * @param b_ Cost of carry
+ * @param T Expiry
+ * @param sig Volatility
+ * @param r Risk-free rate
+ * @param S Spot price
+ * @param K Strike price
+ * @param b Cost of carry
  * @return The rate of change with respect to the input parameters
  */
 template<typename Input_, typename RNG_, typename Mesher_>
-double Pricer<Input_, RNG_, Mesher_>::gamma(double T_, double sig_, double r_, double S_, double K_, double b_) const {
-    double tmp = sig_ * sqrt(T_);
+double Pricer<Input_, RNG_, Mesher_>::gamma(double T, double sig, double r, double S, double K, double b) const {
+    double tmp = sig * sqrt(T);
 
-    double d1 = (log(S_ / K_) + (b_ + (sig_ * sig_) * 0.5) * T_) / tmp;
+    double d1 = (log(S / K) + (b + (sig * sig) * 0.5) * T) / tmp;
 
     double n1 = RNG_::PDF(d1);
 
-    return (n1 * exp((b_ - r_) * T_)) / (S_ * tmp);
+    return (n1 * exp((b - r) * T)) / (S * tmp);
 }
 
 /**
@@ -241,20 +240,20 @@ Pricer<Input_, RNG_, Mesher_>::gamma(double h, const std::vector<std::vector<dou
 /**
  * Calculate closed form solution for Vega
  * @Note Measures option sensitivity to implied vol (e.g. change in the option price per point change in implied vol)
- * @param T_ Expiry
- * @param sig_ Volatility
- * @param r_ Risk-free rate
- * @param S_ Spot price
- * @param K_ Strike price
- * @param b_ Cost of carry
+ * @param T Expiry
+ * @param sig Volatility
+ * @param r Risk-free rate
+ * @param S Spot price
+ * @param K Strike price
+ * @param b Cost of carry
  * @return The rate of change in the option price with respect to volatility
  */
 template<typename Input_, typename RNG_, typename Mesher_>
-double Pricer<Input_, RNG_, Mesher_>::vega(double T_, double sig_, double r_, double S_, double K_, double b_) const {
+double Pricer<Input_, RNG_, Mesher_>::vega(double T, double sig, double r, double S, double K, double b) const {
 
-    double d1 = (log(S_ / K_) + (b_ + (sig_ * sig_) * 0.5) * T_) / (sig_ * sqrt(T_));
+    double d1 = (log(S / K) + (b + (sig * sig) * 0.5) * T) / (sig * sqrt(T));
 
-    return (S_ * exp((b_ - r_) * T_) * RNG_::PDF(d1) * sqrt(T_));
+    return (S * exp((b - r) * T) * RNG_::PDF(d1) * sqrt(T));
 }
 
 /* ********************************************************************************************************************
@@ -292,54 +291,73 @@ double Pricer<Input_, RNG_, Mesher_>::price() {
 template<typename Input_, typename RNG_, typename Mesher_>
 std::vector<std::vector<double> >
 Pricer<Input_, RNG_, Mesher_>::price( const std::vector<std::vector<double> > &matrix,
-        const std::string &optType_, const std::string &optFlavor_) const {
+        const std::string &optType, const std::string &optFlavor) const {
 
     // Create a new container for each new matrix
     std::vector<std::vector<double> > optionPrices;
 
     for (const auto & row : matrix) {
         // Store the price
-        optionPrices.push_back({price(row[0], row[1], row[2], row[3], row[4], row[5], optType_, optFlavor_)});
+        optionPrices.push_back({price(row[0], row[1], row[2], row[3], row[4], row[5], optType, optFlavor)});
     }
     return optionPrices;
 }
 
 /**
  * The core pricing engine that uses the Black-Scholes formula
- * @param T_ Expiry
- * @param sig_ Volatility
- * @param r_ Risk-free rate
- * @param S_ Spot price
- * @param K_ Strike price
- * @param b_ Cost of carry
- * @param optType_ Put or Call
- * @param optFlavor_ European or American
+ * @param T Expiry
+ * @param sig Volatility
+ * @param r Risk-free rate
+ * @param S Spot price
+ * @param K Strike price
+ * @param b Cost of carry
+ * @param optType Put or Call
+ * @param optFlavor European or American
  * @return The price of the option. Otherwise -1 for invalid input
  */
 template<typename Input_, typename RNG_, typename Mesher_>
-double Pricer<Input_, RNG_, Mesher_>::price(double T_, double sig_, double r_, double S_, double K_, double b_,
-                                            const std::string &optType_, const std::string &optFlavor_) const {
+double Pricer<Input_, RNG_, Mesher_>::price(double T, double sig, double r, double S, double K, double b,
+                                            const std::string &optType, const std::string &optFlavor) const {
 
-    double tmp = sig_ * sqrt(T_);
-    double d1 = (log(S_ / K_) + (b_ + (sig_ * sig_) * 0.5) * T_) / tmp;
+    double tmp = sig * sqrt(T);
+    double d1 = (log(S / K) + (b + (sig * sig) * 0.5) * T) / tmp;
     double d2 = d1 - tmp;
 
-    if (optType_ == "Call" && optFlavor_ == "European") {
+    if (optType == "Call" && optFlavor == "European") {
 
         double N1 = RNG_::CDF(d1);
         double N2 = RNG_::CDF(d2);
-        return (S_ * exp((b_ - r_) * T_) * N1) - (K_ * exp(-r_ * T_) * N2);
+        return (S * exp((b - r) * T) * N1) - (K * exp(-r * T) * N2);
 
-    } else if (optType_ == "Put" && optFlavor_ == "European") {
+    } else if (optType == "Put" && optFlavor == "European") {
 
         double N1 = RNG_::CDF(-d1);
         double N2 = RNG_::CDF(-d2);
-        return (K_ * exp(-r_ * T_) * N2) - (S_ * exp((b_ - r_) * T_) * N1);
+        return (K * exp(-r * T) * N2) - (S * exp((b - r) * T) * N1);
 
-    } else if (optType_ == "Call" && optFlavor_ == "American") {
-        //todo
-    } else {
-        //todo
+    } else if (optType == "Call" && optFlavor == "American") {
+        double sig2 = sig * sig;
+        double fac = b/sig2 - 0.5; fac *= fac;
+        double y1 = 0.5 - b/sig2 + sqrt(fac + 2.0*r/sig2);
+
+
+        if (1.0 == y1) {return S;}
+
+        double fac2 = ((y1 - 1.0) * S) / (y1 * K);
+        double c = K * pow(fac2, y1) / (y1 - 1.0);
+
+        return c;
+    } else if (optType == "Put" && optFlavor == "American") {
+        double sig2 = sig*sig;
+        double fac = b/sig2 - 0.5; fac *= fac;
+        double y2 = 0.5 - b/sig2 - sqrt(fac + 2.0*r/sig2);
+
+        if (0.0 == y2) {return S;}
+
+        double fac2 = ((y2 - 1.0)*S) / (y2 * K);
+        double p = K * pow(fac2, y2) / (1.0 - y2);
+
+        return p;
     }
 
     return -1;                                             // Indicates invalid input
