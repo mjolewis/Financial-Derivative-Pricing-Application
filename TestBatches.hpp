@@ -11,6 +11,7 @@
 
 
 #include <iostream>
+#include <iomanip>
 
 #include "Input.hpp"
 #include "Matrix.hpp"
@@ -57,10 +58,11 @@ public:
         std::vector<std::vector<double>> callPrices;                 // A matrix of call option prices
         std::vector<std::vector<double>> putPrices;                  // A matrix of put option prices
         std::vector<std::vector<double>> callDelta;                  // A matrix of call delta prices
-        std::vector<std::vector<double>> callDeltaApproximates;      // A matrix of divided differences call deltas
+        std::vector<std::vector<double>> callDeltaApproximates;      // A matrix of divided difference call deltas
         std::vector<std::vector<double>> putDelta;                   // A matrix of put delta prices
-        std::vector<std::vector<double>> putDeltaApproximates;       // A matrix of divided differences put deltas
+        std::vector<std::vector<double>> putDeltaApproximates;       // A matrix of divided difference put deltas
         std::vector<std::vector<double>> gamma;                      // A matrix of gamma
+        std::vector<std::vector<double>> gammaApproximates;          // A matrix of divided difference gamma
 
         // Batch 1
         T = 0.25;
@@ -80,9 +82,11 @@ public:
         callPrices = pricer.price(options, call, optFlavor);
         putPrices = pricer.price(options, put, optFlavor);
         callDelta = pricer.delta(options, call);
-        callDeltaApproximates = pricer.delta(.01, call, optFlavor, options);
+        callDeltaApproximates = pricer.delta(.01, options, call, optFlavor);
         putDelta = pricer.delta(options, put);
-        putDeltaApproximates = pricer.delta(.01, put, optFlavor, options);
+        putDeltaApproximates = pricer.delta(.01, options, put, optFlavor);
+        gamma = pricer.gamma(options);
+        gammaApproximates = pricer.gamma(.01, options);
 
         std::cout << "\nBatch 1:"
                   << "\nExpiry: " << T
@@ -99,12 +103,18 @@ public:
 
         // Iterate through the matrix and print the option prices and sensitivities
         std::cout << "\nOption prices and sensitivities as a function of spot price:";
-        std::cout << "\nCall Price\t\tPut Price\t\tCall Delta\t\tCall Delta Appox.\t\tPut Delta\t\tPut Delta Approx";
-        std::cout << "\n-------------\t\t-------------\t\t-------------\t\t-------------\t\t-------------\t\t-------------\n";
+        std::cout << "\nCall Price\tPut Price\t"
+                     "Gamma\t\tGamma Est\t"
+                     "Call Delta\tDeltaC Est\t"
+                     "Put Delta\tDeltaP Est";
+        std::cout << "\n-------------\t-------------\t-------------\t-------------\t"
+                     "-------------\t-------------\t-------------\t-------------\n";
         for (int i = 0; i < callPrices.size(); ++i) {
-            std::cout << callPrices[i][0] << "\t\t\t" << putPrices[i][0] << "\t\t\t"
-                      << callDelta[i][0] << "\t\t" << callDeltaApproximates[i][0] << "\t\t"
-                      << putDelta[i][0] << "\t\t" << putDeltaApproximates[i][0] << "\n";
+            std::cout << std::setprecision(6);
+            std::cout << callPrices[i][0] << "\t\t" << putPrices[i][0] << "\t\t"
+                      << gamma[i][0] << "\t" << gammaApproximates[i][0] << "\t"
+                      << callDelta[i][0] << "\t" << callDeltaApproximates[i][0] << "\t"
+                      << putDelta[i][0] << "\t" << putDeltaApproximates[i][0] << "\n";
         }
 
         // Batch 2
@@ -125,9 +135,11 @@ public:
         callPrices = pricer.price(options, call, optFlavor);
         putPrices = pricer.price(options, put, optFlavor);
         callDelta = pricer.delta(options, call);
-        callDeltaApproximates = pricer.delta(.01, call, optFlavor, options);
+        callDeltaApproximates = pricer.delta(.01, options, call, optFlavor);
         putDelta = pricer.delta(options, put);
-        putDeltaApproximates = pricer.delta(.01, put, optFlavor, options);
+        putDeltaApproximates = pricer.delta(.01, options, put, optFlavor);
+        gamma = pricer.gamma(options);
+        gammaApproximates = pricer.gamma(.01, options);
 
         std::cout << "\nBatch 2:"
                   << "\nExpiry: " << T
@@ -144,12 +156,18 @@ public:
 
         // Iterate through the matrix and print the option prices and sensitivities
         std::cout << "\nOption prices and sensitivities as a function of spot price:";
-        std::cout << "\nCall Price\t\tPut Price\t\tCall Delta\t\tCall Delta Appox.\t\tPut Delta\t\tPut Delta Approx";
-        std::cout << "\n-------------\t\t-------------\t\t-------------\t\t-------------\t\t-------------\t\t-------------\n";
+        std::cout << "\nCall Price\tPut Price\t"
+                     "Gamma\t\tGamma Est\t"
+                     "Call Delta\tDeltaC Est\t"
+                     "Put Delta\tDeltaP Est";
+        std::cout << "\n-------------\t-------------\t-------------\t-------------\t"
+                     "-------------\t-------------\t-------------\t-------------\n";
         for (int i = 0; i < callPrices.size(); ++i) {
-            std::cout << callPrices[i][0] << "\t\t\t" << putPrices[i][0] << "\t\t\t"
-                      << callDelta[i][0] << "\t\t" << callDeltaApproximates[i][0] << "\t\t"
-                      << putDelta[i][0] << "\t\t" << putDeltaApproximates[i][0] << "\n";
+            std::cout << std::setprecision(6);
+            std::cout << callPrices[i][0] << "\t\t" << putPrices[i][0] << "\t\t"
+                      << gamma[i][0] << "\t" << gammaApproximates[i][0] << "\t"
+                      << callDelta[i][0] << "\t" << callDeltaApproximates[i][0] << "\t"
+                      << putDelta[i][0] << "\t" << putDeltaApproximates[i][0] << "\n";
         }
 
         // Batch 3
@@ -170,9 +188,11 @@ public:
         callPrices = pricer.price(options, call, optFlavor);
         putPrices = pricer.price(options, put, optFlavor);
         callDelta = pricer.delta(options, call);
-        callDeltaApproximates = pricer.delta(.01, call, optFlavor, options);
+        callDeltaApproximates = pricer.delta(.01, options, call, optFlavor);
         putDelta = pricer.delta(options, put);
-        putDeltaApproximates = pricer.delta(.01, put, optFlavor, options);
+        putDeltaApproximates = pricer.delta(.01, options, put, optFlavor);
+        gamma = pricer.gamma(options);
+        gammaApproximates = pricer.gamma(.01, options);
 
         std::cout << "\nBatch 3:"
                   << "\nExpiry: " << T
@@ -189,12 +209,18 @@ public:
 
         // Iterate through the matrix and print the option prices and sensitivities
         std::cout << "\nOption prices and sensitivities as a function of spot price:";
-        std::cout << "\nCall Price\t\tPut Price\t\tCall Delta\t\tCall Delta Appox.\t\tPut Delta\t\tPut Delta Approx";
-        std::cout << "\n-------------\t\t-------------\t\t-------------\t\t-------------\t\t-------------\t\t-------------\n";
+        std::cout << "\nCall Price\tPut Price\t"
+                     "Gamma\t\tGamma Est\t"
+                     "Call Delta\tDeltaC Est\t"
+                     "Put Delta\tDeltaP Est";
+        std::cout << "\n-------------\t-------------\t-------------\t-------------\t"
+                     "-------------\t-------------\t-------------\t-------------\n";
         for (int i = 0; i < callPrices.size(); ++i) {
-            std::cout << callPrices[i][0] << "\t\t\t" << putPrices[i][0] << "\t\t\t"
-                      << callDelta[i][0] << "\t\t" << callDeltaApproximates[i][0] << "\t\t"
-                      << putDelta[i][0] << "\t\t" << putDeltaApproximates[i][0] << "\n";
+            std::cout << std::setprecision(6);
+            std::cout << callPrices[i][0] << "\t\t" << putPrices[i][0] << "\t\t"
+                      << gamma[i][0] << "\t" << gammaApproximates[i][0] << "\t"
+                      << callDelta[i][0] << "\t" << callDeltaApproximates[i][0] << "\t"
+                      << putDelta[i][0] << "\t" << putDeltaApproximates[i][0] << "\n";
         }
 
         // Batch 4
@@ -215,9 +241,11 @@ public:
         callPrices = pricer.price(options, call, optFlavor);
         putPrices = pricer.price(options, put, optFlavor);
         callDelta = pricer.delta(options, call);
-        callDeltaApproximates = pricer.delta(.01, call, optFlavor, options);
+        callDeltaApproximates = pricer.delta(.01, options, call, optFlavor);
         putDelta = pricer.delta(options, put);
-        putDeltaApproximates = pricer.delta(.01, put, optFlavor, options);
+        putDeltaApproximates = pricer.delta(.01, options, put, optFlavor);
+        gamma = pricer.gamma(options);
+        gammaApproximates = pricer.gamma(.01, options);
 
         std::cout << "\nBatch 4:"
                   << "\nExpiry: " << T
@@ -234,12 +262,18 @@ public:
 
         // Iterate through the matrix and print the option prices and sensitivities
         std::cout << "\nOption prices and sensitivities as a function of spot price:";
-        std::cout << "\nCall Price\t\tPut Price\t\tCall Delta\t\tCall Delta Appox.\t\tPut Delta\t\tPut Delta Approx";
-        std::cout << "\n-------------\t\t-------------\t\t-------------\t\t-------------\t\t-------------\t\t-------------\n";
+        std::cout << "\nCall Price\tPut Price\t"
+                     "Gamma\t\tGamma Est\t"
+                     "Call Delta\tDeltaC Est\t"
+                     "Put Delta\tDeltaP Est";
+        std::cout << "\n-------------\t-------------\t-------------\t-------------\t"
+                     "-------------\t-------------\t-------------\t-------------\n";
         for (int i = 0; i < callPrices.size(); ++i) {
-            std::cout << callPrices[i][0] << "\t\t\t" << putPrices[i][0] << "\t\t\t"
-                      << callDelta[i][0] << "\t\t" << callDeltaApproximates[i][0] << "\t\t"
-                      << putDelta[i][0] << "\t\t" << putDeltaApproximates[i][0] << "\n";
+            std::cout << std::setprecision(6);
+            std::cout << callPrices[i][0] << "\t\t" << putPrices[i][0] << "\t\t"
+                      << gamma[i][0] << "\t" << gammaApproximates[i][0] << "\t"
+                      << callDelta[i][0] << "\t" << callDeltaApproximates[i][0] << "\t"
+                      << putDelta[i][0] << "\t" << putDeltaApproximates[i][0] << "\n";
         }
 
 

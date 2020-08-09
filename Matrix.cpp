@@ -29,8 +29,8 @@ Matrix & Matrix::operator=(const Matrix &source) {
  * @param property The variate parameter, which should be represented by the variate symbol (e.g. T, sig, r, S, K, b)
  * @return A {@link std::vector<std::vector<double> > of option parameters
  */
-std::vector<std::vector<double>> Matrix::getMatrix(const std::vector<double>& mesh, const Option &option,
-        const std::string &property) {
+std::vector<std::vector<double>>
+Matrix::getMatrix(const std::vector<double>& mesh, const Option &option, const std::string &property) {
 
     // Create a new output container for each new matrix
     std::vector<std::vector<double>> matrix;
