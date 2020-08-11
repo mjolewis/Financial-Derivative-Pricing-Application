@@ -10,11 +10,7 @@
 #include <string>
 #include <vector>
 
-#include <boost/tuple/tuple.hpp>
-
-
-// Stores option data (e.g. expiry, volatility, risk-free rate, spot, option type, optFlavor
-typedef boost::tuple<double, double, double, double, double, double, std::string, std::string> OptionData;
+#include "Option.hpp"
 
 class Input {
 private:
@@ -29,12 +25,13 @@ private:
     // Model parameters
     std::string optType;                         // Call or Put
     std::string optFlavor;                       // European or American
+    std::string uName;                           // Name of underlying asset
     std::vector<double> meshData;                // The domain of integration and factor
+
+    Option option;                               // Option data container
 public:
     // Constructors and destructor
     Input();
-    explicit Input(const OptionData &optionData_);
-    Input(double T_, double sig_, double r_, double S_, double K_, double b_, std::string &optType_, std::string &optFlavor_);
     Input(const Input &source);
     virtual ~Input();
 
@@ -42,12 +39,10 @@ public:
     Input &operator=(const Input &source);
 
     // Getters
-    const std::vector<double>& getMeshData();    // Provide a console interface to dynamically get mesh data
-    OptionData getOptionData() const;            // Simple getter that returns the option object
-    OptionData getOptionInput();                 // Provide a console interface to dynamically get option data
+    const Option& getOptionData() const;         // Simple getter that returns the option object
 
-    // Setters
-    void setOptionData(double T_, double sig_, double r_, double S_, double K_, double b_, const std::string &optType_, const std::string &optFlavor_);
+    const std::vector<double>& setMeshData();    // Provide a console interface to dynamically get mesh data
+    const Option& setOptionData();               // Provide a console interface to dynamically get option data
 };
 
 #endif //INPUT_HPP

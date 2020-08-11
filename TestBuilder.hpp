@@ -13,12 +13,9 @@
 
 #include "Builder.hpp"
 #include "Input.hpp"
-#include "Matrix.hpp"
-#include "Mesher.hpp"
 #include "Output.hpp"
 #include "Pricer.hpp"
 #include "RNG.hpp"
-#include "Option.hpp"
 
 class TestBuilder {
 public:
@@ -33,7 +30,7 @@ public:
         std::cout << "\t\tAuthored By: Michael Lewis\n";
         std::cout << "\n-------------------------------------------------------------------" << std::endl;
 
-        Builder<Input, RNG, Mesher, Matrix, Output, Pricer> Builder;
+        Builder<Input, RNG, Output, Pricer> Builder;
         Builder.Build();
 
         std::cout << "\n-------------------------------------------------------------------\n\n";

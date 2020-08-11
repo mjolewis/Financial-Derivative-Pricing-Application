@@ -14,42 +14,17 @@
  * Initialize a new Input object
  * @throws OutOfMemoryException Indicates insufficient memory for this new Input object
  */
-Input::Input() {}
-
-/**
- * Initialize a new Input object with the specified option data
- * @param optionData_ A {@link boost::tuple} containing values to initialize core option data (e.g expiry,
- * volatility, risk-free rate, spot price, strike price, option type, European or American)
- * @throws OutOfMemoryException Indicates insufficient memory for this new Input object
- */
-Input::Input(const OptionData &optionData_) : T(optionData_.get<0>()), sig(optionData_.get<1>()),
-                                              r(optionData_.get<2>()), S(optionData_.get<3>()),
-                                              K(optionData_.get<4>()), b(optionData_.get<5>()),
-                                              optType(optionData_.get<6>()), optFlavor(optionData_.get<7>()) {}
-
-/**
- * Initialize a new Input object with the specified option data
- * @param T_ Time to expiry
- * @param sig_ Volatility
- * @param r_ Risk-free interest rate
- * @param S_ Spot price of the underlying
- * @param K_ Strike price
- * @param b_ Cost of carry
- * @param optType_ A put or a call
- * @param optFlavor_ European or American option
- * @throws OutOfMemoryException Indicates insufficient memory for this new Input object
- */
-Input::Input(double T_, double sig_, double r_, double S_, double K_, double b_, std::string &optType_,
-             std::string &optFlavor_) :
-        T(T_), sig(sig_), r(r_), S(S_), K(K_), b(b_), optType(optType_), optFlavor(optFlavor_) {}
+Input::Input() : T(0.25), sig(0.3), r(0.08), S(60), K(65), b(0.08), optType("Call"),
+                  optFlavor("European"), uName("N/A") {}
 
 /**
  * Initialize a new Input object using the member data of the source
  * @param source An Input object whose data members will be used to initialize this Input objects members
  * @throws OutOfMemoryException Indicates insufficient memory for this new Input object
  */
-Input::Input(const Input &source) : T(source.T), sig(source.sig), r(source.r), S(source.S), K(source.K),
-                                    b(source.b), optType(source.optType), optFlavor(source.optFlavor) {}
+Input::Input(const Input &source) : T(source.T), sig(source.sig), r(source.r), S(source.S), K(source.K), b(source.b),
+                                    optType(source.optType), optFlavor(source.optFlavor), uName(source.uName),
+                                    option(source.option) {}
 
 /**
  * Destory's this Input object
@@ -73,12 +48,25 @@ Input &Input::operator=(const Input &source) {
     b = source.b;
     optType = source.optType;
     optFlavor = source.optFlavor;
+    uName = source.uName;
+    option.setOptionData(source.T, source.sig, source.r, source.S, source.K,
+            source.b, source.optType, source.optFlavor, source.uName);
+
+    for (int i = 0; i < meshData.size(); i++) {
+        meshData[i] = source.meshData[i];
+    }
 
     return *this;
 }
 
-const std::vector<double>& Input::getMeshData() {
-    double a, b;
+/**
+ * Accessor that retrieves the Option
+ * @return A new option with Expiry, Sig, r, S, K, b, uName, optType, optFlavor
+ */
+const Option& Input::getOptionData() const {return option;}
+
+const std::vector<double>& Input::setMeshData() {
+    double start, stop;
     int J;
 
     std::cout << "\nEnter the required mesh data:\n";
@@ -86,10 +74,10 @@ const std::vector<double>& Input::getMeshData() {
     // Get parameters
     try {
         std::cout << "Domain of integration min value: ";
-        std::cin >> a;
+        std::cin >> start;
 
         // Handle input errors and crashes gracefully
-        if (a < 0 || !std::cin) {
+        if (start < 0 || !std::cin) {
 
             // Clear the error flag
             std::cin.clear();
@@ -97,19 +85,19 @@ const std::vector<double>& Input::getMeshData() {
             // Ignore input up to stream size or new line (whichever comes first)
             std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 
-            // Set a default value
+            // Set start default value
             std::cout << "Incorrect input. Setting default value to 0\n";
-            a = 0;
+            start = 0;
 
             // Add value to end of vector
             meshData.push_back(0);
         }
 
         std::cout << "Domain of integration max value: ";
-        std::cin >> b;
+        std::cin >> stop;
 
         // Handle input errors and crashes gracefully
-        if (b < 0 || b < a || !std::cin) {
+        if (stop < 0 || stop < start || !std::cin) {
 
             // Clear the error flag
             std::cin.clear();
@@ -117,12 +105,12 @@ const std::vector<double>& Input::getMeshData() {
             // Ignore input up to stream size or new line (whichever comes first)
             std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 
-            // Set a default value
+            // Set start default value
             std::cout << "Incorrect input. Setting default value to 1\n";
-            b = 1;
+            stop = 1;
 
             // Add value to end of vector
-            meshData.push_back(b);
+            meshData.push_back(stop);
         }
 
         std::cout << "Factor: ";
@@ -137,14 +125,14 @@ const std::vector<double>& Input::getMeshData() {
             // Ignore input up to stream size or new line (whichever comes first)
             std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 
-            // Set a default value
+            // Set start default value
             std::cout << "Incorrect input. Setting default value to 100\n";
             J = 100;
 
             // Add value to end of vector
             meshData.push_back(J);
         }
-    } catch (std::exception e) {
+    } catch (std::exception& e) {
         std::cout << e.what() << std::endl;
     }
 
@@ -152,19 +140,13 @@ const std::vector<double>& Input::getMeshData() {
 }
 
 /**
- * Accessor that retrieves OptionData
- * @return A {@link boost::tuple<>} representing core option data (e.g. Expiry, Sig, r, S, K, b, optType, optFlavor)
+ * Provide a console interface to dynamically get option data
+ * @return An Option whose member data is either user defined or the default values if incorrect input is provided
  */
-OptionData Input::getOptionData() const { return boost::make_tuple(T, sig, r, S, K, b, optType, optFlavor); }
-
-/**
- * Get option data from the client and set member data
- * @return A {@link boost::tuple<>} representing an equity option
- */
-OptionData Input::getOptionInput() {
+const Option& Input::setOptionData() {
     std::cout << "\nEnter the required option data:\n";
 
-    // Get parameters
+    // Get core option data
     try {
         std::cout << "Expiry: ";
         std::cin >> T;
@@ -268,6 +250,21 @@ OptionData Input::getOptionInput() {
             b = r;                              // Pg. 37 of Intro to C++ for Financial Engineers by Dr. Duffy
         }
 
+        std::cout << "Name of underlying: ";
+        std::cin >> uName;
+
+        // Handle input errors and crashes gracefully
+        if (!std::cin) {
+
+            // Clear the error flag
+            std::cin.clear();
+
+            // Ignore input up to stream size or new line (whichever comes first)
+            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+            std::cout << "Incorrect input. Setting default underlying name to N/A";
+            uName = "N/A";
+        }
+
         std::cout << "Put or Call: ";
         std::cin >> optType;
         if (optType == "call") { optType = "Call"; }
@@ -312,18 +309,6 @@ OptionData Input::getOptionInput() {
         std::cout << e.what() << std::endl;
     }
 
-    return boost::make_tuple(T, sig, r, S, K, b, optType, optFlavor);
-}
-
-void Input::setOptionData(double T_, double sig_, double r_, double S_, double K_, double b_,
-                          const std::string& optType_, const std::string& optFlavor_) {
-
-    T = T_;
-    sig = sig_;
-    r = r_;
-    S = S_;
-    K = K_;
-    b = b_;
-    optType = optType_;
-    optFlavor = optFlavor_;
+    option.setOptionData(T, sig, r, S, K, b, optType, optFlavor, uName);
+    return option;
 }

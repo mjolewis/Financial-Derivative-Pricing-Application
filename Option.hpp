@@ -34,7 +34,8 @@ public:
 
     // Constructors and Destructors
     Option();
-    Option(double T_, double sig_, double r_, double S_, double K_, double b_, std::string& optType_, std::string& optFlavor_, std::string& uName_);
+    Option(double T_, double sig_, double r_, double S_, double K_, double b_,
+            const std::string& optType_, const std::string& optFlavor_, const std::string& uName_);
     Option(const Option &source);
     virtual ~Option();
 
@@ -57,9 +58,10 @@ public:
     const std::string& type() const;
     const std::string& flavor() const;
     const std::string& underlying() const;
-    const boost::tuple<double, double, double, double, double, double, const std::string&, const std::string&, const std::string&> getOption() const;
 
     // Setters
+    void setOptionData(double T_, double sig_, double r_, double S_, double K_, double b_, const std::string& optType_,
+                               const std::string& optFlavor_, const std::string& uName_);
     void expiry(double T_);
     void vol(double sig_);
     void riskFree(double r_);

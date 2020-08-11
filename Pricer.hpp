@@ -13,29 +13,20 @@
 #include "Input.hpp"
 #include "Option.hpp"
 
-typedef  boost::tuple<double, double, double, double, double, double, std::string, std::string> OptionData;
-
-template<typename Input_, typename RNG_, typename Mesher_, typename Matrix_, typename Output_>
-class Pricer : public Input_, public RNG_, public Mesher_, public Matrix_, public Output_ {
+template<typename Input_, typename RNG_, typename Output_>
+class Pricer : public Input_, public RNG_, public Output_ {
 
 private:
-    OptionData optionData;                            // Holds the option data; Provided via Input.cpp
 
 public:
     // Constructors and destructors
     Pricer();
-    Pricer(const OptionData& optionData_);
+    Pricer(const Option& option_);
     Pricer(const Pricer& source);
     virtual ~Pricer();
 
     // Operator overloading
     Pricer& operator=(const Pricer& source);
-
-    // Getters
-    const OptionData& getOptionData() const;
-
-    // Setters
-    void setOptionData(const OptionData& optionData_);
 
     // Core Pricing engines
     double price();
