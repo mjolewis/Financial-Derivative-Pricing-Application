@@ -1,7 +1,5 @@
 /**********************************************************************************************************************
- * Function declarations for Pricer.hpp
- *
- * A financial derivatives pricing and sensitivity engine that employs the Black-Scholes formula
+ * Black-Scholes pricing application. Provides access to the core Option pricing and sensitivity engine
  *
  * Created by Michael Lewis on 7/31/20.
  *********************************************************************************************************************/
@@ -17,8 +15,8 @@
 
 typedef  boost::tuple<double, double, double, double, double, double, std::string, std::string> OptionData;
 
-template<typename Input_, typename RNG_, typename Mesher_>
-class Pricer : public Input_, public RNG_, public Mesher_ {
+template<typename Input_, typename RNG_, typename Mesher_, typename Matrix_, typename Output_>
+class Pricer : public Input_, public RNG_, public Mesher_, public Matrix_, public Output_ {
 
 private:
     OptionData optionData;                            // Holds the option data; Provided via Input.cpp
@@ -54,7 +52,7 @@ public:
     std::vector<std::vector<double>> gamma(const std::vector<std::vector<double>>& matrix) const;
     double vega(double T, double sig, double r, double S, double K, double b) const;
 
-    // Divided differences method for option sensitivities (Greeks)
+    // Finite difference methods for option sensitivities (Greeks)
     double delta(double h, const std::vector<double>& option, const std::string &optType = "Call",
             const std::string& optFlavor = "European") const;
     std::vector<std::vector<double>> delta(double h, const std::vector<std::vector<double>>& matrix,

@@ -1,7 +1,5 @@
 /**********************************************************************************************************************
- * Black-Scholes Option Pricer
- *
- * Testing core Batches. Separated from Main to improve readability
+ * Black-Scholes Option Pricer - Test core Batches
  *
  * Created by Michael Lewis on 8/2/20.
  *********************************************************************************************************************/
@@ -17,6 +15,7 @@
 #include "Matrix.hpp"
 #include "Mesher.hpp"
 #include "Option.hpp"
+#include "Output.hpp"
 #include "Pricer.hpp"
 #include "RNG.hpp"
 
@@ -50,7 +49,7 @@ public:
         // Access to functionality
         Matrix matrix;                                               // Generate the matrix of options
         Mesher mesher;                                               // Generate mesh points
-        Pricer<Input, RNG, Mesher> pricer;                           // Pricing engine
+        Pricer<Input, RNG, Mesher, Matrix, Output> pricer;           // Pricing engine
 
         // Data containers
         std::vector<double> mesh;                                    // A vector of mesh points
@@ -280,11 +279,6 @@ public:
         std::cout << "\n\n*******************************************************************\n\n";
         std::cout << "Simulation complete\n";
         std::cout << "\n*******************************************************************" << std::endl;
-
-        std::cout << "\n\nTest greeks\n\n";
-        std::cout << "\nGamma: " << pricer.gamma(0.5, 0.36, 0.1, 105, 100, 0);
-        std::cout << "\nCall Delta: " << pricer.delta(.5, 0.36, 0.1, 105, 100, 0, call);
-        std::cout << "\nPut Delta: " << pricer.delta(.5, 0.36, 0.1, 105, 100, 0, put);
     }
 };
 

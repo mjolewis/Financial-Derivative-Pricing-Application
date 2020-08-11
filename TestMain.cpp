@@ -1,7 +1,5 @@
 /**********************************************************************************************************************
- * Black-Scholes Option Pricer
- *
- * Main entry point. Run different test cases by toggling the options below
+ * Black-Scholes Option Pricer - Main entry point
  *
  * Created by Michael Lewis on 8/2/20.
  *********************************************************************************************************************/

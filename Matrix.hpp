@@ -22,7 +22,8 @@ public:
     Matrix& operator=(const Matrix& source);
 
     // Generate matrices
-    std::vector<std::vector<double>> getMatrix(const std::vector<double>& mesh, const Option& option, const std::string& property);
+    std::vector<std::vector<double>>
+    getMatrix(const std::vector<double>& mesh, const Option& option, const std::string& property);
 
 };
 
