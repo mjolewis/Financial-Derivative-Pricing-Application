@@ -1,15 +1,14 @@
 /**********************************************************************************************************************
- * European equity option
+ * A financial instrument
  *
  * Created by Michael Lewis on 7/31/20.
  *********************************************************************************************************************/
 
-#ifndef EUROPEANOPTION_HPP
-#define EUROPEANOPTION_HPP
+#ifndef OPTION_HPP
+#define OPTION_HPP
 
 #include <string>
 #include <cmath>
-#include <boost/tuple/tuple.hpp>
 
 #include "Instrument.hpp"
 
@@ -73,4 +72,4 @@ public:
     void underlying(const std::string& uName_);
 };
 
-#endif // EUROPEANOPTION_HPP
+#endif // OPTION_HPP
