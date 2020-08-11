@@ -11,7 +11,8 @@
  * Initialize a new Option
  * @throws OutOfMemoryError Indicates insufficient memory for this Option
  */
-Option::Option() : T(0.25), sig(0.3), r(0.08), S(60), K(65), b(r), optType("Call"), optFlavor("European"), uName("Default") {}
+Option::Option() : T(0.25), sig(0.3), r(0.08), S(60), K(65), b(r),
+                   optType("Call"), optFlavor("European"), uName("Default") {}
 
 /**
  * Initialize a new Option
@@ -26,7 +27,8 @@ Option::Option() : T(0.25), sig(0.3), r(0.08), S(60), K(65), b(r), optType("Call
  * @param uName_ Name of underlying asset
  * @throws OutOfMemoryError Indicates insufficient memory for this Option
  */
-Option::Option(double T_, double sig_, double r_, double S_, double K_, double b_, std::string& optType_, std::string& optFlavor_, std::string& uName_) {
+Option::Option(double T_, double sig_, double r_, double S_, double K_, double b_,
+        const std::string& optType_, const std::string& optFlavor_, const std::string& uName_) {
     T = T_;
     sig = sig_;
     r = r_;
@@ -111,12 +113,20 @@ const std::string & Option::type() const { return optType; }
 const std::string & Option::flavor() const { return optFlavor; }
 const std::string & Option::underlying() const { return uName; }
 
-// Package the entire option in one container
-const boost::tuple<double, double, double, double, double, double, const std::string &, const std::string &, const std::string &> Option::getOption() const {
-    return boost::make_tuple(T, sig, r, S, K, b, optType, optFlavor, uName);
+// Setters
+void Option::setOptionData(double T_, double sig_, double r_, double S_, double K_, double b_, const std::string& optType_,
+        const std::string& optFlavor_, const std::string& uName_) {
+    T = T_;
+    sig = sig_;
+    r = r_;
+    S = S_;
+    K = K_;
+    b = b_;
+    optType = optType_;
+    optFlavor = optFlavor_;
+    uName = uName_;
 }
 
-// Setters
 void Option::expiry(double T_) { T = T_;}
 void Option::vol(double sig_) { sig = sig_; }
 void Option::riskFree(double r_) { r = r_; }

@@ -9,74 +9,61 @@
 
 #include "Pricer.hpp"
 
-#include <boost/tuple/tuple_io.hpp>
-#include <iostream>
 #include "Input.hpp"
+#include "Output.hpp"
+#include "RNG.hpp"
 
 /**
  * Initialize a new Pricer
  * @tparam Input_ Provides a console interface to dynamically get option data
  * @tparam RNG_ Provides access to the Boost Random library to generate Gaussian variates
- * @tparam Mesher_ Generates a vector of mesh points
- * @tparam Matrix_ Generates an Option matrix where a data member for each Option is monotonically separated by a mesh point
  * @tparam Output_ Output class that sends option data to a file specified by the user
  * @throws OutOfMemoryError Indicates insufficient memory for this new Pricer
  */
-template<typename Input_, typename RNG_, typename Mesher_, typename Matrix_, typename Output_>
-Pricer<Input_, RNG_, Mesher_, Matrix_, Output_>::Pricer() : Input_(), RNG_(), Mesher_(), Matrix_(), Output_() {}
+template<typename Input_, typename RNG_, typename Output_>
+Pricer<Input_, RNG_, Output_>::Pricer() : Input_(), RNG_(), Output_() {}
 
 /**
  * Initialize a new Pricer
  * @tparam Input_ Provides a console interface to dynamically get option data
  * @tparam RNG_ Provides access to the Boost Random library to generate Gaussian variates
- * @tparam Mesher_ Generates a vector of mesh points
- * @tparam Matrix_ Generates an Option matrix where a data member for each Option is monotonically separated by a mesh point
  * @tparam Output_ Output class that sends option data to a file specified by the user
  * @param optionData_ A {@link boost::tuple} with T, sig, r, S, K, optType
  * @throws OutOfMemoryError Indicates insufficient memory for this new Pricer
  */
-template<typename Input_, typename RNG_, typename Mesher_, typename Matrix_, typename Output_>
-Pricer<Input_, RNG_, Mesher_, Matrix_, Output_>::
-Pricer(const OptionData &optionData_) : Input_(), RNG_(), Mesher_(), Matrix_(), Output_(), optionData(optionData_) {}
+template<typename Input_, typename RNG_, typename Output_>
+Pricer<Input_, RNG_, Output_>::Pricer(const Option &option_) : Input_(), RNG_(), Output_() {}
 
 /**
  * Initialize a new Pricer whose members are a deep copy of the source
  * @tparam Input_ Provides a console interface to dynamically get option data
  * @tparam RNG_ Provides access to the Boost Random library to generate Gaussian variates
- * @tparam Mesher_ Generates a vector of mesh points
- * @tparam Matrix_ Generates an Option matrix where a data member for each Option is monotonically separated by a mesh point
  * @tparam Output_ Output class that sends option data to a file specified by the user
  * @param source A Pricer whose data members will be deeply copied into this new Pricer
  * @throws OutOfMemoryError Indicates insufficient memory for this new Pricer
  */
-template<typename Input_, typename RNG_, typename Mesher_, typename Matrix_, typename Output_>
-Pricer<Input_, RNG_, Mesher_, Matrix_, Output_>::Pricer(const Pricer &source)
-        : Input_(), RNG_(), Mesher_(), Matrix_(), Output_(), optionData(source.optionData) {}
+template<typename Input_, typename RNG_, typename Output_>
+Pricer<Input_, RNG_, Output_>::Pricer(const Pricer &source) : Input_(), RNG_(), Output_() {}
 
 /**
  * Destroy this Pricer
  * @tparam Input_ Provides a console interface to dynamically get option data
  * @tparam RNG_ Provides access to the Boost Random library to generate Gaussian variates
- * @tparam Mesher_ Generates a vector of mesh points
- * @tparam Matrix_ Generates an Option matrix where a data member for each Option is monotonically separated by a mesh point
  * @tparam Output_ Output class that sends option data to a file specified by the user
  */
-template<typename Input_, typename RNG_, typename Mesher_, typename Matrix_, typename Output_>
-Pricer<Input_, RNG_, Mesher_, Matrix_, Output_>::~Pricer() {}
+template<typename Input_, typename RNG_, typename Output_>
+Pricer<Input_, RNG_, Output_>::~Pricer() {}
 
 /**
  * Deeply copy the source data members into this Pricer
  * @tparam Input_ Provides a console interface to dynamically get option data
  * @tparam RNG_ Provides access to the Boost Random library to generate Gaussian variates
- * @tparam Mesher_ Generates a vector of mesh points
- * @tparam Matrix_ Generates an Option matrix where a data member for each Option is monotonically separated by a mesh point
  * @tparam Output_ Output class that sends option data to a file specified by the user
  * @param source A Pricer whose data members will be deeply copied into this new Pricer
  * @return A Pricer whose data members are a deep copy of the source data members
  */
-template<typename Input_, typename RNG_, typename Mesher_, typename Matrix_, typename Output_>
-Pricer<Input_, RNG_, Mesher_, Matrix_, Output_> &Pricer<Input_, RNG_, Mesher_, Matrix_, Output_>::
-operator=(const Pricer<Input_, RNG_, Mesher_, Matrix_, Output_> &source) {
+template<typename Input_, typename RNG_, typename Output_>
+Pricer<Input_, RNG_, Output_> &Pricer<Input_, RNG_, Output_>::operator=(const Pricer<Input_, RNG_, Output_> &source) {
 
     // Avoid self assign
     if (this == &source) { return *this; }
@@ -84,42 +71,10 @@ operator=(const Pricer<Input_, RNG_, Mesher_, Matrix_, Output_> &source) {
     // Call base class assignment
     Input_::operator=(source);
     RNG_::operator=(source);
-    Mesher_::operator=(source);
-    Matrix_::operator=(source);
     Output_::operator=(source);
-
-    optionData = source.optionData;
 
     return *this;
 }
-
-/* ********************************************************************************************************************
- * Getters and Setters
- *********************************************************************************************************************/
-
-/**
- * Accessor
- * @tparam Input_ Provides a console interface to dynamically get option data
- * @tparam RNG_ Provides access to the Boost Random library to generate Gaussian variates
- * @tparam Mesher_ Generates a vector of mesh points
- * @tparam Matrix_ Generates an Option matrix where a data member for each Option is monotonically separated by a mesh point
- * @tparam Output_ Output class that sends option data to a file specified by the user
- * @return A reference to an optionData object, which is a {@link boost::tuple}
- */
-template<typename Input_, typename RNG_, typename Mesher_, typename Matrix_, typename Output_>
-const OptionData &Pricer<Input_, RNG_, Mesher_, Matrix_, Output_>::getOptionData() const { return optionData; }
-
-/**
- * Mutator
- * @tparam Input_ Provides a console interface to dynamically get option data
- * @tparam RNG_ Provides access to the Boost Random library to generate Gaussian variates
- * @tparam Mesher_ Generates a vector of mesh points
- * @tparam Matrix_ Generates an Option matrix where a data member for each Option is monotonically separated by a mesh point
- * @tparam Output_ Output class that sends option data to a file specified by the user
- * @param optionData_ An optionData object whose members are T, sig, r, S, K, optType
- */
-template<typename Input_, typename RNG_, typename Mesher_, typename Matrix_, typename Output_>
-void Pricer<Input_, RNG_, Mesher_, Matrix_, Output_>::setOptionData(const OptionData &optionData_) { optionData = optionData_; }
 
 /* ********************************************************************************************************************
  * Option sensitivities (Greeks)
@@ -130,8 +85,6 @@ void Pricer<Input_, RNG_, Mesher_, Matrix_, Output_>::setOptionData(const Option
  * @note Delta is the change in the option’s price or premium due to the change in the Underlying futures price
  * @tparam Input_ Provides a console interface to dynamically get option data
  * @tparam RNG_ Provides access to the Boost Random library to generate Gaussian variates
- * @tparam Mesher_ Generates a vector of mesh points
- * @tparam Matrix_ Generates an Option matrix where a data member for each Option is monotonically separated by a mesh point
  * @tparam Output_ Output class that sends option data to a file specified by the user
  * @param T Expiry
  * @param sig Volatility
@@ -142,9 +95,9 @@ void Pricer<Input_, RNG_, Mesher_, Matrix_, Output_>::setOptionData(const Option
  * @param optType
  * @return Call delta if optType is a Call. Otherwise Put delta
  */
-template<typename Input_, typename RNG_, typename Mesher_, typename Matrix_, typename Output_>
-double Pricer<Input_, RNG_, Mesher_, Matrix_, Output_>::delta(double T, double sig, double r, double S,
-                                            double K, double b, const std::string &optType) const {
+template<typename Input_, typename RNG_, typename Output_>
+double Pricer<Input_, RNG_, Output_>::delta(double T, double sig, double r, double S,
+        double K, double b, const std::string &optType) const {
 
     double d1 = (log(S / K) + (b + (sig * sig) * 0.5) * T) / (sig * sqrt(T));
 
@@ -159,17 +112,14 @@ double Pricer<Input_, RNG_, Mesher_, Matrix_, Output_>::delta(double T, double s
  * @note Delta is the change in the option’s price or premium due to the change in the Underlying futures price
  * @tparam Input_ Provides a console interface to dynamically get option data
  * @tparam RNG_ Provides access to the Boost Random library to generate Gaussian variates
- * @tparam Mesher_ Generates a vector of mesh points
- * @tparam Matrix_ Generates an Option matrix where a data member for each Option is monotonically separated by a mesh point
  * @tparam Output_ Output class that sends option data to a file specified by the user
  * @param matrix A matrix of option parameters where each row has T, sig, r, S, K, b
  * @param optType_ Call or Put
  * @return Call delta matrix if optType is a Call. Otherwise Put delta
  */
-template<typename Input_, typename RNG_, typename Mesher_, typename Matrix_, typename Output_>
+template<typename Input_, typename RNG_, typename Output_>
 std::vector<std::vector<double>>
-Pricer<Input_, RNG_, Mesher_, Matrix_, Output_>::delta(const std::vector<std::vector<double> > &matrix,
-                                     const std::string &optType) const {
+Pricer<Input_, RNG_, Output_>::delta(const std::vector<std::vector<double> > &matrix, const std::string &optType) const {
 
     std::vector<std::vector<double> > deltas;              // A container of delta approximations
 
@@ -185,17 +135,15 @@ Pricer<Input_, RNG_, Mesher_, Matrix_, Output_>::delta(const std::vector<std::ve
  * @note Delta is the change in the option’s price or premium due to the change in the Underlying futures price
  * @tparam Input_ Provides a console interface to dynamically get option data
  * @tparam RNG_ Provides access to the Boost Random library to generate Gaussian variates
- * @tparam Mesher_ Generates a vector of mesh points
- * @tparam Matrix_ Generates an Option matrix where a data member for each Option is monotonically separated by a mesh point
  * @tparam Output_ Output class that sends option data to a file specified by the user
  * @param h
  * @param optType An option with T, sig, r, S, K, b, optType, and optFlavor
  * @param optFlavor European or American
  * @return The delta call or delta put, which depends on the type of option provided
  */
-template<typename Input_, typename RNG_, typename Mesher_, typename Matrix_, typename Output_>
-double Pricer<Input_, RNG_, Mesher_, Matrix_, Output_>::delta(double h, const std::vector<double> &option,
-                                            const std::string &optType, const std::string &optFlavor) const {
+template<typename Input_, typename RNG_, typename Output_>
+double Pricer<Input_, RNG_, Output_>::delta(double h, const std::vector<double> &option,
+        const std::string &optType, const std::string &optFlavor) const {
 
     // Input for divided differences numerator
     double S1 = option[3] + h;
@@ -214,8 +162,6 @@ double Pricer<Input_, RNG_, Mesher_, Matrix_, Output_>::delta(double h, const st
  * @note Delta is the change in the option’s price or premium due to the change in the Underlying futures price
  * @tparam Input_ Provides a console interface to dynamically get option data
  * @tparam RNG_ Provides access to the Boost Random library to generate Gaussian variates
- * @tparam Mesher_ Generates a vector of mesh points
- * @tparam Matrix_ Generates an Option matrix where a data member for each Option is monotonically separated by a mesh point
  * @tparam Output_ Output class that sends option data to a file specified by the user
  * @param h
  * @param optType Call or Put
@@ -223,10 +169,10 @@ double Pricer<Input_, RNG_, Mesher_, Matrix_, Output_>::delta(double h, const st
  * @param matrix A matrix option parameters where each row has T, sig, r, S, K, b
  * @return
  */
-template<typename Input_, typename RNG_, typename Mesher_, typename Matrix_, typename Output_>
+template<typename Input_, typename RNG_, typename Output_>
 std::vector<std::vector<double>>
-Pricer<Input_, RNG_, Mesher_, Matrix_, Output_>::delta(double h, const std::vector<std::vector<double> > &matrix,
-                                     const std::string &optType, const std::string &optFlavor) const {
+Pricer<Input_, RNG_, Output_>::delta(double h, const std::vector<std::vector<double> > &matrix,
+                                                       const std::string &optType, const std::string &optFlavor) const {
 
     // Container for divided differences results
     std::vector<std::vector<double>> deltaPrices;
@@ -243,8 +189,6 @@ Pricer<Input_, RNG_, Mesher_, Matrix_, Output_>::delta(double h, const std::vect
  * @note Gamma is the rate of change in an options delta per one point move in the underlying asset's price
  * @tparam Input_ Provides a console interface to dynamically get option data
  * @tparam RNG_ Provides access to the Boost Random library to generate Gaussian variates
- * @tparam Mesher_ Generates a vector of mesh points
- * @tparam Matrix_ Generates an Option matrix where a data member for each Option is monotonically separated by a mesh point
  * @tparam Output_ Output class that sends option data to a file specified by the user
  * @param T Expiry
  * @param sig Volatility
@@ -254,8 +198,8 @@ Pricer<Input_, RNG_, Mesher_, Matrix_, Output_>::delta(double h, const std::vect
  * @param b Cost of carry
  * @return The rate of change with respect to the input parameters
  */
-template<typename Input_, typename RNG_, typename Mesher_, typename Matrix_, typename Output_>
-double Pricer<Input_, RNG_, Mesher_, Matrix_, Output_>::gamma(double T, double sig, double r, double S, double K, double b) const {
+template<typename Input_, typename RNG_, typename Output_>
+double Pricer<Input_, RNG_, Output_>::gamma(double T, double sig, double r, double S, double K, double b) const {
     double tmp = sig * sqrt(T);
 
     double d1 = (log(S / K) + (b + (sig * sig) * 0.5) * T) / tmp;
@@ -270,24 +214,22 @@ double Pricer<Input_, RNG_, Mesher_, Matrix_, Output_>::gamma(double T, double s
  * @note Gamma is the rate of change in an options delta per one point move in the underlying asset's price
  * @tparam Input_ Provides a console interface to dynamically get option data
  * @tparam RNG_ Provides access to the Boost Random library to generate Gaussian variates
- * @tparam Mesher_ Generates a vector of mesh points
- * @tparam Matrix_ Generates an Option matrix where a data member for each Option is monotonically separated by a mesh point
  * @tparam Output_ Output class that sends option data to a file specified by the user
  * @param matrix A matrix of option parameters (e.g. T, sig, r, S, K, b)
  * @return A matrix of closed form solutions for Gamma (one solution for each row of options in the input matrix)
  */
-template<typename Input_, typename RNG_, typename Mesher_, typename Matrix_, typename Output_>
+template<typename Input_, typename RNG_, typename Output_>
 std::vector<std::vector<double>>
-Pricer<Input_, RNG_, Mesher_, Matrix_, Output_>::gamma(const std::vector<std::vector<double> > &matrix) const {
+Pricer<Input_, RNG_, Output_>::gamma(const std::vector<std::vector<double> > &matrix) const {
 
     // Create a new container for each new matrix
-    std::vector<std::vector<double> > gammaMatrix;
+    std::vector<std::vector<double> > gammas;
 
     // Calculate exact gamma and put the result into the output matrix
     for (const auto &i : matrix) {
-        gammaMatrix.push_back({gamma(i[0], i[1], i[2], i[3], i[4], i[5])});
+        gammas.push_back({gamma(i[0], i[1], i[2], i[3], i[4], i[5])});
     }
-    return gammaMatrix;
+    return gammas;
 }
 
 /**
@@ -295,15 +237,13 @@ Pricer<Input_, RNG_, Mesher_, Matrix_, Output_>::gamma(const std::vector<std::ve
  * @note Gamma is the rate of change in an options delta per one point move in the underlying asset's price
  * @tparam Input_ Provides a console interface to dynamically get option data
  * @tparam RNG_ Provides access to the Boost Random library to generate Gaussian variates
- * @tparam Mesher_ Generates a vector of mesh points
- * @tparam Matrix_ Generates an Option matrix where a data member for each Option is monotonically separated by a mesh point
  * @tparam Output_ Output class that sends option data to a file specified by the user
  * @param h Smaller values of h produce better approximations but we need to avoid round-off errors
  * @param option A call or put option used to approximate gamma
  * @return An approximation of Gamma for the given option
  */
-template<typename Input_, typename RNG_, typename Mesher_, typename Matrix_, typename Output_>
-double Pricer<Input_, RNG_, Mesher_, Matrix_, Output_>::gamma(double h, const std::vector<double> &option) const {
+template<typename Input_, typename RNG_, typename Output_>
+double Pricer<Input_, RNG_, Output_>::gamma(double h, const std::vector<double> &option) const {
 
     // Input for divided differences numerator
     double S1 = price(option[0], option[1], option[2], option[3] + h, option[4], option[5]);
@@ -319,24 +259,22 @@ double Pricer<Input_, RNG_, Mesher_, Matrix_, Output_>::gamma(double h, const st
  * @note Gamma is the rate of change in an options delta per one point move in the underlying asset's price
  * @tparam Input_ Provides a console interface to dynamically get option data
  * @tparam RNG_ Provides access to the Boost Random library to generate Gaussian variates
- * @tparam Mesher_ Generates a vector of mesh points
- * @tparam Matrix_ Generates an Option matrix where a data member for each Option is monotonically separated by a mesh point
  * @tparam Output_ Output class that sends option data to a file specified by the user
  * @return A matrix of Gamma approximations (one solution for each row of options in the input matrix)
  */
-template<typename Input_, typename RNG_, typename Mesher_, typename Matrix_, typename Output_>
+template<typename Input_, typename RNG_, typename Output_>
 std::vector<std::vector<double>>
-Pricer<Input_, RNG_, Mesher_, Matrix_, Output_>::gamma(double h, const std::vector<std::vector<double>> &matrix) const {
+Pricer<Input_, RNG_, Output_>::gamma(double h, const std::vector<std::vector<double>> &matrix) const {
 
     // Create a new container for each new matrix
-    std::vector<std::vector<double> > gammaMatrix;
+    std::vector<std::vector<double> > gammas;
 
     // Calculate exact gamma and put the result into the output matrix
     for (const auto &i : matrix) {
-        gammaMatrix.push_back({gamma(h, i)});
+        gammas.push_back({gamma(h, i)});
     }
 
-    return gammaMatrix;
+    return gammas;
 }
 
 /**
@@ -344,8 +282,6 @@ Pricer<Input_, RNG_, Mesher_, Matrix_, Output_>::gamma(double h, const std::vect
  * @note Measures option sensitivity to implied vol (e.g. change in the option price per point change in implied vol)
  * @tparam Input_ Provides a console interface to dynamically get option data
  * @tparam RNG_ Provides access to the Boost Random library to generate Gaussian variates
- * @tparam Mesher_ Generates a vector of mesh points
- * @tparam Matrix_ Generates an Option matrix where a data member for each Option is monotonically separated by a mesh point
  * @tparam Output_ Output class that sends option data to a file specified by the user
  * @param T Expiry
  * @param sig Volatility
@@ -355,8 +291,8 @@ Pricer<Input_, RNG_, Mesher_, Matrix_, Output_>::gamma(double h, const std::vect
  * @param b Cost of carry
  * @return The rate of change in the option price with respect to volatility
  */
-template<typename Input_, typename RNG_, typename Mesher_, typename Matrix_, typename Output_>
-double Pricer<Input_, RNG_, Mesher_, Matrix_, Output_>::vega(double T, double sig, double r, double S, double K, double b) const {
+template<typename Input_, typename RNG_, typename Output_>
+double Pricer<Input_, RNG_, Output_>::vega(double T, double sig, double r, double S, double K, double b) const {
 
     double d1 = (log(S / K) + (b + (sig * sig) * 0.5) * T) / (sig * sqrt(T));
 
@@ -372,43 +308,30 @@ double Pricer<Input_, RNG_, Mesher_, Matrix_, Output_>::vega(double T, double si
  * @note This version provides a console interface to dynamically get option data
  * @tparam Input_ Provides a console interface to dynamically get option data
  * @tparam RNG_ Provides access to the Boost Random library to generate Gaussian variates
- * @tparam Mesher_ Generates a vector of mesh points
- * @tparam Matrix_ Generates an Option matrix where a data member for each Option is monotonically separated by a mesh point
  * @tparam Output_ Output class that sends option data to a file specified by the user
  * @return The option price
  */
-template<typename Input_, typename RNG_, typename Mesher_, typename Matrix_, typename Output_>
-double Pricer<Input_, RNG_, Mesher_, Matrix_, Output_>::price() {
+template<typename Input_, typename RNG_, typename Output_>
+double Pricer<Input_, RNG_, Output_>::price() {
 
-    optionData = Input_::getOptionInput();                 // Provide a console interface to dynamically get option data
+    Option option = Input_::setOptionData();          // Provide a console interface to dynamically get option data
 
-    // Required option data
-    double T = optionData.get<0>();                        // Expiry time/maturity. E.g. T = 1 means one year
-    double sig = optionData.get<1>();                      // Volatility
-    double r = optionData.get<2>();                        // Risk-free interest rate
-    double S = optionData.get<3>();                        // Spot price
-    double K = optionData.get<4>();                        // Strike price
-    double b = optionData.get<5>();                        // Cost of carry
-    std::string optType = optionData.get<6>();             // Put or Call
-    std::string optFlavor = optionData.get<7>();           // European or American
-
-    return price(T, sig, r, S, K, b, optType, optFlavor);
+    return price(option.expiry(), option.vol(), option.riskFree(), option.spot(),
+            option.strike(), option.carry(), option.type(), option.flavor());
 }
 
 /**
  * Receives a matrix of options and prices each of of them
  * @tparam Input_ Provides a console interface to dynamically get option data
  * @tparam RNG_ Provides access to the Boost Random library to generate Gaussian variates
- * @tparam Mesher_ Generates a vector of mesh points
- * @tparam Matrix_ Generates an Option matrix where a data member for each Option is monotonically separated by a mesh point
  * @tparam Output_ Output class that sends option data to a file specified by the user
  * @param matrix Option parameters
  * @return A matrix of option prices
  */
-template<typename Input_, typename RNG_, typename Mesher_, typename Matrix_, typename Output_>
+template<typename Input_, typename RNG_, typename Output_>
 std::vector<std::vector<double> >
-Pricer<Input_, RNG_, Mesher_, Matrix_, Output_>::price(const std::vector<std::vector<double> > &matrix,
-                                     const std::string &optType, const std::string &optFlavor) const {
+Pricer<Input_, RNG_, Output_>::price(const std::vector<std::vector<double> > &matrix,
+                                                       const std::string &optType, const std::string &optFlavor) const {
 
     // Create a new container for each new matrix
     std::vector<std::vector<double> > optionPrices;
@@ -424,8 +347,6 @@ Pricer<Input_, RNG_, Mesher_, Matrix_, Output_>::price(const std::vector<std::ve
  * The core pricing engine that uses the Black-Scholes formula
  * @tparam Input_ Provides a console interface to dynamically get option data
  * @tparam RNG_ Provides access to the Boost Random library to generate Gaussian variates
- * @tparam Mesher_ Generates a vector of mesh points
- * @tparam Matrix_ Generates an Option matrix where a data member for each Option is monotonically separated by a mesh point
  * @tparam Output_ Output class that sends option data to a file specified by the user
  * @param T Expiry
  * @param sig Volatility
@@ -437,9 +358,9 @@ Pricer<Input_, RNG_, Mesher_, Matrix_, Output_>::price(const std::vector<std::ve
  * @param optFlavor European or American
  * @return The price of the option. Otherwise -1 for invalid input
  */
-template<typename Input_, typename RNG_, typename Mesher_, typename Matrix_, typename Output_>
-double Pricer<Input_, RNG_, Mesher_, Matrix_, Output_>::price(double T, double sig, double r, double S, double K, double b,
-                                            const std::string &optType, const std::string &optFlavor) const {
+template<typename Input_, typename RNG_, typename Output_>
+double Pricer<Input_, RNG_, Output_>::price(double T, double sig, double r, double S, double K, double b,
+                                                              const std::string &optType, const std::string &optFlavor) const {
 
     double tmp = sig * sqrt(T);
     double d1 = (log(S / K) + (b + (sig * sig) * 0.5) * T) / tmp;

@@ -49,7 +49,7 @@ public:
         // Access to functionality
         Matrix matrix;                                               // Generate the matrix of options
         Mesher mesher;                                               // Generate mesh points
-        Pricer<Input, RNG, Mesher, Matrix, Output> pricer;           // Pricing engine
+        Pricer<Input, RNG, Output> pricer;                           // Pricing engine
 
         // Data containers
         std::vector<double> mesh;                                    // A vector of mesh points
