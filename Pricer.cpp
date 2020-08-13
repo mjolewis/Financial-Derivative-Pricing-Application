@@ -340,6 +340,7 @@ Pricer<Input_, RNG_, Output_>::price(const std::vector<std::vector<double> > &ma
         // Store the price
         optionPrices.push_back({price(row[0], row[1], row[2], row[3], row[4], row[5], optType, optFlavor)});
     }
+    //Output_::sendToFile(optionPrices);
     return optionPrices;
 }
 

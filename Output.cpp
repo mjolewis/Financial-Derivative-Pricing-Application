@@ -41,75 +41,40 @@ Output & Output::operator=(const Output &source) {
 
 /**
  * Provide a console interface to dynamically get the output file
- * @param value
+ * @param value The price of an Option
  */
-void Output::sendToFile(double value) {
+void Output::sendToFile(double value) const {
+    std::ofstream outFile;                       // Object for writing to a file
     std::string fileName;
-    std::cout << "Enter output location data:\n";
+    std::cout << "Enter output location data: ";
+    std::cin >> fileName;
 
-    try {
-        std::cout << "Fully qualified path and filename:\n";
-        std::cin >> fileName;
-
-        // Handle input errors and crashes gracefully
-        if (!std::cin) {
-
-            // Clear the error flag
-            std::cin.clear();
-
-            // Ignore input up to stream size or new line (whichever comes first)
-            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-
-            // Set a default value
-            std::cout << "Incorrect input. Setting default value to /Users/Black-Scholes Option Data.xlsx";
-            fileName = "/Users/Black-Scholes Option Data.xlsx";
-        }
-    } catch (std::exception& e) {
-        std::cout << e.what() << std::endl;
-    }
-
-    // Write to the file
-    try {
-        outFile.open(fileName, std::ios::out);
-
-        // Handle file opening errors
-        if (!outFile) {
-            std::cout << "Unable to open the file. Check filepath permissions\n";
-        } else {
-            outFile << value;                    // Write to the file
-            outFile.close();                     // Close file to clean up resources
-        }
-    } catch (std::exception& e) {
-        std::cout << e.what() << std::endl;
+    outFile.open(fileName);
+    if (outFile.is_open()) {
+        outFile << value;
+        outFile.close();
+    } else {
+        std::cout << "Unable to open the file. Check filepath permissions\n";
     }
 }
 
 /**
  * Provide a console interface to dynamically get the output file
- * @param matrix
+ * @param matrix A matrix of Option prices
  */
 void Output::sendToFile(const std::vector<std::vector<double> > &matrix) const {
+    std::ofstream outFile;                       // Object for writing to a file
     std::string fileName;
-    std::cout << "Enter output location data:\n";
+    std::cout << "Enter output location data: ";
+    std::cin >> fileName;
 
-    try {
-        std::cout << "Fully qualified path and filename:\n";
-        std::cin >> fileName;
-
-        // Handle input errors and crashes gracefully
-        if (!std::cin) {
-
-            // Clear the error flag
-            std::cin.clear();
-
-            // Ignore input up to stream size or new line (whichever comes first)
-            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-
-            // Set a default value
-            std::cout << "Incorrect input. Setting default value to /Users/Black-Scholes Option Data.xlsx";
-            fileName = "/Users/Black-Scholes Option Data.xlsx";
+    outFile.open(fileName);
+    if (outFile.is_open()) {
+        for (auto &row : matrix) {
+            outFile << row[0] << "\n";
         }
-    } catch (std::exception& e) {
-        std::cout << e.what() << std::endl;
+        outFile.close();
+    } else {
+        std::cout << "Unable to open the file. Check filepath permissions\n";
     }
 }

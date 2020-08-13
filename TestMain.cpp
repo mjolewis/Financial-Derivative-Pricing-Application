@@ -6,19 +6,24 @@
 
 #include <string>
 
-#include "TestGroupA.hpp"
+#include "TestGroupAPricing.hpp"
+#include "TestGroupAGreeks.hpp"
 #include "TestBuilder.hpp"
 #include "TestExtras.hpp"
 
 // Comment or uncomment to toggle test cases
 int main() {
 
-    // Hard-coded test cases
-    TestGroupA groupA;
-    groupA.PartOne();
-    groupA.PartTwo();
-    groupA.PartThree();
-    groupA.PartFour();
+    // Group A Pricing Tests
+    TestGroupAPricing groupAPricing;
+    groupAPricing.PartOne();
+    groupAPricing.PartTwo();
+    groupAPricing.PartThree();
+    groupAPricing.PartFour();
+
+    // Group A Greeks Tests;
+    TestGroupAGreeks groupAGreeks;
+    groupAGreeks.PartOne();
 
     // Test Builder Pattern, which allows the user to input option data
 //    TestBuilder builderTest;

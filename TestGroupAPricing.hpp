@@ -19,7 +19,7 @@
 #include "Pricer.hpp"
 #include "RNG.hpp"
 
-class TestGroupA {
+class TestGroupAPricing {
 private:
     Option option1Call = Option(0.25, 0.30, 0.08, 60, 65, 0.08, "Call", "European", "GS");
     Option option1Put = Option(0.25, 0.30, 0.08, 60, 65, 0.08, "Put", "European", "GS");
@@ -38,15 +38,15 @@ private:
     Matrix matrix;                                               // Matrix engine
 
 public:
-    TestGroupA() {};
-    virtual ~TestGroupA() {};
+    TestGroupAPricing() {};
+    virtual ~TestGroupAPricing() {};
 
     void PartOne() {
 
         // Begin simulation
         std::cout << "\n*******************************************************************\n\n";
         std::cout << "Black-Scholes Option Pricing Engine\n";
-        std::cout << "Test Batch: Group A Part 1\n";
+        std::cout << "Test Batch: Group A Pricing Part 1\n";
         std::cout << "Authored By: Michael Lewis\n";
         std::cout << "\n*******************************************************************" << std::endl;
 
@@ -111,7 +111,7 @@ public:
 
 
         std::cout << "\n\n*******************************************************************\n\n";
-        std::cout << "Completed Group A Part 1\n";
+        std::cout << "Completed Group A Pricing Part 1\n";
         std::cout << "\n*******************************************************************" << std::endl;
     }
 
@@ -120,7 +120,7 @@ public:
         // Begin simulation
         std::cout << "\n*******************************************************************\n\n";
         std::cout << "Black-Scholes Option Pricing Engine\n";
-        std::cout << "Test Batch: Group A Part 2\n";
+        std::cout << "Test Batch: Group A Pricing Part 2\n";
         std::cout << "Authored By: Michael Lewis\n";
         std::cout << "\n*******************************************************************" << std::endl;
 
@@ -173,7 +173,7 @@ public:
                   << "\nSatisfies Put-Call Parity: " << option4Call.putCallParity(92.1757, 1.2475);
 
         std::cout << "\n\n*******************************************************************\n\n";
-        std::cout << "Completed Group A Part 2\n";
+        std::cout << "Completed Group A Pricing Part 2\n";
         std::cout << "\n*******************************************************************" << std::endl;
     }
 
@@ -182,13 +182,13 @@ public:
         // Begin simulation
         std::cout << "\n*******************************************************************\n\n";
         std::cout << "Black-Scholes Option Pricing Engine\n";
-        std::cout << "Test Batch: Group A Part 3\n";
+        std::cout << "Test Batch: Group A Pricing Part 3\n";
         std::cout << "Authored By: Michael Lewis\n";
         std::cout << "\n*******************************************************************" << std::endl;
 
         // Batch 1
         std::vector<double> mesh = mesher.xarr(option1Call.spot(), option1Call.spot() + 5, 0.5);
-        std::vector<std::vector<double>> options = matrix.getMatrix(mesh, option1Call, "S");
+        std::vector<std::vector<double>> options = matrix.getStockOptionsMatrix(mesh, option1Call, "S");
         std::vector<std::vector<double>> callPrices = pricer.price(options, "Call", "European");
         std::vector<std::vector<double>> putPrices = pricer.price(options, "Put", "European");
 
@@ -210,7 +210,7 @@ public:
 
         // Batch 2
         mesh = mesher.xarr(option2Call.spot(), option2Call.spot() + 5, 0.5);
-        options = matrix.getMatrix(mesh, option2Call, "S");
+        options = matrix.getStockOptionsMatrix(mesh, option2Call, "S");
         callPrices = pricer.price(options, "Call", "European");
         putPrices = pricer.price(options, "Put", "European");
 
@@ -232,7 +232,7 @@ public:
 
         // Batch 3
         mesh = mesher.xarr(option3Call.spot(), option3Call.spot() + 5, 0.5);
-        options = matrix.getMatrix(mesh, option3Call, "S");
+        options = matrix.getStockOptionsMatrix(mesh, option3Call, "S");
         callPrices = pricer.price(options, "Call", "European");
         putPrices = pricer.price(options, "Put", "European");
 
@@ -254,7 +254,7 @@ public:
 
         // Batch 4
         mesh = mesher.xarr(option4Call.spot(), option4Call.spot() + 5, 0.5);
-        options = matrix.getMatrix(mesh, option4Call, "S");
+        options = matrix.getStockOptionsMatrix(mesh, option4Call, "S");
         callPrices = pricer.price(options, "Call", "European");
         putPrices = pricer.price(options, "Put", "European");
 
@@ -275,7 +275,7 @@ public:
         };
 
         std::cout << "\n\n*******************************************************************\n\n";
-        std::cout << "Completed Group A Part 3\n";
+        std::cout << "Completed Group A Pricing Part 3\n";
         std::cout << "\n*******************************************************************" << std::endl;
     }
 
@@ -284,13 +284,13 @@ public:
         // Begin simulation
         std::cout << "\n*******************************************************************\n\n";
         std::cout << "Black-Scholes Option Pricing Engine\n";
-        std::cout << "Test Batch: Group A Part 4\n";
+        std::cout << "Test Batch: Group A Pricing Part 4\n";
         std::cout << "Authored By: Michael Lewis\n";
         std::cout << "\n*******************************************************************" << std::endl;
 
         // Batch 1
         std::vector<double> mesh = mesher.xarr(option1Call.expiry(), option1Call.expiry() + 5, 0.5);
-        std::vector<std::vector<double>> options = matrix.getMatrix(mesh, option1Call, "T");
+        std::vector<std::vector<double>> options = matrix.getStockOptionsMatrix(mesh, option1Call, "T");
         std::vector<std::vector<double>> callPrices = pricer.price(options, "Call", "European");
         std::vector<std::vector<double>> putPrices = pricer.price(options, "Put", "European");
 
@@ -312,7 +312,7 @@ public:
 
         // Batch 2
         mesh = mesher.xarr(option2Call.vol(), option2Call.vol() + 5, 0.5);
-        options = matrix.getMatrix(mesh, option2Call, "sig");
+        options = matrix.getStockOptionsMatrix(mesh, option2Call, "sig");
         callPrices = pricer.price(options, "Call", "European");
         putPrices = pricer.price(options, "Put", "European");
 
@@ -334,7 +334,7 @@ public:
 
         // Batch 3
         mesh = mesher.xarr(option3Call.strike(), option3Call.strike() + 5, 0.5);
-        options = matrix.getMatrix(mesh, option3Call, "K");
+        options = matrix.getStockOptionsMatrix(mesh, option3Call, "K");
         callPrices = pricer.price(options, "Call", "European");
         putPrices = pricer.price(options, "Put", "European");
 
@@ -356,7 +356,7 @@ public:
 
         // Batch 4
         mesh = mesher.xarr(option4Call.riskFree(), option4Call.riskFree() + .05, 0.005);
-        options = matrix.getMatrix(mesh, option4Call, "r");
+        options = matrix.getStockOptionsMatrix(mesh, option4Call, "r");
         callPrices = pricer.price(options, "Call", "European");
         putPrices = pricer.price(options, "Put", "European");
 
@@ -377,7 +377,7 @@ public:
         };
 
         std::cout << "\n\n*******************************************************************\n\n";
-        std::cout << "Completed Group A Part 4\n";
+        std::cout << "Completed Group A Pricing Part 4\n";
         std::cout << "\n*******************************************************************" << std::endl;
     }
 };
