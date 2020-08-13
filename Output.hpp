@@ -15,8 +15,6 @@ class Output {
 
 private:
 
-    std::ofstream outFile;                       // Object for writing to a file
-
 public:
     // Constructors and destructors
     Output();
@@ -27,7 +25,7 @@ public:
     Output& operator=(const Output& source);
 
     // Core functionality
-    void sendToFile(double value);
+    void sendToFile(double value) const;
     void sendToFile(const std::vector<std::vector<double>>& matrix) const;
 
 };

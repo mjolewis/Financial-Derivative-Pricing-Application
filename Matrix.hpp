@@ -23,7 +23,10 @@ public:
 
     // Generate matrices
     std::vector<std::vector<double>>
-    getMatrix(const std::vector<double>& mesh, const Option& option, const std::string& property);
+    getStockOptionsMatrix(const std::vector<double>& mesh, const Option& option, const std::string& property) const;
+
+    std::vector<std::vector<double>>
+    getFuturesOptionsMatrix(const std::vector<double>& mesh, const Option& option, const std::string& property) const;
 
 };
 
