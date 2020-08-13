@@ -6,7 +6,7 @@
 
 #include <string>
 
-#include "TestBatches.hpp"
+#include "TestGroupA.hpp"
 #include "TestBuilder.hpp"
 #include "TestExtras.hpp"
 
@@ -14,14 +14,17 @@
 int main() {
 
     // Hard-coded test cases
-    TestBatches batchTests;
-    batchTests.RunTest();
+    TestGroupA groupA;
+    groupA.PartOne();
+    groupA.PartTwo();
+    groupA.PartThree();
+    groupA.PartFour();
 
     // Test Builder Pattern, which allows the user to input option data
 //    TestBuilder builderTest;
-//    builderTest.RunTest();
+//    builderTest.PartOne();
 
     // Test extras
 //    TestExtras extrasTest;
-//    extrasTest.RunTest();
+//    extrasTest.PartOne();
 }
