@@ -92,7 +92,7 @@ Pricer<Input_, RNG_, Output_> &Pricer<Input_, RNG_, Output_>::operator=(const Pr
  * @param S Spot price
  * @param K Strike price
  * @param b Cost of carry
- * @param optType
+ * @param optType Call or Put
  * @return Call delta if optType is a Call. Otherwise Put delta
  */
 template<typename Input_, typename RNG_, typename Output_>
@@ -136,10 +136,39 @@ Pricer<Input_, RNG_, Output_>::delta(const std::vector<std::vector<double> > &ma
  * @tparam Input_ Provides a console interface to dynamically get option data
  * @tparam RNG_ Provides access to the Boost Random library to generate Gaussian variates
  * @tparam Output_ Output class that sends option data to a file specified by the user
- * @param h
+ * @param h Step size for FDM method
+ * @param T Expiry
+ * @param sig Volatility
+ * @param r Risk-free rate
+ * @param S Spot price
+ * @param K Strike price
+ * @param b Cost of carry
+ * @param optType Call or Put
+ * @param optFlavor European or American
+ * @return The delta call or delta put approximation, which depends on the type of option provided
+ */
+template<typename Input_, typename RNG_, typename Output_>
+double Pricer<Input_, RNG_, Output_>::delta(double h, double T, double sig, double r, double S, double K, double b,
+        const std::string &optType, const std::string &optFlavor) const {
+
+    // Placeholders for final numerator values
+    double LHS = price(T, sig, r, S + h, K, b, optType, optFlavor);
+    double RHS = price(T, sig, r, S - h, K, b, optType, optFlavor);
+
+    // Divided differences method
+    return (LHS - RHS) / (2 * h);
+}
+
+/**
+ * FDM to approximate option delta using divided differences
+ * @note Delta is the change in the option’s price or premium due to the change in the Underlying futures price
+ * @tparam Input_ Provides a console interface to dynamically get option data
+ * @tparam RNG_ Provides access to the Boost Random library to generate Gaussian variates
+ * @tparam Output_ Output class that sends option data to a file specified by the user
+ * @param h Step size for FDM method
  * @param optType An option with T, sig, r, S, K, b, optType, and optFlavor
  * @param optFlavor European or American
- * @return The delta call or delta put, which depends on the type of option provided
+ * @return The delta call or delta put approximation, which depends on the type of option provided
  */
 template<typename Input_, typename RNG_, typename Output_>
 double Pricer<Input_, RNG_, Output_>::delta(double h, const std::vector<double> &option,
@@ -163,11 +192,11 @@ double Pricer<Input_, RNG_, Output_>::delta(double h, const std::vector<double> 
  * @tparam Input_ Provides a console interface to dynamically get option data
  * @tparam RNG_ Provides access to the Boost Random library to generate Gaussian variates
  * @tparam Output_ Output class that sends option data to a file specified by the user
- * @param h
+ * @param h Step size for FDM method
  * @param optType Call or Put
  * @param optFlavor European or American
  * @param matrix A matrix option parameters where each row has T, sig, r, S, K, b
- * @return
+ * @return The delta call or delta put approximation, which depends on the type of option provided
  */
 template<typename Input_, typename RNG_, typename Output_>
 std::vector<std::vector<double>>

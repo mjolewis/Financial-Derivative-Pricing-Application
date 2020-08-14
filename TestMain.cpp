@@ -24,6 +24,8 @@ int main() {
     // Group A Greeks Tests;
     TestGroupAGreeks groupAGreeks;
     groupAGreeks.PartOne();
+    groupAGreeks.PartTwoAndThree();
+    groupAGreeks.PartFour();
 
     // Test Builder Pattern, which allows the user to input option data
 //    TestBuilder builderTest;

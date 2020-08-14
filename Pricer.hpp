@@ -44,6 +44,8 @@ public:
     double vega(double T, double sig, double r, double S, double K, double b) const;
 
     // Finite difference methods for option sensitivities (Greeks)
+    double delta(double h, double T, double sig, double r, double S, double K, double b,
+            const std::string& optType = "Call", const std::string& optFlavor = "European") const;
     double delta(double h, const std::vector<double>& option, const std::string &optType = "Call",
             const std::string& optFlavor = "European") const;
     std::vector<std::vector<double>> delta(double h, const std::vector<std::vector<double>>& matrix,
