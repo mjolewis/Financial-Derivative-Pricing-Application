@@ -194,7 +194,7 @@ public:
 
         // Iterate through the matrix and print the option prices and sensitivities
         std::cout << "\n\nBatch 1:"
-                  << "\nOption prices as a function of monotonically increasing spot price:\n"
+                  << "\nExact prices as a function of monotonically increasing spot price:\n"
                   << std::setw(15) << "Spot Price"
                   << std::setw(15) << "Call Price"
                   << std::setw(15) << "Put Price\n"
@@ -216,7 +216,7 @@ public:
 
         // Iterate through the matrix and print the option prices and sensitivities
         std::cout << "\n\nBatch 2:"
-                  << "\nOption prices as a function of monotonically increasing spot price:\n"
+                  << "\nExact prices as a function of monotonically increasing spot price:\n"
                   << std::setw(15) << "Spot Price"
                   << std::setw(15) << "Call Price"
                   << std::setw(15) << "Put Price\n"
@@ -238,7 +238,7 @@ public:
 
         // Iterate through the matrix and print the option prices and sensitivities
         std::cout << "\n\nBatch 3:"
-                  << "\nOption prices as a function of monotonically increasing spot price:\n"
+                  << "\nExact prices as a function of monotonically increasing spot price:\n"
                   << std::setw(15) << "Spot Price"
                   << std::setw(15) << "Call Price"
                   << std::setw(15) << "Put Price\n"
@@ -260,7 +260,7 @@ public:
 
         // Iterate through the matrix and print the option prices and sensitivities
         std::cout << "\n\nBatch 4:"
-                  << "\nOption prices as a function of monotonically increasing spot price:\n"
+                  << "\nExact prices as a function of monotonically increasing spot price:\n"
                   << std::setw(15) << "Spot Price"
                   << std::setw(15) << "Call Price"
                   << std::setw(15) << "Put Price\n"

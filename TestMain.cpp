@@ -8,6 +8,7 @@
 
 #include "TestGroupAPricing.hpp"
 #include "TestGroupAGreeks.hpp"
+#include "TestGroupB.hpp"
 #include "TestBuilder.hpp"
 #include "TestExtras.hpp"
 
@@ -27,11 +28,16 @@ int main() {
     groupAGreeks.PartTwoAndThree();
     groupAGreeks.PartFour();
 
+    // Group B Pricing Tests
+    TestGroupB groupB;
+    groupB.PartB();
+    groupB.PartCAndD();
+
     // Test Builder Pattern, which allows the user to input option data
 //    TestBuilder builderTest;
-//    builderTest.PartOne();
+//    builderTest.PartB();
 
     // Test extras
 //    TestExtras extrasTest;
-//    extrasTest.PartOne();
+//    extrasTest.PartB();
 }
