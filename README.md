@@ -22,8 +22,11 @@ Note that there are multiple ways to get Boost.
 # System Analysis
 The system was decomposed into smaller subsystems with each subsystem having a well-defined responsibility. The concept mapping below highlights the subsystems used and their associated relationship and data flow. At a macro level, the Pricer acts as the kernal and delegates responsibility whenever it's logical to do so. 
 
-Builder Pattern:
+Console Interface:
 ![Data Flow Diagram](https://user-images.githubusercontent.com/12025538/90526012-e0dc2580-e13d-11ea-925a-bf68375e10a6.png)
+
+Direct Access
+![Data Flow Diagram Automated](https://user-images.githubusercontent.com/12025538/90526733-bf2f6e00-e13e-11ea-8730-c9b7c7a88c84.png)
 
 # System Design
 
