@@ -10,7 +10,6 @@
 #include <iostream>
 #include <iomanip>
 
-#include "Input.hpp"
 #include "Matrix.hpp"
 #include "Mesher.hpp"
 #include "Option.hpp"
@@ -25,9 +24,9 @@ private:
     Option option1Call = Option(std::numeric_limits<double>::infinity(), 0.1, 0.1, 110, 100, 0.02, "Call", "American", "GS");
     Option option1Put = Option(std::numeric_limits<double>::infinity(), 0.1, 0.1, 110, 100, 0.02, "Put", "American", "GS");
 
-    Pricer<Input, RNG, Output> pricer;                           // Pricing engine
-    Mesher mesher;                                               // Meshing engine
-    Matrix matrix;                                               // Matrix engine
+    Pricer<Mesher, Matrix, RNG, Output> pricer;                 // Pricing engine
+    Mesher mesher;                                              // Meshing engine
+    Matrix matrix;                                              // Matrix engine
 public:
     TestGroupB() {};
     virtual ~TestGroupB() {};

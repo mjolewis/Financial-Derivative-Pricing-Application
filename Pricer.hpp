@@ -10,11 +10,13 @@
 #include <vector>
 #include <boost/tuple/tuple_io.hpp>
 
-#include "Input.hpp"
+#include "Mesher.hpp"
+#include "Matrix.hpp"
+#include "Output.hpp"
 #include "Option.hpp"
 
-template<typename Input_, typename RNG_, typename Output_>
-class Pricer : public Input_, public RNG_, public Output_ {
+template<typename Mesher_, typename Matrix_, typename RNG_, typename Output_>
+class Pricer : public Mesher_, public Matrix_, public RNG_, public Output_ {
 
 private:
 
@@ -29,7 +31,6 @@ public:
     Pricer& operator=(const Pricer& source);
 
     // Core Pricing engines
-    double price();
     std::vector<std::vector<double>>
     price(const std::vector<std::vector<double> >& matrix,
             const std::string& optType = "Call", const std::string& optFlavor = "European") const;

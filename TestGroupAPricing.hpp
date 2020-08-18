@@ -11,7 +11,6 @@
 #include <iostream>
 #include <iomanip>
 
-#include "Input.hpp"
 #include "Matrix.hpp"
 #include "Mesher.hpp"
 #include "Option.hpp"
@@ -33,9 +32,9 @@ private:
     Option option4Call = Option(30, .3, .08, 100, 100, 0.08, "Call", "European", "JPM");
     Option option4Put = Option(30, .3, .08, 100, 100, 0.08, "Put", "European", "JPM");
 
-    Pricer<Input, RNG, Output> pricer;                           // Pricing engine
-    Mesher mesher;                                               // Meshing engine
-    Matrix matrix;                                               // Matrix engine
+    Pricer<Mesher, Matrix, RNG, Output> pricer;                 // Pricing engine
+    Mesher mesher;                                              // Meshing engine
+    Matrix matrix;                                              // Matrix engine
 
 public:
     TestGroupAPricing() {};
