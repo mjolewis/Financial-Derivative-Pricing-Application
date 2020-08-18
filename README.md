@@ -26,8 +26,11 @@ Console Interface:
 ![Data Flow Diagram](https://user-images.githubusercontent.com/12025538/90526012-e0dc2580-e13d-11ea-925a-bf68375e10a6.png)
 
 Direct Access
-![Data Flow Diagram Automated](https://user-images.githubusercontent.com/12025538/90526733-bf2f6e00-e13e-11ea-8730-c9b7c7a88c84.png)
+![Data Flow Diagram Automated (1)](https://user-images.githubusercontent.com/12025538/90527117-2e0cc700-e13f-11ea-87e5-0ae9e9f88618.png)
 
 # System Design
 
 # Output
+The output data is sent directly to Microsoft Excel by default and, therefore, you must have Excel installed on your system. To do this, you need to update the mso.dll, vbe6ext.olb, and EXCEL.exe file paths to point to wherever these files are installed on your system. 
+
+The Output folder included in this project provides sample output data that you can use as a reference.
