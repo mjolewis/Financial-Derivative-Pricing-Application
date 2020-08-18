@@ -19,7 +19,10 @@ public:
     Builder& operator=(const Builder& builder);
 
     // Core functionality
-    void Build();
+    void BuildConsoleInterface();
+    void BuildGroupAPricing();
+    void BuildGroupAGreeks();
+    void BuildGroupB();
 };
 
 #ifndef BUILDER_CPP

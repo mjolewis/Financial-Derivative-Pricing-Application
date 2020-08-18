@@ -10,6 +10,9 @@
 #include <iostream>
 
 #include "Builder.hpp"
+#include "TestGroupAPricing.hpp"
+#include "TestGroupAGreeks.hpp"
+#include "TestGroupB.hpp"
 
 /**
  * Initialize a new Builder
@@ -69,19 +72,70 @@ Builder<Input_, RNG_, Output_, Pricer_> &Builder<Input_, RNG_, Output_, Pricer_>
 }
 
 /**
- * Build and assemble the Black-Scholes pricing engine
+ * Build and assemble the Black-Scholes pricing engine using the console Interface
  * @tparam Input_ Provides a console interface to dynamically get option data
  * @tparam RNG_ Provides access to the Boost Random library to generate Gaussian variates
  * @tparam Output_ Output class that sends option data to a file specified by the user
  * @tparam Pricer_ Black-Scholes Option pricing engine
  */
 template<typename Input_, typename RNG_, typename Output_, template<typename, typename, typename> class Pricer_>
-void Builder<Input_, RNG_, Output_, Pricer_>::Build() {
+void Builder<Input_, RNG_, Output_, Pricer_>::BuildConsoleInterface() {
 
     // Starts the pricing engine and gets option data from the user
     double optionPrice = Pricer_<Input_, RNG_, Output_>::price();
 
     std::cout << "Option Price: " << optionPrice << std::endl;
+}
+
+/**
+ * Build and assemble the Black-Scholes pricing engine for Test Group A
+ * @tparam Input_ Provides a console interface to dynamically get option data
+ * @tparam RNG_ Provides access to the Boost Random library to generate Gaussian variates
+ * @tparam Output_ Output class that sends option data to a file specified by the user
+ * @tparam Pricer_ Black-Scholes Option pricing engine
+ */
+template<typename Input_, typename RNG_, typename Output_, template<typename, typename, typename> class Pricer_>
+void Builder<Input_, RNG_, Output_, Pricer_>::BuildGroupAPricing() {
+
+    // Start Group A Tests
+    TestGroupAPricing groupAPricing;
+    groupAPricing.PartOne();
+    groupAPricing.PartTwo();
+    groupAPricing.PartThree();
+    groupAPricing.PartFour();
+}
+
+/**
+ * Build and assemble the Black-Scholes pricing engine for Test Group A
+ * @tparam Input_ Provides a console interface to dynamically get option data
+ * @tparam RNG_ Provides access to the Boost Random library to generate Gaussian variates
+ * @tparam Output_ Output class that sends option data to a file specified by the user
+ * @tparam Pricer_ Black-Scholes Option pricing engine
+ */
+template<typename Input_, typename RNG_, typename Output_, template<typename, typename, typename> class Pricer_>
+void Builder<Input_, RNG_, Output_, Pricer_>::BuildGroupAGreeks() {
+
+    // Start Group A Tests
+    TestGroupAGreeks groupAGreeks;
+    groupAGreeks.PartOne();
+    groupAGreeks.PartTwoAndThree();
+    groupAGreeks.PartFour();
+}
+
+/**
+ * Build and assemble the Black-Scholes pricing engine for Test Group B
+ * @tparam Input_ Provides a console interface to dynamically get option data
+ * @tparam RNG_ Provides access to the Boost Random library to generate Gaussian variates
+ * @tparam Output_ Output class that sends option data to a file specified by the user
+ * @tparam Pricer_ Black-Scholes Option pricing engine
+ */
+template<typename Input_, typename RNG_, typename Output_, template<typename, typename, typename> class Pricer_>
+void Builder<Input_, RNG_, Output_, Pricer_>::BuildGroupB() {
+
+    // Start Group B Tests
+    TestGroupB groupB;
+    groupB.PartB();
+    groupB.PartCAndD();
 }
 
 #endif // Builder_CPP
