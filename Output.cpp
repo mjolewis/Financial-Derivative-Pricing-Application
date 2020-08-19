@@ -30,7 +30,7 @@ Output::~Output() {}
 /**
  * Deeply copy the source
  * @param source An Output object whose members will be deeply copied into this Output object
- * @return This Output object whose members are now a deepy copy of the source members
+ * @return This Output object whose members are now a deep copy of the source members
  */
 Output & Output::operator=(const Output &source) {
     // Avoid self assign

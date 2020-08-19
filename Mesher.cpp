@@ -1,5 +1,5 @@
 /**********************************************************************************************************************
-* A simple mesher on a 1D domain. We divide an interval into J+1 mesh points, J-1 of which are internal mesh points.
+* A simple mesher on start 1D domain.
  *
  * Created by Michael Lewis on 8/5/20.
  *********************************************************************************************************************/
@@ -7,25 +7,26 @@
 #include "Mesher.hpp"
 
 /**
- * Initialize a new Mesher
+ * Initialize start new Mesher
  * @throws OutOfMemoryError Indicates insufficient memory for this new Mesher
  */
-Mesher::Mesher() : a(0), b(1) {}
+Mesher::Mesher() : start(0), stop(1), step(0.5) {}
 
 /**
- * Initialize a new Mesher with the domain of integration
- * @param A Start point for the domain of integration
- * @param B End point for the domain of integration
+ * Initialize start new Mesher with the domain of integration
+ * @param start_ Start point for the domain of integration
+ * @param stop_ End point for the domain of integration
+ * @param step_ The distance between each point in the mesh
  * @throws OutOfMemoryError Indicates insufficient memory for this new Mesher
  */
-Mesher::Mesher(double A, double B) : a(A), b(B) {}
+Mesher::Mesher(double start_, double stop_, double step_) : start(start_), stop(stop_), step(step_) {}
 
 /**
- * Initialize a deep copy of the source Mesher
+ * Initialize start deep copy of the source Mesher
  * @param mesher The Mesher that will be deeply copied
  * @throws OutOfMemoryError Indicates insufficient memory for this new Mesher
  */
-Mesher::Mesher(const Mesher &mesher) : a(mesher.a), b(mesher.b) {}
+Mesher::Mesher(const Mesher &mesher) : start(mesher.start), stop(mesher.stop), step(mesher.step) {}
 
 /**
  * Destroy this Mesher
@@ -33,7 +34,7 @@ Mesher::Mesher(const Mesher &mesher) : a(mesher.a), b(mesher.b) {}
 Mesher::~Mesher() {}
 
 /**
- * Create a deep copy of the source Mesher
+ * Create start deep copy of the source Mesher
  * @param mesher The Mesher that will be deeply copied
  * @return This Mesher whose members have been reassigned to the values provided by the source
  */
@@ -41,76 +42,52 @@ Mesher & Mesher::operator=(const Mesher &mesher) {
     // Avoid self assign
     if (this == &mesher) { return *this; }
 
-    a = mesher.a;
-    b = mesher.b;
+    start = mesher.start;
+    stop = mesher.stop;
+    step = mesher.step;
 
     return *this;
 }
 
 /**
- * Create a vector of mesh points, which can be used when simulating option prices
- * @param J The factor used to determine the distance between mesh points
+ * Create start_ vector of mesh points
  * @return A {@link std::vector} containing mesh points
  */
-std::vector<double> Mesher::xarr(int J) const {
-    double h = (b - a) / double (J);
-
-    int size = J;
-    int start = 1;
-
-    std::vector<double> result(size, start);
-    result[0] = a;
-    result[J - 1] = b;
-
-    for (unsigned int j = 1; j < size; ++j) {
-        result[j] = result[j - 1] + h;
-    }
-
-    return result;
-}
-
-/**
- * Create a vector of mesh points, which can be used when simulating option prices
- * @param a_ Domain of integration minimum value
- * @param b_ Domain of integration maximum value
- * @param J The factor used to determine the distance between mesh points
- * @return A {@link std::vector} containing mesh points
- */
-std::vector<double> Mesher::xarr(double a_, double b_, int J) {
-    double h = (b_ - a_) / double (J);
-
-    int size = J;
-    int start = 1;
-
-    std::vector<double> result(size, start);
-    result[0] = a_;
-    result[J - 1] = b_;
-
-    for (unsigned int j = 1; j < size; ++j) {
-        result[j] = result[j - 1] + h;
-    }
-
-    return result;
-}
-
-/**
- * Create a vector of mesh points
- * @param start Initial value of the property
- * @param stop Ending value for the property
- * @param step The distance between mesh points
- * @return A {@link std::vector} containing mesh points
- */
-std::vector<double> Mesher::xarr(double start, double stop, double step) {
+std::vector<double> Mesher::xarr() {
 
     double steps = (stop - start) / step;
 
-    // Create the container and add the start point
+    // Create the container and add the start_ point
     std::vector<double> result;
     result.push_back(start);
 
     double curr = start;
     for (int i = 0; i < steps; ++i) {
         curr += step;
+        result.push_back(curr);
+    }
+
+    return result;
+}
+
+/**
+ * Create start_ vector of mesh points
+ * @param start_ Initial value of the property
+ * @param stop_ Ending value for the property
+ * @param step_ The distance between mesh points
+ * @return A {@link std::vector} containing mesh points
+ */
+std::vector<double> Mesher::xarr(double start_, double stop_, double step_) {
+
+    double steps = (stop_ - start_) / step_;
+
+    // Create the container and add the start_ point
+    std::vector<double> result;
+    result.push_back(start_);
+
+    double curr = start_;
+    for (int i = 0; i < steps; ++i) {
+        curr += step_;
         result.push_back(curr);
     }
 

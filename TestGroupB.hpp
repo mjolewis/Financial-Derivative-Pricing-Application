@@ -69,7 +69,7 @@ public:
         std::cout << "\n*******************************************************************" << std::endl;
 
         std::vector<double> mesh = mesher.xarr(option1Call.spot(), option1Call.spot() + 5, 0.5);
-        std::vector<std::vector<double>> options = matrix.getStockOptionsMatrix(mesh, option1Call, "S");
+        std::vector<std::vector<double>> options = matrix.americanMatrix(mesh, option1Call, "S");
         std::vector<std::vector<double>> callPrices = pricer.price(options, "Call", "American");
         std::vector<std::vector<double>> putPrices = pricer.price(options, "Put", "American");
 
@@ -77,6 +77,48 @@ public:
         std::cout << "\n\nBatch 1:"
                   << "\nExact prices as a function of monotonically increasing spot price:\n"
                   << std::setw(15) << "Spot Price"
+                  << std::setw(15) << "Call Price"
+                  << std::setw(15) << "Put Price\n"
+                  << std::setw(15) << "-----------"
+                  << std::setw(15) << "-----------"
+                  << std::setw(15) << "-----------\n";
+        for (int i = 0; i < options.size(); ++i) {
+            std::cout << std::setprecision(6)
+                      << std::setw(15) << mesh[i]
+                      << std::setw(15) << callPrices[i][0]
+                      << std::setw(15) << putPrices[i][0] << "\n";
+        }
+
+        mesh = mesher.xarr(option1Call.vol(), option1Call.vol() + 1, 0.1);
+        options = matrix.americanMatrix(mesh, option1Call, "sig");
+        callPrices = pricer.price(options, "Call", "American");
+        putPrices = pricer.price(options, "Put", "American");
+
+        // Iterate through the matrix and print the option prices and sensitivities
+        std::cout << "\n\nBatch 1:"
+                  << "\nExact prices as a function of monotonically increasing volatility:\n"
+                  << std::setw(15) << "Volatility"
+                  << std::setw(15) << "Call Price"
+                  << std::setw(15) << "Put Price\n"
+                  << std::setw(15) << "-----------"
+                  << std::setw(15) << "-----------"
+                  << std::setw(15) << "-----------\n";
+        for (int i = 0; i < options.size(); ++i) {
+            std::cout << std::setprecision(6)
+                      << std::setw(15) << mesh[i]
+                      << std::setw(15) << callPrices[i][0]
+                      << std::setw(15) << putPrices[i][0] << "\n";
+        }
+
+        mesh = mesher.xarr(option1Call.strike(), option1Call.strike() + 5, 0.5);
+        options = matrix.americanMatrix(mesh, option1Call, "K");
+        callPrices = pricer.price(options, "Call", "American");
+        putPrices = pricer.price(options, "Put", "American");
+
+        // Iterate through the matrix and print the option prices and sensitivities
+        std::cout << "\n\nBatch 1:"
+                  << "\nExact prices as a function of monotonically increasing strike price:\n"
+                  << std::setw(15) << "Strike Price"
                   << std::setw(15) << "Call Price"
                   << std::setw(15) << "Put Price\n"
                   << std::setw(15) << "-----------"

@@ -71,7 +71,7 @@ public:
         std::cout << "\n*******************************************************************" << std::endl;
 
         std::vector<double> mesh = mesher.xarr(option1Call.spot(), option1Call.spot() + 5, 0.5);
-        std::vector<std::vector<double>> options = matrix.getFuturesOptionsMatrix(mesh, option1Call, "S");
+        std::vector<std::vector<double>> options = matrix.futuresMatrix(mesh, option1Call, "S");
         std::vector<std::vector<double>> callPrices = pricer.delta(options, "Call");
         std::vector<std::vector<double>> putPrices = pricer.delta(options, "Put");
 
@@ -91,7 +91,7 @@ public:
         }
 
         mesh = mesher.xarr(option1Call.spot(), option1Call.spot() + 5, 0.5);
-        options = matrix.getFuturesOptionsMatrix(mesh, option1Call, "S");
+        options = matrix.futuresMatrix(mesh, option1Call, "S");
         callPrices = pricer.gamma(options);
 
         // Iterate through the matrix and print the option prices and sensitivities
@@ -107,7 +107,7 @@ public:
         }
 
         mesh = mesher.xarr(option1Call.spot(), option1Call.spot() + 5, 0.5);
-        options = matrix.getFuturesOptionsMatrix(mesh, option1Call, "S");
+        options = matrix.futuresMatrix(mesh, option1Call, "S");
         callPrices = pricer.delta(options, "Call");
         putPrices = pricer.delta(options, "Put");
 
@@ -127,7 +127,7 @@ public:
 
         // FDM for monotonically increasing Spot
         std::vector<double> mesh = mesher.xarr(option1Call.spot(), option1Call.spot() + 5, 0.5);
-        std::vector<std::vector<double>> options = matrix.getFuturesOptionsMatrix(mesh, option1Call, "S");
+        std::vector<std::vector<double>> options = matrix.futuresMatrix(mesh, option1Call, "S");
         std::vector<std::vector<double>> callPrices = pricer.delta(.1, options, "Call", "European");
         std::vector<std::vector<double>> putPrices = pricer.delta(.1, options, "Put", "European");
 
@@ -148,7 +148,7 @@ public:
         }
 
         mesh = mesher.xarr(option1Call.spot(), option1Call.spot() + 5, 0.5);
-        options = matrix.getFuturesOptionsMatrix(mesh, option1Call, "S");
+        options = matrix.futuresMatrix(mesh, option1Call, "S");
         callPrices = pricer.gamma(.1, options);
 
         // Iterate through the matrix and print the option prices and sensitivities
@@ -166,7 +166,7 @@ public:
 
         // FDM for monotonically increasing Spot
         mesh = mesher.xarr(option1Call.spot(), option1Call.spot() + 5, 0.5);
-        options = matrix.getFuturesOptionsMatrix(mesh, option1Call, "S");
+        options = matrix.futuresMatrix(mesh, option1Call, "S");
         callPrices = pricer.delta(2, options, "Call", "European");
         putPrices = pricer.delta(2, options, "Put", "European");
 
@@ -187,7 +187,7 @@ public:
         }
 
         mesh = mesher.xarr(option1Call.spot(), option1Call.spot() + 5, 0.5);
-        options = matrix.getFuturesOptionsMatrix(mesh, option1Call, "S");
+        options = matrix.futuresMatrix(mesh, option1Call, "S");
         callPrices = pricer.gamma(2, options);
 
         // Iterate through the matrix and print the option prices and sensitivities
