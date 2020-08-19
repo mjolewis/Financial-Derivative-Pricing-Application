@@ -23,10 +23,13 @@ public:
 
     // Generate matrices
     std::vector<std::vector<double>>
-    getStockOptionsMatrix(const std::vector<double>& mesh, const Option& option, const std::string& property) const;
+    americanMatrix(const std::vector<double>& mesh, const Option& option, const std::string& property) const;
 
     std::vector<std::vector<double>>
-    getFuturesOptionsMatrix(const std::vector<double>& mesh, const Option& option, const std::string& property) const;
+    europeanMatrix(const std::vector<double>& mesh, const Option& option, const std::string& property) const;
+
+    std::vector<std::vector<double>>
+    futuresMatrix(const std::vector<double>& mesh, const Option& option, const std::string& property) const;
 
 };
 

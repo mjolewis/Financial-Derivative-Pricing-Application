@@ -1,5 +1,5 @@
 /**********************************************************************************************************************
-* A simple mesher on a 1D domain. We divide an interval into J+1 mesh points, J-1 of which are internal mesh points.
+* A simple mesher on start 1D domain.
  *
  * Created by Michael Lewis on 8/5/20.
  *********************************************************************************************************************/
@@ -13,19 +13,18 @@
 
 class Mesher {
 private:
-    double a, b;                                                     // Interval
+    double start, stop, step;                                        // Interval and step size
 public:
     Mesher();
-    Mesher(double A, double B);                                      // Domain of integration
+    Mesher(double start_, double stop_, double step_);               // Domain of integration
     Mesher(const Mesher& mesher);
     virtual ~Mesher();
 
     Mesher& operator=(const Mesher& mesher);
 
     // Vectors of mesh points
-    std::vector<double> xarr(int J) const;
-    std::vector<double> xarr(double a_, double b_, int J);
-    std::vector<double> xarr(double start, double stop, double step);
+    std::vector<double> xarr();
+    std::vector<double> xarr(double start_, double stop_, double step_);
 };
 
 #endif // MESHER_HPP

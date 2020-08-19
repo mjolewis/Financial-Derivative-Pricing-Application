@@ -138,7 +138,7 @@ Pricer<Mesher_, Matrix_, RNG_, Output_>::delta(const std::vector<std::vector<dou
  * @tparam Mesher_ Provides a console interface to dynamically get option data
  * @tparam RNG_ Provides access to the Boost Random library to generate Gaussian variates
  * @tparam Output_ Output class that sends option data to a file specified by the user
- * @param h Step size for FDM method
+ * @param h Difference parameter
  * @param T Expiry
  * @param sig Volatility
  * @param r Risk-free rate
@@ -167,7 +167,7 @@ double Pricer<Mesher_, Matrix_, RNG_, Output_>::delta(double h, double T, double
  * @tparam Mesher_ Provides a console interface to dynamically get option data
  * @tparam RNG_ Provides access to the Boost Random library to generate Gaussian variates
  * @tparam Output_ Output class that sends option data to a file specified by the user
- * @param h Step size for FDM method
+ * @param h Difference parameter
  * @param optType An option with T, sig, r, S, K, b, optType, and optFlavor
  * @param optFlavor European or American
  * @return The delta call or delta put approximation, which depends on the type of option provided
@@ -194,7 +194,7 @@ double Pricer<Mesher_, Matrix_, RNG_, Output_>::delta(double h, const std::vecto
  * @tparam Mesher_ Provides a console interface to dynamically get option data
  * @tparam RNG_ Provides access to the Boost Random library to generate Gaussian variates
  * @tparam Output_ Output class that sends option data to a file specified by the user
- * @param h Step size for FDM method
+ * @param h Difference parameter
  * @param optType Call or Put
  * @param optFlavor European or American
  * @param matrix A matrix option parameters where each row has T, sig, r, S, K, b
