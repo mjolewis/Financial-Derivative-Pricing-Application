@@ -30,31 +30,36 @@ public:
     // Operator overloading
     Pricer& operator=(const Pricer& source);
 
-    // Core Pricing engines
-    std::vector<std::vector<double>>
-    price(const std::vector<std::vector<double> >& matrix,
-            const std::string& optType = "Call", const std::string& optFlavor = "European") const;
-    double price(double T, double sig, double r, double S, double K, double b,
-            const std::string& optType = "Call", const std::string& optFlavor = "European") const;
-    void price(double h, double start, double stop, double step, const Option& option,
-            const std::string& property, const bool isFuture) const;
+    // American Option Pricing Formulae
+    std::vector<std::vector<double>> priceAmerican(const std::vector<std::vector<double> >& matrix) const;
+    std::vector<std::vector<double>> priceAmerican(double T, double sig, double r, double S, double K, double b) const;
+    void priceAmerican(double h, double start, double stop, double step, const Option& option, const std::string& property) const;
+
+    // European Option Pricing Formulae
+    std::vector<std::vector<double>> priceEuropean(const std::vector<std::vector<double> >& matrix) const;
+    std::vector<std::vector<double>> priceEuropean(double T, double sig, double r, double S, double K, double b) const;
+    void priceEuropean(double h, double start, double stop, double step, const Option& option, const std::string& property) const;
 
     // Exact solutions for option sensitivities (Greeks)
-    double delta(double T, double sig, double r, double S, double K, double b, const std::string& optType = "Call") const;
-    std::vector<std::vector<double>> delta(const std::vector<std::vector<double>>& matrix, const std::string& optType = "Call") const;
+    std::vector<double> delta(double T, double sig, double r, double S, double K, double b) const;
+    std::vector<std::vector<double>> delta(const std::vector<std::vector<double>>& matrix) const;
     double gamma(double T, double sig, double r, double S, double K, double b) const;
     std::vector<std::vector<double>> gamma(const std::vector<std::vector<double>>& matrix) const;
     double vega(double T, double sig, double r, double S, double K, double b) const;
 
-    // Finite difference methods for option sensitivities (Greeks)
-    double delta(double h, double T, double sig, double r, double S, double K, double b,
-            const std::string& optType = "Call", const std::string& optFlavor = "European") const;
-    double delta(double h, const std::vector<double>& option, const std::string &optType = "Call",
-            const std::string& optFlavor = "European") const;
-    std::vector<std::vector<double>> delta(double h, const std::vector<std::vector<double>>& matrix,
-            const std::string &optType = "Call", const std::string& optFlavor = "European") const;
-    double gamma(double h, const std::vector<double>& option) const;
-    std::vector<std::vector<double>> gamma(double h, const std::vector<std::vector<double>>& matrix) const;
+    // American Greeks using Finite difference methods
+    std::vector<double>deltaAmerican(double h, double T, double sig, double r, double S, double K, double b) const;
+    std::vector<double> deltaAmerican(double h, const std::vector<double>& option) const;
+    std::vector<std::vector<double>> deltaAmerican(double h, const std::vector<std::vector<double>>& matrix) const;
+    double gammaAmerican(double h, const std::vector<double>& option) const;
+    std::vector<std::vector<double>>gammaAmerican(double h, const std::vector<std::vector<double>>& matrix) const;
+
+    // European Greeks using Finite difference methods
+    std::vector<double>deltaEuropean(double h, double T, double sig, double r, double S, double K, double b) const;
+    std::vector<double> deltaEuropean(double h, const std::vector<double>& option) const;
+    std::vector<std::vector<double>> deltaEuropean(double h, const std::vector<std::vector<double>>& matrix) const;
+    double gammaEuropean(double h, const std::vector<double>& option) const;
+    std::vector<std::vector<double>>gammaEuropean(double h, const std::vector<std::vector<double>>& matrix) const;
 };
 
 #ifndef PRICER_CPP

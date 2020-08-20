@@ -21,7 +21,7 @@ class TestOutFile {
 private:
 
     // Perpetual price is the time-homogenous price and is the same as the normal price when the expiry price T tends to infinity
-    Option option = Option(std::numeric_limits<double>::infinity(), 0.1, 0.1, 110, 100, 0.02, "Call", "American", "GS");
+    Option option = Option(std::numeric_limits<double>::infinity(), 0.1, 0.1, 110, 100, 0.02);
 
     Pricer<Mesher, Matrix, RNG, Output> pricer;                 // Pricing engine
     Mesher mesher;                                              // Meshing engine
@@ -40,7 +40,8 @@ public:
         std::cout << "Authored By: Michael Lewis\n";
         std::cout << "\n*******************************************************************" << std::endl;
 
-        pricer.price(0.1, option.spot(), option.spot() + 10, 0.5, option, "S", false);
+        pricer.priceEuropean(0.1, option.spot(), option.spot() + 10, 0.5, option, "S");
+        //pricer.priceAmerican(0.1, option.spot(), option.spot() + 10, 0.5, option, "S");
 
         std::cout << "\n\n*******************************************************************\n\n";
         std::cout << "Completed Group B Pricing Part B\n";

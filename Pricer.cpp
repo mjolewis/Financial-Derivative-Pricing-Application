@@ -112,19 +112,21 @@ Pricer<Mesher_, Matrix_, RNG_, Output_> &Pricer<Mesher_, Matrix_, RNG_, Output_>
  * @param S Spot price
  * @param K Strike price
  * @param b Cost of carry
- * @param optType Call or Put
- * @return Call delta if optType is a Call. Otherwise Put delta
+ * @return A vector of Call and Put Deltas
  */
 template<typename Mesher_, typename Matrix_, typename RNG_, typename Output_>
-double Pricer<Mesher_, Matrix_, RNG_, Output_>::delta(double T, double sig, double r, double S,
-                                             double K, double b, const std::string &optType) const {
+std::vector<double> Pricer<Mesher_, Matrix_, RNG_, Output_>::delta(double T, double sig, double r, double S,
+                                             double K, double b) const {
+
+    std::vector<double> deltas;
 
     double d1 = (log(S / K) + (b + (sig * sig) * 0.5) * T) / (sig * sqrt(T));
 
-    if (optType == "Put" || optType == "put") { return exp((b - r) * T) * (RNG_::CDF(d1) - 1.0); }
+    // Add call delta then put delta
+    deltas.push_back({exp((b - r) * T) * RNG_::CDF(d1)});                 // Call delta
+    deltas.push_back({exp((b - r) * T) * (RNG_::CDF(d1) - 1.0)});         // Put delta
 
-    // optType is a call
-    return exp((b - r) * T) * RNG_::CDF(d1);
+    return deltas;
 }
 
 /**
@@ -137,18 +139,16 @@ double Pricer<Mesher_, Matrix_, RNG_, Output_>::delta(double T, double sig, doub
  * @tparam RNG_ Provides access to the Boost Random library to generate Gaussian variates
  * @tparam Output_ Output class that sends option data to a file specified by the user
  * @param matrix A matrix of option parameters where each row has T, sig, r, S, K, b
- * @param optType_ Call or Put
- * @return Call delta matrix if optType is a Call. Otherwise Put delta
+ * @return A matrix of Call and Put Deltas
  */
 template<typename Mesher_, typename Matrix_, typename RNG_, typename Output_>
 std::vector<std::vector<double>>
-Pricer<Mesher_, Matrix_, RNG_, Output_>::delta(const std::vector<std::vector<double> > &matrix, const std::string &optType) const {
+Pricer<Mesher_, Matrix_, RNG_, Output_>::delta(const std::vector<std::vector<double> > &matrix) const {
 
-    std::vector<std::vector<double> > deltas;              // A container of delta approximations
+    std::vector<std::vector<double> > deltas;
 
-    // Calculate exact deltas and store in the output matrix
     for (const auto &i : matrix) {
-        deltas.push_back({delta(i[0], i[1], i[2], i[3], i[4], i[5], optType)});
+        deltas.push_back(delta(i[0], i[1], i[2], i[3], i[4], i[5]));      // Each row contains Call and Put Deltas
     }
     return deltas;
 }
@@ -169,20 +169,24 @@ Pricer<Mesher_, Matrix_, RNG_, Output_>::delta(const std::vector<std::vector<dou
  * @param S Spot price
  * @param K Strike price
  * @param b Cost of carry
- * @param optType Call or Put
- * @param optFlavor European or American
  * @return The delta call or delta put approximation, which depends on the type of option provided
  */
 template<typename Mesher_, typename Matrix_, typename RNG_, typename Output_>
-double Pricer<Mesher_, Matrix_, RNG_, Output_>::delta(double h, double T, double sig, double r, double S, double K, double b,
-                                             const std::string &optType, const std::string &optFlavor) const {
+std::vector<double> Pricer<Mesher_, Matrix_, RNG_, Output_>::deltaAmerican(double h, double T, double sig, double r, double S,
+                                                                   double K, double b) const {
+
+    // Call and Put Deltas
+    std::vector<double> deltas;
 
     // Placeholders for final numerator values
-    double LHS = price(T, sig, r, S + h, K, b, optType, optFlavor);
-    double RHS = price(T, sig, r, S - h, K, b, optType, optFlavor);
+    std::vector<double> LHS = priceAmerican(T, sig, r, S + h, K, b);
+    std::vector<double> RHS = priceAmerican(T, sig, r, S - h, K, b);
 
     // Divided differences method
-    return (LHS - RHS) / (2 * h);
+    deltas.push_back((LHS[0] - RHS[0]) / (2 * h));              // Call prices
+    deltas.push_back((LHS[1] - RHS[1]) / (2 * h));              // Put prices
+
+    return deltas;
 }
 
 /**
@@ -195,24 +199,28 @@ double Pricer<Mesher_, Matrix_, RNG_, Output_>::delta(double h, double T, double
  * @tparam RNG_ Provides access to the Boost Random library to generate Gaussian variates
  * @tparam Output_ Output class that sends option data to a file specified by the user
  * @param h Difference parameter
- * @param optType An option with T, sig, r, S, K, b, optType, and optFlavor
- * @param optFlavor European or American
- * @return The delta call or delta put approximation, which depends on the type of option provided
+ * @param option An option with T, sig, r, S, K, b
+ * @return A vector of Call and Put Deltas
  */
 template<typename Mesher_, typename Matrix_, typename RNG_, typename Output_>
-double Pricer<Mesher_, Matrix_, RNG_, Output_>::delta(double h, const std::vector<double> &option,
-                                             const std::string &optType, const std::string &optFlavor) const {
+std::vector<double> Pricer<Mesher_, Matrix_, RNG_, Output_>::deltaAmerican(double h, const std::vector<double> &option) const {
+
+    // Call and Put Deltas
+    std::vector<double> deltas;
 
     // Input for divided differences numerator
     double S1 = option[3] + h;
     double S2 = option[3] - h;
 
     // Placeholders for final numerator values
-    double LHS = price(option[0], option[1], option[2], S1, option[4], option[5], optType, optFlavor);
-    double RHS = price(option[0], option[1], option[2], S2, option[4], option[5], optType, optFlavor);
+    std::vector<double> LHS = priceAmerican(option[0], option[1], option[2], S1, option[4], option[5])[0];
+    std::vector<double> RHS = priceAmerican(option[0], option[1], option[2], S2, option[4], option[5])[0];
 
     // Divided differences method
-    return (LHS - RHS) / (2 * h);
+    deltas.push_back((LHS[0] - RHS[0]) / (2 * h));              // Call prices
+    deltas.push_back((LHS[1] - RHS[1]) / (2 * h));              // Put prices
+
+    return deltas;
 }
 
 /**
@@ -225,21 +233,114 @@ double Pricer<Mesher_, Matrix_, RNG_, Output_>::delta(double h, const std::vecto
  * @tparam RNG_ Provides access to the Boost Random library to generate Gaussian variates
  * @tparam Output_ Output class that sends option data to a file specified by the user
  * @param h Difference parameter
- * @param optType Call or Put
- * @param optFlavor European or American
  * @param matrix A matrix option parameters where each row has T, sig, r, S, K, b
  * @return The delta call or delta put approximation, which depends on the type of option provided
  */
 template<typename Mesher_, typename Matrix_, typename RNG_, typename Output_>
 std::vector<std::vector<double>>
-Pricer<Mesher_, Matrix_, RNG_, Output_>::delta(double h, const std::vector<std::vector<double> > &matrix,
-                                      const std::string &optType, const std::string &optFlavor) const {
+Pricer<Mesher_, Matrix_, RNG_, Output_>::deltaAmerican(double h, const std::vector<std::vector<double> > &matrix) const {
 
     // Container for divided differences results
     std::vector<std::vector<double>> deltaPrices;
 
-    for (const auto &i : matrix) {
-        deltaPrices.push_back({delta(h, i, optType, optFlavor)});
+    for (const auto &row : matrix) {
+        deltaPrices.push_back(deltaAmerican(h, row));
+    }
+
+    return deltaPrices;
+}
+
+/**
+ * FDM to approximate option delta using divided differences
+ * @note Delta is the change in the option’s price or premium due to the change in the Underlying futures price
+ * @tparam Mesher_ Monotonically increases the specified option property. The interval is [start, stop] and each point
+ * is separated by the step
+ * @tparam Matrix_ Creates a matrix of option parameters where each new row has a property that has been monotonically
+ * increased by the Mesher
+ * @tparam RNG_ Provides access to the Boost Random library to generate Gaussian variates
+ * @tparam Output_ Output class that sends option data to a file specified by the user
+ * @param h Difference parameter
+ * @param T Expiry
+ * @param sig Volatility
+ * @param r Risk-free rate
+ * @param S Spot price
+ * @param K Strike price
+ * @param b Cost of carry
+ * @return The delta call or delta put approximation, which depends on the type of option provided
+ */
+template<typename Mesher_, typename Matrix_, typename RNG_, typename Output_>
+std::vector<double> Pricer<Mesher_, Matrix_, RNG_, Output_>::deltaEuropean(double h, double T, double sig, double r, double S,
+                                                                   double K, double b) const {
+
+    // Call and Put Deltas
+    std::vector<double> deltas;
+
+    // Placeholders for final numerator values
+    std::vector<double> LHS = priceEuropean(T, sig, r, S + h, K, b);
+    std::vector<double> RHS = priceEuropean(T, sig, r, S - h, K, b);
+
+    // Divided differences method
+    deltas.push_back((LHS[0] - RHS[0]) / (2 * h));              // Call prices
+    deltas.push_back((LHS[1] - RHS[1]) / (2 * h));              // Put prices
+
+    return deltas;
+}
+
+/**
+ * FDM to approximate option delta using divided differences
+ * @note Delta is the change in the option’s price or premium due to the change in the Underlying futures price
+ * @tparam Mesher_ Monotonically increases the specified option property. The interval is [start, stop] and each point
+ * is separated by the step
+ * @tparam Matrix_ Creates a matrix of option parameters where each new row has a property that has been monotonically
+ * increased by the Mesher
+ * @tparam RNG_ Provides access to the Boost Random library to generate Gaussian variates
+ * @tparam Output_ Output class that sends option data to a file specified by the user
+ * @param h Difference parameter
+ * @return A vector of Call and Put Deltas
+ */
+template<typename Mesher_, typename Matrix_, typename RNG_, typename Output_>
+std::vector<double> Pricer<Mesher_, Matrix_, RNG_, Output_>::deltaEuropean(double h, const std::vector<double> &option) const {
+
+    // Call and Put Deltas
+    std::vector<double> deltas;
+
+    // Input for divided differences numerator
+    double S1 = option[3] + h;
+    double S2 = option[3] - h;
+
+    // Placeholders for final numerator values
+    std::vector<double> LHS = priceEuropean(option[0], option[1], option[2], S1, option[4], option[5])[0];
+    std::vector<double> RHS = priceEuropean(option[0], option[1], option[2], S2, option[4], option[5])[0];
+
+    // Divided differences method
+    deltas.push_back((LHS[0] - RHS[0]) / (2 * h));              // Call prices
+    deltas.push_back((LHS[1] - RHS[1]) / (2 * h));              // Put prices
+
+    return deltas;
+}
+
+/**
+ * FDM to approximate option delta using divided differences
+ * @note Delta is the change in the option’s price or premium due to the change in the Underlying futures price
+ * @tparam Mesher_ Monotonically increases the specified option property. The interval is [start, stop] and each point
+ * is separated by the step
+ * @tparam Matrix_ Creates a matrix of option parameters where each new row has a property that has been monotonically
+ * increased by the Mesher
+ * @tparam RNG_ Provides access to the Boost Random library to generate Gaussian variates
+ * @tparam Output_ Output class that sends option data to a file specified by the user
+ * @param h Difference parameter
+ * @param matrix A matrix option parameters where each row has T, sig, r, S, K, b
+ * @return The delta call or delta put approximation, which depends on the type of option provided
+ */
+template<typename Mesher_, typename Matrix_, typename RNG_, typename Output_>
+std::vector<std::vector<double>>
+Pricer<Mesher_, Matrix_, RNG_, Output_>::deltaEuropean(double h, const std::vector<std::vector<double> > &matrix) const {
+
+    // Container for divided differences results
+    std::vector<std::vector<double>> deltaPrices;
+
+    for (const auto &row : matrix) {
+        deltaPrices.push_back(deltaEuropean(h, row));
     }
 
     return deltaPrices;
@@ -313,12 +414,12 @@ Pricer<Mesher_, Matrix_, RNG_, Output_>::gamma(const std::vector<std::vector<dou
  * @return An approximation of Gamma for the given option
  */
 template<typename Mesher_, typename Matrix_, typename RNG_, typename Output_>
-double Pricer<Mesher_, Matrix_, RNG_, Output_>::gamma(double h, const std::vector<double> &option) const {
+double Pricer<Mesher_, Matrix_, RNG_, Output_>::gammaAmerican(double h, const std::vector<double> &option) const {
 
     // Input for divided differences numerator
-    double S1 = price(option[0], option[1], option[2], option[3] + h, option[4], option[5]);
-    double S2 = 2 * price(option[0], option[1], option[2], option[3], option[4], option[5]);
-    double S3 = price(option[0], option[1], option[2], option[3] - h, option[4], option[5]);
+    double S1 = (priceAmerican(option[0], option[1], option[2], option[3] + h, option[4], option[5])[0][0]);
+    double S2 = 2 * (priceAmerican(option[0], option[1], option[2], option[3], option[4], option[5])[0][0]);
+    double S3 = (priceAmerican(option[0], option[1], option[2], option[3] - h, option[4], option[5])[0][0]);
 
     // Divided differences method
     return (S1 - S2 + S3) / (h * h);
@@ -337,14 +438,65 @@ double Pricer<Mesher_, Matrix_, RNG_, Output_>::gamma(double h, const std::vecto
  */
 template<typename Mesher_, typename Matrix_, typename RNG_, typename Output_>
 std::vector<std::vector<double>>
-Pricer<Mesher_, Matrix_, RNG_, Output_>::gamma(double h, const std::vector<std::vector<double>> &matrix) const {
+Pricer<Mesher_, Matrix_, RNG_, Output_>::gammaAmerican(double h, const std::vector<std::vector<double>> &matrix) const {
 
     // Create a new container for each new matrix
     std::vector<std::vector<double> > gammas;
 
     // Calculate exact gamma and put the result into the output matrix
     for (const auto &i : matrix) {
-        gammas.push_back({gamma(h, i)});
+        gammas.push_back({gammaAmerican(h, i)});
+    }
+
+    return gammas;
+}
+
+/**
+ * FDM to approximate Gamma using divided differences
+ * @note Gamma is the rate of change in an options delta per one point move in the underlying asset's price
+ * @tparam Mesher_ Monotonically increases the specified option property. The interval is [start, stop] and each point
+ * is separated by the step
+ * @tparam Matrix_ Creates a matrix of option parameters where each new row has a property that has been monotonically
+ * increased by the Mesher
+ * @tparam RNG_ Provides access to the Boost Random library to generate Gaussian variates
+ * @tparam Output_ Output class that sends option data to a file specified by the user
+ * @param h Difference parameter
+ * @param option A call or put option used to approximate gamma
+ * @return An approximation of Gamma for the given option
+ */
+template<typename Mesher_, typename Matrix_, typename RNG_, typename Output_>
+double Pricer<Mesher_, Matrix_, RNG_, Output_>::gammaEuropean(double h, const std::vector<double> &option) const {
+
+    // Input for divided differences numerator
+    double S1 = (priceEuropean(option[0], option[1], option[2], option[3] + h, option[4], option[5])[0][0]);
+    double S2 = 2 * (priceEuropean(option[0], option[1], option[2], option[3], option[4], option[5])[0][0]);
+    double S3 = (priceEuropean(option[0], option[1], option[2], option[3] - h, option[4], option[5])[0][0]);
+
+    // Divided differences method
+    return (S1 - S2 + S3) / (h * h);
+}
+
+/**
+ * FDM to approximate Gamma using divided differences
+ * @note Gamma is the rate of change in an options delta per one point move in the underlying asset's price
+ * @tparam Mesher_ Monotonically increases the specified option property. The interval is [start, stop] and each point
+ * is separated by the step
+ * @tparam Matrix_ Creates a matrix of option parameters where each new row has a property that has been monotonically
+ * increased by the Mesher
+ * @tparam RNG_ Provides access to the Boost Random library to generate Gaussian variates
+ * @tparam Output_ Output class that sends option data to a file specified by the user
+ * @return A matrix of Gamma approximations (one solution for each row of options in the input matrix)
+ */
+template<typename Mesher_, typename Matrix_, typename RNG_, typename Output_>
+std::vector<std::vector<double>>
+Pricer<Mesher_, Matrix_, RNG_, Output_>::gammaEuropean(double h, const std::vector<std::vector<double>> &matrix) const {
+
+    // Create a new container for each new matrix
+    std::vector<std::vector<double> > gammas;
+
+    // Calculate exact gamma and put the result into the output matrix
+    for (const auto &i : matrix) {
+        gammas.push_back({gammaEuropean(h, i)});
     }
 
     return gammas;
@@ -380,7 +532,7 @@ double Pricer<Mesher_, Matrix_, RNG_, Output_>::vega(double T, double sig, doubl
  *********************************************************************************************************************/
 
 /**
- *
+ * The core pricing engine that uses the Black-Scholes formula
  * @tparam Mesher_ Monotonically increases the specified option property. The interval is [start, stop] and each point
  * is separated by the step
  * @tparam Matrix_ Creates a matrix of option parameters where each new row has a property that has been monotonically
@@ -393,33 +545,23 @@ double Pricer<Mesher_, Matrix_, RNG_, Output_>::vega(double T, double sig, doubl
  * @param step The step size within the interval
  * @param option A financial deriviative with parameters T, sig, r, S, K, b, optType, optFlavor
  * @param property The option parameter which will be monotonically increased by the Mesher
- * @param isFuture True to calculate Greeks for a futures option. False to calculate Greeks for a stock option
  */
 template<typename Mesher_, typename Matrix_, typename RNG_, typename Output_>
 void
-Pricer<Mesher_, Matrix_, RNG_, Output_>::price(double h, double start, double stop, double step, const Option& option,
-const std::string& property, const bool isFuture) const {
+Pricer<Mesher_, Matrix_, RNG_, Output_>::priceAmerican(double h, double start, double stop, double step, const Option& option,
+const std::string& property) const {
 
     std::vector<double> mesh = Mesher_::xarr(start, stop, step);     // Generate the mesh points for the matrix
 
-    std::vector<std::vector<double>> matrix;
-    if (isFuture) {
-        matrix = Matrix_::futuresMatrix(mesh, option, property);
-    } else if (option.flavor() == "European" || option.flavor() == "european") {
-        matrix = Matrix_::europeanMatrix(mesh, option, property);
-    } else {
-        matrix = Matrix_::americanMatrix(mesh, option, property);
-    }
+    std::vector<std::vector<double>> matrix = Matrix_::americanMatrix(mesh, option, property);
 
     // Create and fill containers with option data
-    std::vector<std::vector<double>> optionPrices = price(matrix, option.type(), option.flavor());
-    std::vector<std::vector<double>> deltas = delta(h, matrix, option.type(), option.flavor());
-    //std::vector<std::vector<double>> gammas = gamma(h, matrix);
+    std::vector<std::vector<double>> prices = priceAmerican(matrix);
+    std::vector<std::vector<double>> deltas = deltaAmerican(h, matrix);
 
     // Send data to an output file
-    Output::sendToFile(mesh, optionPrices, deltas);
+    Output::sendToFile(mesh, prices, deltas);
 }
-
 
 /**
  * Receives a matrix of options and prices each of of them
@@ -434,18 +576,16 @@ const std::string& property, const bool isFuture) const {
  */
 template<typename Mesher_, typename Matrix_, typename RNG_, typename Output_>
 std::vector<std::vector<double> >
-Pricer<Mesher_, Matrix_, RNG_, Output_>::price(const std::vector<std::vector<double> > &matrix,
-                                      const std::string &optType, const std::string &optFlavor) const {
+Pricer<Mesher_, Matrix_, RNG_, Output_>::priceAmerican(const std::vector<std::vector<double> > &matrix) const {
 
     // Create a new container for each new matrix
-    std::vector<std::vector<double> > optionPrices;
+    std::vector<std::vector<double> > prices;
 
     for (const auto &row : matrix) {
-        // Store the price
-        optionPrices.push_back({price(row[0], row[1], row[2], row[3], row[4], row[5], optType, optFlavor)});
+        // Each row in the matrix has a Call and Put price
+        prices.push_back(priceAmerican(row[0], row[1], row[2], row[3], row[4], row[5])[0]);
     }
-    //Output_::sendToFile(optionPrices);
-    return optionPrices;
+    return prices;
 }
 
 /**
@@ -462,58 +602,138 @@ Pricer<Mesher_, Matrix_, RNG_, Output_>::price(const std::vector<std::vector<dou
  * @param S Spot price
  * @param K Strike price
  * @param b Cost of carry
- * @param optType Put or Call
- * @param optFlavor European or American
- * @return The price of the option. Otherwise -1 for invalid input
+ * @return A vector of Call and Put prices
  */
 template<typename Mesher_, typename Matrix_, typename RNG_, typename Output_>
-double Pricer<Mesher_, Matrix_, RNG_, Output_>::price(double T, double sig, double r, double S, double K, double b,
-                                             const std::string &optType, const std::string &optFlavor) const {
+std::vector<std::vector<double>> Pricer<Mesher_, Matrix_, RNG_, Output_>::priceAmerican(double T, double sig, double r, double S,
+        double K, double b) const {
+
+    std::vector<std::vector<double>> prices;
+
+    double sig2 = sig * sig;
+    double fac = b / sig2 - 0.5;
+    fac *= fac;
+    double y1 = 0.5 - b / sig2 + sqrt(fac + 2.0 * r / sig2);
+    double y2 = 0.5 - b / sig2 - sqrt(fac + 2.0 * r / sig2);
+
+    // Temp variables create a row for each Call and Put
+    double call, put;
+
+    // Call price
+    if (1.0 == y1) {
+        call = S;
+    } else {
+        double fac2 = ((y1 - 1.0) * S) / (y1 * K);
+        double c = K * pow(fac2, y1) / (y1 - 1.0);
+        call = c;
+    }
+
+    // Put price
+    if (0.0 == y2) {
+        put = S;
+    } else {
+        double fac2 = ((y2 - 1.0) * S) / (y2 * K);
+        double p = K * pow(fac2, y2) / (1.0 - y2);
+        put = p;
+    }
+
+    prices.push_back({call, put});
+    return prices;
+}
+
+/**
+ * The core pricing engine that uses the Black-Scholes formula
+ * @tparam Mesher_ Monotonically increases the specified option property. The interval is [start, stop] and each point
+ * is separated by the step
+ * @tparam Matrix_ Creates a matrix of option parameters where each new row has a property that has been monotonically
+ * increased by the Mesher
+ * @tparam RNG_ Provides access to the Boost Random library to generate Gaussian variates
+ * @tparam Output_ Output class that sends option data to a file specified by the user
+ * @param h Difference parameter
+ * @param start Start point of interval
+ * @param stop End point of interval
+ * @param step The step size within the interval
+ * @param option A financial deriviative with parameters T, sig, r, S, K, b, optType, optFlavor
+ * @param property The option parameter which will be monotonically increased by the Mesher
+ */
+template<typename Mesher_, typename Matrix_, typename RNG_, typename Output_>
+void
+Pricer<Mesher_, Matrix_, RNG_, Output_>::priceEuropean(double h, double start, double stop, double step, const Option& option,
+                                               const std::string& property) const {
+
+    std::vector<double> mesh = Mesher_::xarr(start, stop, step);     // Generate the mesh points for the matrix
+
+    std::vector<std::vector<double>> matrix = Matrix_::europeanMatrix(mesh, option, property);
+
+    // Create and fill containers with option data
+    std::vector<std::vector<double>> prices = priceEuropean(matrix);
+    std::vector<std::vector<double>> deltas = deltaEuropean(h, matrix);
+    std::vector<std::vector<double>> gammas = gammaEuropean(h, matrix);
+
+    // Send data to an output file
+    Output::sendToFile(mesh, prices, deltas, gammas);
+}
+
+/**
+ * The core pricing engine that uses the Black-Scholes formula
+ * @tparam Mesher_ Monotonically increases the specified option property. The interval is [start, stop] and each point
+ * is separated by the step
+ * @tparam Matrix_ Creates a matrix of option parameters where each new row has a property that has been monotonically
+ * increased by the Mesher
+ * @tparam RNG_ Provides access to the Boost Random library to generate Gaussian variates
+ * @tparam Output_ Output class that sends option data to a file specified by the user
+ * @param T Expiry
+ * @param sig Volatility
+ * @param r Risk-free rate
+ * @param S Spot price
+ * @param K Strike price
+ * @param b Cost of carry
+ * @return A vector of Call and Put prices
+ */
+template<typename Mesher_, typename Matrix_, typename RNG_, typename Output_>
+std::vector<std::vector<double>> Pricer<Mesher_, Matrix_, RNG_, Output_>::priceEuropean(double T, double sig, double r,
+        double S, double K, double b) const {
+
+    std::vector<std::vector<double>> prices;
 
     double tmp = sig * sqrt(T);
     double d1 = (log(S / K) + (b + (sig * sig) * 0.5) * T) / tmp;
     double d2 = d1 - tmp;
 
-    if (optType == "Call" && optFlavor == "European") {
+    // Call price
+    double call = (S * exp((b - r) * T) * RNG_::CDF(d1)) - (K * exp(-r * T) * RNG_::CDF(d2));
 
-        double N1 = RNG_::CDF(d1);
-        double N2 = RNG_::CDF(d2);
-        return (S * exp((b - r) * T) * N1) - (K * exp(-r * T) * N2);
+    // Put price
+    double put = (K * exp(-r * T) * RNG_::CDF(-d2)) - (S * exp((b - r) * T) * RNG_::CDF(-d1));
 
-    } else if (optType == "Put" && optFlavor == "European") {
+    prices.push_back({call, put});
 
-        double N1 = RNG_::CDF(-d1);
-        double N2 = RNG_::CDF(-d2);
-        return (K * exp(-r * T) * N2) - (S * exp((b - r) * T) * N1);
+    return prices;
+}
 
-    } else if (optType == "Call" && optFlavor == "American") {
-        double sig2 = sig * sig;
-        double fac = b / sig2 - 0.5;
-        fac *= fac;
-        double y1 = 0.5 - b / sig2 + sqrt(fac + 2.0 * r / sig2);
+/**
+ * Receives a matrix of options and prices each of of them
+ * @tparam Mesher_ Monotonically increases the specified option property. The interval is [start, stop] and each point
+ * is separated by the step
+ * @tparam Matrix_ Creates a matrix of option parameters where each new row has a property that has been monotonically
+ * increased by the Mesher
+ * @tparam RNG_ Provides access to the Boost Random library to generate Gaussian variates
+ * @tparam Output_ Output class that sends option data to a file specified by the user
+ * @param matrix Option parameters
+ * @return A matrix of option prices
+ */
+template<typename Mesher_, typename Matrix_, typename RNG_, typename Output_>
+std::vector<std::vector<double> >
+Pricer<Mesher_, Matrix_, RNG_, Output_>::priceEuropean(const std::vector<std::vector<double> > &matrix) const {
 
+    // Create a new container for each new matrix
+    std::vector<std::vector<double> > prices;
 
-        if (1.0 == y1) { return S; }
-
-        double fac2 = ((y1 - 1.0) * S) / (y1 * K);
-        double c = K * pow(fac2, y1) / (y1 - 1.0);
-
-        return c;
-    } else if (optType == "Put" && optFlavor == "American") {
-        double sig2 = sig * sig;
-        double fac = b / sig2 - 0.5;
-        fac *= fac;
-        double y2 = 0.5 - b / sig2 - sqrt(fac + 2.0 * r / sig2);
-
-        if (0.0 == y2) { return S; }
-
-        double fac2 = ((y2 - 1.0) * S) / (y2 * K);
-        double p = K * pow(fac2, y2) / (1.0 - y2);
-
-        return p;
+    for (const auto &row : matrix) {
+        // Each row in the matrix has a Call and Put price
+        prices.push_back(priceEuropean(row[0], row[1], row[2], row[3], row[4], row[5])[0]);
     }
-
-    return -1;                                             // Indicates invalid input
+    return prices;
 }
 
 #endif

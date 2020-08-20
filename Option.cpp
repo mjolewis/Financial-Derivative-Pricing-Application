@@ -11,8 +11,7 @@
  * Initialize a new Option
  * @throws OutOfMemoryError Indicates insufficient memory for this Option
  */
-Option::Option() : T(0.25), sig(0.3), r(0.08), S(60), K(65), b(r),
-                   optType("Call"), optFlavor("European"), uName("Default") {}
+Option::Option() : T(0.25), sig(0.3), r(0.08), S(60), K(65), b(r) {}
 
 /**
  * Initialize a new Option
@@ -22,22 +21,15 @@ Option::Option() : T(0.25), sig(0.3), r(0.08), S(60), K(65), b(r),
  * @param S_ Current price of underlying
  * @param K_ Strike price
  * @param b_ Cost of carry
- * @param optType_ Call or Put
- * @param optFlavor_ European or American
- * @param uName_ Name of underlying asset
  * @throws OutOfMemoryError Indicates insufficient memory for this Option
  */
-Option::Option(double T_, double sig_, double r_, double S_, double K_, double b_,
-        const std::string& optType_, const std::string& optFlavor_, const std::string& uName_) {
+Option::Option(double T_, double sig_, double r_, double S_, double K_, double b_) {
     T = T_;
     sig = sig_;
     r = r_;
     S = S_;
     K = K_;
     b = b_;
-    optType = optType_;
-    optFlavor = optFlavor_;
-    uName = uName_;
 }
 
 /**
@@ -45,8 +37,7 @@ Option::Option(double T_, double sig_, double r_, double S_, double K_, double b
  * @param source The source object used to initialize this EuropeanOptions data members
  * @throws OutOfMemoryError Indicates insufficient memory for this Option
  */
-Option::Option(const Option &source) : T(source.T), sig(source.sig), r(source.r), S(source.S), K(source.K), b(source.b),
-                                       optType(source.optType), optFlavor(source.optFlavor), uName(source.uName) {}
+Option::Option(const Option &source) : T(source.T), sig(source.sig), r(source.r), S(source.S), K(source.K), b(source.b) {}
 
 /**
  * Destroy this Option
@@ -71,9 +62,6 @@ Option &Option::operator=(const Option &source) {
     S = source.S;
     K = source.K;
     b = source.b;
-    optType = source.optType;
-    optFlavor = source.optFlavor;
-    uName = source.uName;
 
     return *this;
 }
@@ -109,22 +97,15 @@ double Option::riskFree() const { return r; }
 double Option::spot() const { return S; }
 double Option::strike() const { return K; }
 double Option::carry() const { return b; }
-const std::string & Option::type() const { return optType; }
-const std::string & Option::flavor() const { return optFlavor; }
-const std::string & Option::underlying() const { return uName; }
 
 // Setters
-void Option::setOptionData(double T_, double sig_, double r_, double S_, double K_, double b_, const std::string& optType_,
-        const std::string& optFlavor_, const std::string& uName_) {
+void Option::setOptionData(double T_, double sig_, double r_, double S_, double K_, double b_) {
     T = T_;
     sig = sig_;
     r = r_;
     S = S_;
     K = K_;
     b = b_;
-    optType = optType_;
-    optFlavor = optFlavor_;
-    uName = uName_;
 }
 
 void Option::expiry(double T_) { T = T_;}
@@ -133,9 +114,6 @@ void Option::riskFree(double r_) { r = r_; }
 void Option::spot(double S_) { S = S_; }
 void Option::strike(double K_) {K = K_; }
 void Option::carry(double b_) { b = b_; }
-void Option::type(const std::string &optType_) { optType = optType_; }
-void Option::flavor(const std::string &optFlavor_) { optFlavor = optFlavor_; }
-void Option::underlying(const std::string &uName_) { uName = uName_; }
 
 // Mechanism to check if a given set of call (C) and put (P) prices satisfy parity (tolerance = 1e-5)
 bool Option::putCallParity(double C, double P, double T_, double K, double r_, double S) {

@@ -81,7 +81,7 @@ std::vector<double> Mesher::xarr(double start_, double stop_, double step_) cons
 
     double steps = (stop_ - start_) / step_;
 
-    // Create the container and add the start_ point
+    // Create the container and add the start point
     std::vector<double> result;
     result.push_back(start_);
 

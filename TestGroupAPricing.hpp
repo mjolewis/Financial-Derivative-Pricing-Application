@@ -20,17 +20,10 @@
 
 class TestGroupAPricing {
 private:
-    Option option1Call = Option(0.25, 0.30, 0.08, 60, 65, 0.08, "Call", "European", "GS");
-    Option option1Put = Option(0.25, 0.30, 0.08, 60, 65, 0.08, "Put", "European", "GS");
-
-    Option option2Call = Option(1, 0.2, 0, 100, 100, 0, "Call", "European", "MS");
-    Option option2Put = Option(1, 0.2, 0, 100, 100, 0, "Put", "European", "MS");
-
-    Option option3Call = Option(1, .5, .12, 5, 10, .12, "Call", "European", "C");
-    Option option3Put = Option(1, .5, .12, 5, 10, .12, "Put", "European", "C");
-
-    Option option4Call = Option(30, .3, .08, 100, 100, 0.08, "Call", "European", "JPM");
-    Option option4Put = Option(30, .3, .08, 100, 100, 0.08, "Put", "European", "JPM");
+    Option option1 = Option(0.25, 0.30, 0.08, 60, 65, 0.08);
+    Option option2 = Option(1, 0.2, 0, 100, 100, 0);
+    Option option3 = Option(1, .5, .12, 5, 10, .12);
+    Option option4 = Option(30, .3, .08, 100, 100, 0.08);
 
     Pricer<Mesher, Matrix, RNG, Output> pricer;                 // Pricing engine
     Mesher mesher;                                              // Meshing engine
@@ -50,63 +43,114 @@ public:
         std::cout << "\n*******************************************************************" << std::endl;
 
         std::cout << "\nBatch 1:"
-                  << "\nExpiry: " << option1Call.expiry()
-                  << "\nVolatility: " << option1Call.vol()
-                  << "\nRisk-free rate: " << option1Call.riskFree()
-                  << "\nStock price: " << option1Call.spot()
-                  << "\nStrike price: " << option1Call.strike()
-                  << "\nCost of carry: " << option1Call.carry()
-                  << "\nExact Call Price: " << pricer.price(option1Call.expiry(), option1Call.vol(), option1Call.riskFree(),
-                                                            option1Call.spot(), option1Call.strike(), option1Call.carry(),
-                                                            option1Call.type(), option1Call.flavor())
-                  << "\nExact Put Price: " << pricer.price(option1Put.expiry(), option1Put.vol(), option1Put.riskFree(),
-                                                           option1Put.spot(), option1Put.strike(), option1Put.carry(),
-                                                           option1Put.type(), option1Put.flavor());
+                  << "\nExpiry: " << option1.expiry()
+                  << "\nVolatility: " << option1.vol()
+                  << "\nRisk-free rate: " << option1.riskFree()
+                  << "\nStock price: " << option1.spot()
+                  << "\nStrike price: " << option1.strike()
+                  << "\nCost of carry: " << option1.carry() << "\n"
+                  << std::setw(15) << "Call Price"
+                  << std::setw(15) << "Put Price\n"
+                  << std::setw(15) << "-----------"
+                  << std::setw(15) << "-----------\n";
+
+        std::vector<std::vector<double>> prices = pricer.priceEuropean(option1.expiry(), option1.vol(), option1.riskFree(),
+                                                          option1.spot(), option1.strike(), option1.carry());
+
+        for (const auto& row : prices) {
+            std::cout << std::setprecision(6)
+                      << std::setw(15) << row[0]
+                      << std::setw(15) << row[1] << "\n";
+        }
+//        for (int i = 0; i < prices.size(); ++i) {
+//            std::cout << std::setprecision(6)
+//                      << std::setw(15) << prices[0]
+//                      << std::setw(15) << prices[1] << "\n";
+//        }
 
         // Batch 2
         std::cout << "\n\nBatch 2:"
-                  << "\nExpiry: " << option2Call.expiry()
-                  << "\nVolatility: " << option2Call.vol()
-                  << "\nRisk-free rate: " << option2Call.riskFree()
-                  << "\nStock price: " << option2Call.spot()
-                  << "\nStrike price: " << option2Call.strike()
-                  << "\nCost of carry: " << option2Call.carry()
-                  << "\nExact Call Price: " << pricer.price(option2Call.expiry(), option2Call.vol(), option2Call.riskFree(),
-                                                            option2Call.spot(), option2Call.strike(), option2Call.carry(),
-                                                            option2Call.type(), option2Call.flavor())
-                  << "\nExact Put Price: " << pricer.price(option2Put.expiry(), option2Put.vol(), option2Put. riskFree(),
-                                                           option2Put.spot(), option2Put.strike(), option2Put.carry(),
-                                                           option2Put.type(), option2Put.flavor());
+                << "\nExpiry: " << option2.expiry()
+                << "\nVolatility: " << option2.vol()
+                << "\nRisk-free rate: " << option2.riskFree()
+                << "\nStock price: " << option2.spot()
+                << "\nStrike price: " << option2.strike()
+                << "\nCost of carry: " << option2.carry() << "\n"
+                << std::setw(15) << "Call Price"
+                << std::setw(15) << "Put Price\n"
+                << std::setw(15) << "-----------"
+                << std::setw(15) << "-----------\n";
+
+        prices = pricer.priceEuropean(option2.expiry(), option2.vol(), option2.riskFree(), option2.spot(),
+                                      option2.strike(), option2.carry());
+
+        for (const auto& row : prices) {
+            std::cout << std::setprecision(6)
+                      << std::setw(15) << row[0]
+                      << std::setw(15) << row[1] << "\n";
+        }
+
+//        for (int i = 0; i < prices.size(); ++i) {
+//            std::cout << std::setprecision(6)
+//                      << std::setw(15) << prices[0]
+//                      << std::setw(15) << prices[1] << "\n";
+//        }
 
         // Batch 3
         std::cout << "\n\nBatch 3:"
-                  << "\nExpiry: " << option3Call.expiry()
-                  << "\nVolatility: " << option3Call.vol()
-                  << "\nRisk-free rate: " << option3Call.riskFree()
-                  << "\nStock price: " << option3Call.spot()
-                  << "\nStrike price: " << option3Call.strike()
-                  << "\nCost of carry: " << option3Call.carry()
-                  << "\nExact Call Price: " << pricer.price(option3Call.expiry(), option3Call.vol(), option3Call. riskFree(),
-                                                            option3Call.spot(), option3Call.strike(), option3Call.carry(),
-                                                            option3Call.type(), option3Call.flavor())
-                  << "\nExact Put Price: " << pricer.price(option3Put.expiry(), option3Put.vol(), option3Put.riskFree(),
-                                                           option3Put.spot(), option3Put.strike(), option3Put.carry(),
-                                                           option3Put.type(), option3Put.flavor());
+                << "\nExpiry: " << option3.expiry()
+                << "\nVolatility: " << option3.vol()
+                << "\nRisk-free rate: " << option3.riskFree()
+                << "\nStock price: " << option3.spot()
+                << "\nStrike price: " << option3.strike()
+                << "\nCost of carry: " << option3.carry() << "\n"
+                << std::setw(15) << "Call Price"
+                << std::setw(15) << "Put Price\n"
+                << std::setw(15) << "-----------"
+                << std::setw(15) << "-----------\n";
+
+        prices = pricer.priceEuropean(option3.expiry(), option3.vol(), option3.riskFree(), option3.spot(),
+                                      option3.strike(), option3.carry());
+
+        for (const auto& row : prices) {
+            std::cout << std::setprecision(6)
+                      << std::setw(15) << row[0]
+                      << std::setw(15) << row[1] << "\n";
+        }
+
+//        for (int i = 0; i < prices.size(); ++i) {
+//            std::cout << std::setprecision(6)
+//                      << std::setw(15) << prices[0]
+//                      << std::setw(15) << prices[1] << "\n";
+//        }
 
         // Batch 4
         std::cout << "\n\nBatch 4:"
-                  << "\nExpiry: " << option4Call.expiry()
-                  << "\nVolatility: " << option4Call.vol()
-                  << "\nRisk-free rate: " << option4Call.riskFree()
-                  << "\nStock price: " << option4Call.spot()
-                  << "\nStrike price: " << option4Call.strike()
-                  << "\nCost of carry: " << option4Call.carry()
-                  << "\nExact Call Price: " << pricer.price(option4Call.expiry(), option4Call.vol(), option4Call. riskFree(),
-                                                            option4Call.spot(), option4Call.strike(), option4Call.carry(),
-                                                            option4Call.type(), option4Call.flavor())
-                  << "\nExact Put Price: " << pricer.price(option4Put.expiry(), option4Put.vol(), option4Put.riskFree(),
-                                                           option4Put.spot(), option4Put.strike(), option4Put.carry(),
-                                                           option4Put.type(), option4Put.flavor());
+                << "\nExpiry: " << option4.expiry()
+                << "\nVolatility: " << option4.vol()
+                << "\nRisk-free rate: " << option4.riskFree()
+                << "\nStock price: " << option4.spot()
+                << "\nStrike price: " << option4.strike()
+                << "\nCost of carry: " << option4.carry() << "\n"
+                << std::setw(15) << "Call Price"
+                << std::setw(15) << "Put Price\n"
+                << std::setw(15) << "-----------"
+                << std::setw(15) << "-----------\n";
+
+        prices = pricer.priceEuropean(option4.expiry(), option4.vol(), option4.riskFree(), option4.spot(),
+                                      option4.strike(), option4.carry());
+
+        for (const auto& row : prices) {
+            std::cout << std::setprecision(6)
+                      << std::setw(15) << row[0]
+                      << std::setw(15) << row[1] << "\n";
+        }
+
+//        for (int i = 0; i < prices.size(); ++i) {
+//            std::cout << std::setprecision(6)
+//                      << std::setw(15) << prices[0]
+//                      << std::setw(15) << prices[1] << "\n";
+//        }
 
 
         std::cout << "\n\n*******************************************************************\n\n";
@@ -125,51 +169,51 @@ public:
 
         // Batch 1
         std::cout << "\nBatch 1:"
-                  << "\nExpiry: " << option1Call.expiry()
-                  << "\nVolatility: " << option1Call.vol()
-                  << "\nRisk-free rate: " << option1Call.riskFree()
-                  << "\nStock price: " << option1Call.spot()
-                  << "\nStrike price: " << option1Call.strike()
-                  << "\nCost of carry: " << option1Call.carry()
-                  << "\nCall Price determined by Put-Call Parity: " << option1Put.putCallParity(5.84628, option1Put.type())
-                  << "\nPut Price determined by Put-Call Parity: " << option1Call.putCallParity(2.13337, option1Call.type())
-                  << "\nSatisfies Put-Call Parity: " << option1Call.putCallParity(2.13337, 5.84628);
+                  << "\nExpiry: " << option1.expiry()
+                  << "\nVolatility: " << option1.vol()
+                  << "\nRisk-free rate: " << option1.riskFree()
+                  << "\nStock price: " << option1.spot()
+                  << "\nStrike price: " << option1.strike()
+                  << "\nCost of carry: " << option1.carry()
+                  << "\nCall Price determined by Put-Call Parity: " << option1.putCallParity(5.84628, "Put")
+                  << "\nPut Price determined by Put-Call Parity: " << option1.putCallParity(2.13337, "Call")
+                  << "\nSatisfies Put-Call Parity: " << option1.putCallParity(2.13337, 5.84628);
 
         // Batch 2
         std::cout << "\n\nBatch 2:"
-                  << "\nExpiry: " << option2Call.expiry()
-                  << "\nVolatility: " << option2Call.vol()
-                  << "\nRisk-free rate: " << option2Call.riskFree()
-                  << "\nStock price: " << option2Call.spot()
-                  << "\nStrike price: " << option2Call.strike()
-                  << "\nCost of carry: " << option2Call.carry()
-                  << "\nCall Price determined by Put-Call Parity: " << option2Put.putCallParity(7.96557, option2Put.type())
-                  << "\nPut Price determined by Put-Call Parity: " << option2Call.putCallParity(7.96557, option2Call.type())
-                  << "\nSatisfies Put-Call Parity: " << option2Call.putCallParity(7.96557, 7.96557);
+                  << "\nExpiry: " << option2.expiry()
+                  << "\nVolatility: " << option2.vol()
+                  << "\nRisk-free rate: " << option2.riskFree()
+                  << "\nStock price: " << option2.spot()
+                  << "\nStrike price: " << option2.strike()
+                  << "\nCost of carry: " << option2.carry()
+                  << "\nCall Price determined by Put-Call Parity: " << option2.putCallParity(7.96557, "Put")
+                  << "\nPut Price determined by Put-Call Parity: " << option2.putCallParity(7.96557, "Call")
+                  << "\nSatisfies Put-Call Parity: " << option2.putCallParity(7.96557, 7.96557);
 
         // Batch 3
         std::cout << "\n\nBatch 3:"
-                  << "\nExpiry: " << option3Call.expiry()
-                  << "\nVolatility: " << option3Call.vol()
-                  << "\nRisk-free rate: " << option3Call.riskFree()
-                  << "\nStock price: " << option3Call.spot()
-                  << "\nStrike price: " << option3Call.strike()
-                  << "\nCost of carry: " << option3Call.carry()
-                  << "\nCall Price determined by Put-Call Parity: " << option3Put.putCallParity(4.07326, option3Put.type())
-                  << "\nPut Price determined by Put-Call Parity: " << option3Call.putCallParity(0.204058, option3Call.type())
-                  << "\nSatisfies Put-Call Parity: " << option3Call.putCallParity(0.204058, 4.07326);
+                  << "\nExpiry: " << option3.expiry()
+                  << "\nVolatility: " << option3.vol()
+                  << "\nRisk-free rate: " << option3.riskFree()
+                  << "\nStock price: " << option3.spot()
+                  << "\nStrike price: " << option3.strike()
+                  << "\nCost of carry: " << option3.carry()
+                  << "\nCall Price determined by Put-Call Parity: " << option3.putCallParity(4.07326, "Put")
+                  << "\nPut Price determined by Put-Call Parity: " << option3.putCallParity(0.204058, "Call")
+                  << "\nSatisfies Put-Call Parity: " << option3.putCallParity(0.204058, 4.07326);
 
         // Batch 4
         std::cout << "\n\nBatch 4:"
-                  << "\nExpiry: " << option4Call.expiry()
-                  << "\nVolatility: " << option4Call.vol()
-                  << "\nRisk-free rate: " << option4Call.riskFree()
-                  << "\nStock price: " << option4Call.spot()
-                  << "\nStrike price: " << option4Call.strike()
-                  << "\nCost of carry: " << option4Call.carry()
-                  << "\nCall Price determined by Put-Call Parity: " << option4Put.putCallParity(1.2475, option4Put.type())
-                  << "\nPut Price determined by Put-Call Parity: " << option4Call.putCallParity(92.1757, option4Call.type())
-                  << "\nSatisfies Put-Call Parity: " << option4Call.putCallParity(92.1757, 1.2475);
+                  << "\nExpiry: " << option4.expiry()
+                  << "\nVolatility: " << option4.vol()
+                  << "\nRisk-free rate: " << option4.riskFree()
+                  << "\nStock price: " << option4.spot()
+                  << "\nStrike price: " << option4.strike()
+                  << "\nCost of carry: " << option4.carry()
+                  << "\nCall Price determined by Put-Call Parity: " << option4.putCallParity(1.2475, "Put")
+                  << "\nPut Price determined by Put-Call Parity: " << option4.putCallParity(92.1757, "Call")
+                  << "\nSatisfies Put-Call Parity: " << option4.putCallParity(92.1757, 1.2475);
 
         std::cout << "\n\n*******************************************************************\n\n";
         std::cout << "Completed Group A Pricing Part 2\n";
@@ -186,10 +230,9 @@ public:
         std::cout << "\n*******************************************************************" << std::endl;
 
         // Batch 1
-        std::vector<double> mesh = mesher.xarr(option1Call.spot(), option1Call.spot() + 5, 0.5);
-        std::vector<std::vector<double>> options = matrix.europeanMatrix(mesh, option1Call, "S");
-        std::vector<std::vector<double>> callPrices = pricer.price(options, "Call", "European");
-        std::vector<std::vector<double>> putPrices = pricer.price(options, "Put", "European");
+        std::vector<double> mesh = mesher.xarr(option1.spot(), option1.spot() + 5, 0.5);
+        std::vector<std::vector<double>> options = matrix.europeanMatrix(mesh, option1, "S");
+        std::vector<std::vector<double>> prices = pricer.priceEuropean(options);
 
         // Iterate through the matrix and print the option prices and sensitivities
         std::cout << "\n\nBatch 1:"
@@ -203,15 +246,14 @@ public:
         for (int i = 0; i < options.size(); ++i) {
             std::cout << std::setprecision(6)
                       << std::setw(15) << mesh[i]
-                      << std::setw(15) << callPrices[i][0]
-                      << std::setw(15) << putPrices[i][0] << "\n";
+                      << std::setw(15) << prices[i][0]
+                      << std::setw(15) << prices[i][1] << "\n";
         }
 
         // Batch 2
-        mesh = mesher.xarr(option2Call.spot(), option2Call.spot() + 5, 0.5);
-        options = matrix.europeanMatrix(mesh, option2Call, "S");
-        callPrices = pricer.price(options, "Call", "European");
-        putPrices = pricer.price(options, "Put", "European");
+        mesh = mesher.xarr(option2.spot(), option2.spot() + 5, 0.5);
+        options = matrix.europeanMatrix(mesh, option2, "S");
+        prices = pricer.priceEuropean(options);
 
         // Iterate through the matrix and print the option prices and sensitivities
         std::cout << "\n\nBatch 2:"
@@ -225,15 +267,14 @@ public:
         for (int i = 0; i < options.size(); ++i) {
             std::cout << std::setprecision(6)
                       << std::setw(15) << mesh[i]
-                      << std::setw(15) << callPrices[i][0]
-                      << std::setw(15) << putPrices[i][0] << "\n";
+                      << std::setw(15) << prices[i][0]
+                      << std::setw(15) << prices[i][1] << "\n";
         };
 
         // Batch 3
-        mesh = mesher.xarr(option3Call.spot(), option3Call.spot() + 5, 0.5);
-        options = matrix.europeanMatrix(mesh, option3Call, "S");
-        callPrices = pricer.price(options, "Call", "European");
-        putPrices = pricer.price(options, "Put", "European");
+        mesh = mesher.xarr(option3.spot(), option3.spot() + 5, 0.5);
+        options = matrix.europeanMatrix(mesh, option3, "S");
+        prices = pricer.priceEuropean(options);
 
         // Iterate through the matrix and print the option prices and sensitivities
         std::cout << "\n\nBatch 3:"
@@ -247,15 +288,14 @@ public:
         for (int i = 0; i < options.size(); ++i) {
             std::cout << std::setprecision(6)
                       << std::setw(15) << mesh[i]
-                      << std::setw(15) << callPrices[i][0]
-                      << std::setw(15) << putPrices[i][0] << "\n";
+                      << std::setw(15) << prices[i][0]
+                      << std::setw(15) << prices[i][1] << "\n";
         };
 
         // Batch 4
-        mesh = mesher.xarr(option4Call.spot(), option4Call.spot() + 5, 0.5);
-        options = matrix.europeanMatrix(mesh, option4Call, "S");
-        callPrices = pricer.price(options, "Call", "European");
-        putPrices = pricer.price(options, "Put", "European");
+        mesh = mesher.xarr(option4.spot(), option4.spot() + 5, 0.5);
+        options = matrix.europeanMatrix(mesh, option4, "S");
+        prices = pricer.priceEuropean(options);
 
         // Iterate through the matrix and print the option prices and sensitivities
         std::cout << "\n\nBatch 4:"
@@ -269,8 +309,8 @@ public:
         for (int i = 0; i < options.size(); ++i) {
             std::cout << std::setprecision(6)
                       << std::setw(15) << mesh[i]
-                      << std::setw(15) << callPrices[i][0]
-                      << std::setw(15) << putPrices[i][0] << "\n";
+                      << std::setw(15) << prices[i][0]
+                      << std::setw(15) << prices[i][1] << "\n";
         };
 
         std::cout << "\n\n*******************************************************************\n\n";
@@ -288,10 +328,9 @@ public:
         std::cout << "\n*******************************************************************" << std::endl;
 
         // Batch 1
-        std::vector<double> mesh = mesher.xarr(option1Call.expiry(), option1Call.expiry() + 5, 0.5);
-        std::vector<std::vector<double>> options = matrix.europeanMatrix(mesh, option1Call, "T");
-        std::vector<std::vector<double>> callPrices = pricer.price(options, "Call", "European");
-        std::vector<std::vector<double>> putPrices = pricer.price(options, "Put", "European");
+        std::vector<double> mesh = mesher.xarr(option1.expiry(), option1.expiry() + 5, 0.5);
+        std::vector<std::vector<double>> options = matrix.europeanMatrix(mesh, option1, "T");
+        std::vector<std::vector<double>> prices = pricer.priceEuropean(options);
 
         // Iterate through the matrix and print the option prices and sensitivities
         std::cout << "\n\nBatch 1:"
@@ -305,15 +344,14 @@ public:
         for (int i = 0; i < options.size(); ++i) {
             std::cout << std::setprecision(7)
                       << std::setw(15) << mesh[i]
-                      << std::setw(15) << callPrices[i][0]
-                      << std::setw(15) << putPrices[i][0] << "\n";
+                      << std::setw(15) << prices[i][0]
+                      << std::setw(15) << prices[i][1] << "\n";
         }
 
         // Batch 2
-        mesh = mesher.xarr(option2Call.vol(), option2Call.vol() + 5, 0.5);
-        options = matrix.europeanMatrix(mesh, option2Call, "sig");
-        callPrices = pricer.price(options, "Call", "European");
-        putPrices = pricer.price(options, "Put", "European");
+        mesh = mesher.xarr(option2.vol(), option2.vol() + 5, 0.5);
+        options = matrix.europeanMatrix(mesh, option2, "sig");
+        prices = pricer.priceEuropean(options);
 
         // Iterate through the matrix and print the option prices and sensitivities
         std::cout << "\n\nBatch 2:"
@@ -327,15 +365,14 @@ public:
         for (int i = 0; i < options.size(); ++i) {
             std::cout << std::setprecision(7)
                       << std::setw(15) << mesh[i]
-                      << std::setw(15) << callPrices[i][0]
-                      << std::setw(15) << putPrices[i][0] << "\n";
+                      << std::setw(15) << prices[i][0]
+                      << std::setw(15) << prices[i][1] << "\n";
         };
 
         // Batch 3
-        mesh = mesher.xarr(option3Call.strike(), option3Call.strike() + 5, 0.5);
-        options = matrix.europeanMatrix(mesh, option3Call, "K");
-        callPrices = pricer.price(options, "Call", "European");
-        putPrices = pricer.price(options, "Put", "European");
+        mesh = mesher.xarr(option3.strike(), option3.strike() + 5, 0.5);
+        options = matrix.europeanMatrix(mesh, option3, "K");
+        prices = pricer.priceEuropean(options);
 
         // Iterate through the matrix and print the option prices and sensitivities
         std::cout << "\n\nBatch 3:"
@@ -349,15 +386,14 @@ public:
         for (int i = 0; i < options.size(); ++i) {
             std::cout << std::setprecision(7)
                       << std::setw(15) << mesh[i]
-                      << std::setw(15) << callPrices[i][0]
-                      << std::setw(15) << putPrices[i][0] << "\n";
+                      << std::setw(15) << prices[i][0]
+                      << std::setw(15) << prices[i][1] << "\n";
         };
 
         // Batch 4
-        mesh = mesher.xarr(option4Call.riskFree(), option4Call.riskFree() + .05, 0.005);
-        options = matrix.europeanMatrix(mesh, option4Call, "r");
-        callPrices = pricer.price(options, "Call", "European");
-        putPrices = pricer.price(options, "Put", "European");
+        mesh = mesher.xarr(option4.riskFree(), option4.riskFree() + .05, 0.005);
+        options = matrix.europeanMatrix(mesh, option4, "r");
+        prices = pricer.priceEuropean(options);
 
         // Iterate through the matrix and print the option prices and sensitivities
         std::cout << "\n\nBatch 4:"
@@ -371,8 +407,8 @@ public:
         for (int i = 0; i < options.size(); ++i) {
             std::cout << std::setprecision(7)
                       << std::setw(15) << mesh[i]
-                      << std::setw(15) << callPrices[i][0]
-                      << std::setw(15) << putPrices[i][0] << "\n";
+                      << std::setw(15) << prices[i][0]
+                      << std::setw(15) << prices[i][1] << "\n";
         };
 
         std::cout << "\n\n*******************************************************************\n\n";

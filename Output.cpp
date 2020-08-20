@@ -42,18 +42,22 @@ Output & Output::operator=(const Output &source) {
 }
 
 /**
- * Provide a console interface to dynamically get the output file
- * @param value The price of an Option
+ * Send option data to OptionData.csv
+ * @param matrix A prices of Option prices
+ * @param deltas A matrix of Option deltas
  */
-void Output::sendToFile(double value) const {
+void Output::sendToFile(const std::vector<double>& meshPoints, const std::vector<std::vector<double> > &prices,
+        const std::vector<std::vector<double> > &deltas) const {
+
     std::ofstream outFile;                       // Object for writing to a file
     std::string fileName;
-    std::cout << "Enter output location data: ";
-    std::cin >> fileName;
 
-    outFile.open(fileName);
+    outFile.open("OptionData.csv");
     if (outFile.is_open()) {
-        outFile << value;
+        outFile << "Mesh Points" << "," << "Call Price" << "," << "Put Price" << "," << "Delta" << std::endl;
+        for (int i = 0; i < prices.size(); ++i) {
+            outFile << meshPoints[i] << "," << prices[i][0] << "," << prices[i][1] << "," << deltas[i][0] << "," << std::endl;
+        }
         outFile.close();
     } else {
         std::cout << "Unable to open the file. Check filepath permissions\n";
@@ -66,17 +70,17 @@ void Output::sendToFile(double value) const {
  * @param deltas A matrix of Option deltas
  * @param gammas A matrix of Option gammas
  */
-void Output::sendToFile(const std::vector<double> meshPoints, const std::vector<std::vector<double> > &prices,
-        const std::vector<std::vector<double> > &deltas) const {
+void Output::sendToFile(const std::vector<double>& meshPoints, const std::vector<std::vector<double> > &prices,
+                        const std::vector<std::vector<double> > &deltas, const std::vector<std::vector<double>>& gammas) const {
 
     std::ofstream outFile;                       // Object for writing to a file
     std::string fileName;
 
     outFile.open("OptionData.csv");
     if (outFile.is_open()) {
-        outFile << "Mesh Points" << "," << "Price" << "," << "Delta" << "," << "Gamma" << std::endl;
+        outFile << "Mesh Points" << "," << "Call Price" << "," << "Put Price" << "," << "Delta" << "," << "Gamma" << std::endl;
         for (int i = 0; i < prices.size(); ++i) {
-            outFile << meshPoints[i] << "," << prices[i][0] << "," << deltas[i][0] << "," << std::endl; // gammas[i][0] << std::endl;
+            outFile << meshPoints[i] << "," << prices[i][0] << "," << prices[i][1] << "," << deltas[i][0] << "," << gammas[i][0] << std::endl;
         }
         outFile.close();
     } else {
