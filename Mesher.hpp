@@ -24,7 +24,7 @@ public:
 
     // Vectors of mesh points
     std::vector<double> xarr();
-    std::vector<double> xarr(double start_, double stop_, double step_);
+    std::vector<double> xarr(double start_, double stop_, double step_) const;
 };
 
 #endif // MESHER_HPP

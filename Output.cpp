@@ -6,6 +6,8 @@
 
 #include <fstream>
 #include <ios>
+#include <iostream>
+#include <sstream>
 
 #include "Output.hpp"
 
@@ -59,19 +61,22 @@ void Output::sendToFile(double value) const {
 }
 
 /**
- * Provide a console interface to dynamically get the output file
- * @param matrix A matrix of Option prices
+ * Send option data to OptionData.csv
+ * @param matrix A prices of Option prices
+ * @param deltas A matrix of Option deltas
+ * @param gammas A matrix of Option gammas
  */
-void Output::sendToFile(const std::vector<std::vector<double> > &matrix) const {
+void Output::sendToFile(const std::vector<double> meshPoints, const std::vector<std::vector<double> > &prices,
+        const std::vector<std::vector<double> > &deltas) const {
+
     std::ofstream outFile;                       // Object for writing to a file
     std::string fileName;
-    std::cout << "Enter output location data: ";
-    std::cin >> fileName;
 
-    outFile.open(fileName);
+    outFile.open("OptionData.csv");
     if (outFile.is_open()) {
-        for (auto &row : matrix) {
-            outFile << row[0] << "\n";
+        outFile << "Mesh Points" << "," << "Price" << "," << "Delta" << "," << "Gamma" << std::endl;
+        for (int i = 0; i < prices.size(); ++i) {
+            outFile << meshPoints[i] << "," << prices[i][0] << "," << deltas[i][0] << "," << std::endl; // gammas[i][0] << std::endl;
         }
         outFile.close();
     } else {

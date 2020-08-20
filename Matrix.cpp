@@ -49,43 +49,21 @@ Matrix::americanMatrix(const std::vector<double>& mesh, const Option &option, co
     // Create a new output container for each new matrix
     std::vector<std::vector<double>> matrix;
 
-    // Use the mesh points to modify property by a monotonically increasing amount
-    if (property == "T" || property == "t" || property == "Expiry" || property == "expiry") {
+    if (property == "B" || property == "b" || property == "Beta" || property == "beta" ) {
 
-        // Monotonically increase expiry and add the new option to a new row in the matrix
-        for (double T : mesh) {
-            matrix.push_back({T, option.vol(), option.riskFree(), option.spot(), option.strike(), option.carry()});
-        }
-    } else if (property == "Sig" || property == "sig" || property == "Volatility" || property == "volatility" ) {
-
-        // Monotonically increase vol and add the new option to a new row in the matrix
-        for (double sig : mesh) {
-            matrix.push_back({option.expiry(), sig, option.riskFree(), option.spot(), option.strike(), option.carry()});
+        // Monotonically increase cost of carry and add the new option to a new row in the matrix
+        for (double b : mesh) {
+            matrix.push_back({option.expiry(), option.vol(), option.riskFree(), option.spot(), option.strike(), b});
         }
     } else if (property == "R" || property == "r" || property == "Risk-free" || property == "risk-free" ) {
 
         // Monotonically increase risk free rate and add the new option to a new row in the matrix
         for (double r : mesh) {
-            matrix.push_back({option.expiry(), option.vol(), r, option.spot(), option.strike(), option.carry()});
+            matrix.push_back({option.expiry(), option.vol(), r, option.spot(), option.strike(), r});
         }
-    } else if (property == "S" || property == "s" || property == "Spot" || property == "spot" ) {
-
-        // Monotonically increase spot price and add the new option to a new row in the matrix
-        for (double S : mesh) {
-            matrix.push_back({option.expiry(), option.vol(), option.riskFree(), S, option.strike(), option.carry()});
-        }
-    } else if (property == "K" || property == "k" || property == "Strike" || property == "strike" ) {
-
-        // Monotonically increase strike price and add the new option to a new row in the matrix
-        for (double K : mesh) {
-            matrix.push_back({option.expiry(), option.vol(), option.riskFree(), option.spot(), K, option.carry()});
-        }
-    } else if (property == "B" || property == "b" || property == "Beta" || property == "beta" ) {
-
-        // Monotonically increase beta and add the new option to a new row in the matrix
-        for (double b : mesh) {
-            matrix.push_back({option.expiry(), option.vol(), option.riskFree(), option.spot(), option.strike(), b});
-        }
+    } else {
+        // Otherwise, reuse the european stock options matrix because b and r are the only different parameters
+        matrix = europeanMatrix(mesh, option, property);
     }
 
     return matrix;
@@ -166,10 +144,10 @@ Matrix::futuresMatrix(const std::vector<double>& mesh, const Option &option, con
     // b=0 for Black-Scholes futures options model
     if (property == "B" || property == "b" || property == "Beta" || property == "beta" ) {
         for (double b : mesh) {
-            matrix.push_back({option.expiry(), b, option.riskFree(), option.spot(), option.strike(), 0});
+            matrix.push_back({option.expiry(), option.vol(), option.riskFree(), option.spot(), option.strike(), 0});
         }
     } else {
-        // Otherwise, reuse the stock options matrix because b is the only difference between the two matrices
+        // Otherwise, reuse the european stock options matrix because b and r are the only different parameters
         matrix = europeanMatrix(mesh, option, property);
     }
 

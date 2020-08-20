@@ -8,6 +8,7 @@
 #include "TestGroupAGreeks.hpp"
 #include "TestGroupB.hpp"
 #include "TestExtras.hpp"
+#include "TestOutFile.hpp"
 
 // Comment or uncomment to toggle test cases
 int main() {
@@ -29,6 +30,10 @@ int main() {
     TestGroupB groupB;
     groupB.PartB();
     groupB.PartCAndD();
+
+    // Test output file
+    TestOutFile outfile;
+    outfile.send();
 
     // Test extras
 //    TestExtras extrasTest;

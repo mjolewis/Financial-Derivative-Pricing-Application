@@ -36,6 +36,8 @@ public:
             const std::string& optType = "Call", const std::string& optFlavor = "European") const;
     double price(double T, double sig, double r, double S, double K, double b,
             const std::string& optType = "Call", const std::string& optFlavor = "European") const;
+    void price(double h, double start, double stop, double step, const Option& option,
+            const std::string& property, const bool isFuture) const;
 
     // Exact solutions for option sensitivities (Greeks)
     double delta(double T, double sig, double r, double S, double K, double b, const std::string& optType = "Call") const;

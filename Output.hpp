@@ -26,7 +26,8 @@ public:
 
     // Core functionality
     void sendToFile(double value) const;
-    void sendToFile(const std::vector<std::vector<double>>& matrix) const;
+    void sendToFile(const std::vector<double> meshPoints, const std::vector<std::vector<double>>& prices,
+            const std::vector<std::vector<double>>& deltas) const;
 
 };
 

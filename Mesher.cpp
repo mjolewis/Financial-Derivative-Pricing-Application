@@ -77,7 +77,7 @@ std::vector<double> Mesher::xarr() {
  * @param step_ The distance between mesh points
  * @return A {@link std::vector} containing mesh points
  */
-std::vector<double> Mesher::xarr(double start_, double stop_, double step_) {
+std::vector<double> Mesher::xarr(double start_, double stop_, double step_) const {
 
     double steps = (stop_ - start_) / step_;
 

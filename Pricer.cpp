@@ -15,7 +15,10 @@
 
 /**
  * Initialize a new Pricer
- * @tparam Mesher_ Provides a console interface to dynamically get option data
+ * @tparam Mesher_ Monotonically increases the specified option property. The interval is [start, stop] and each point
+ * is separated by the step
+ * @tparam Matrix_ Creates a matrix of option parameters where each new row has a property that has been monotonically
+ * increased by the Mesher
  * @tparam RNG_ Provides access to the Boost Random library to generate Gaussian variates
  * @tparam Output_ Output class that sends option data to a file specified by the user
  * @throws OutOfMemoryError Indicates insufficient memory for this new Pricer
@@ -25,7 +28,10 @@ Pricer<Mesher_, Matrix_, RNG_, Output_>::Pricer() : Mesher_(), Matrix_(), RNG_()
 
 /**
  * Initialize a new Pricer
- * @tparam Mesher_ Provides a console interface to dynamically get option data
+ * @tparam Mesher_ Monotonically increases the specified option property. The interval is [start, stop] and each point
+ * is separated by the step
+ * @tparam Matrix_ Creates a matrix of option parameters where each new row has a property that has been monotonically
+ * increased by the Mesher
  * @tparam RNG_ Provides access to the Boost Random library to generate Gaussian variates
  * @tparam Output_ Output class that sends option data to a file specified by the user
  * @param optionData_ A {@link boost::tuple} with T, sig, r, S, K, optType
@@ -36,7 +42,10 @@ Pricer<Mesher_, Matrix_, RNG_, Output_>::Pricer(const Option &option_) : Mesher_
 
 /**
  * Initialize a new Pricer whose members are a deep copy of the source
- * @tparam Mesher_ Provides a console interface to dynamically get option data
+ * @tparam Mesher_ Monotonically increases the specified option property. The interval is [start, stop] and each point
+ * is separated by the step
+ * @tparam Matrix_ Creates a matrix of option parameters where each new row has a property that has been monotonically
+ * increased by the Mesher
  * @tparam RNG_ Provides access to the Boost Random library to generate Gaussian variates
  * @tparam Output_ Output class that sends option data to a file specified by the user
  * @param source A Pricer whose data members will be deeply copied into this new Pricer
@@ -47,7 +56,10 @@ Pricer<Mesher_, Matrix_, RNG_, Output_>::Pricer(const Pricer &source) : Mesher_(
 
 /**
  * Destroy this Pricer
- * @tparam Mesher_ Provides a console interface to dynamically get option data
+ * @tparam Mesher_ Monotonically increases the specified option property. The interval is [start, stop] and each point
+ * is separated by the step
+ * @tparam Matrix_ Creates a matrix of option parameters where each new row has a property that has been monotonically
+ * increased by the Mesher
  * @tparam RNG_ Provides access to the Boost Random library to generate Gaussian variates
  * @tparam Output_ Output class that sends option data to a file specified by the user
  */
@@ -56,7 +68,10 @@ Pricer<Mesher_, Matrix_, RNG_, Output_>::~Pricer() {}
 
 /**
  * Deeply copy the source data members into this Pricer
- * @tparam Mesher_ Provides a console interface to dynamically get option data
+ * @tparam Mesher_ Monotonically increases the specified option property. The interval is [start, stop] and each point
+ * is separated by the step
+ * @tparam Matrix_ Creates a matrix of option parameters where each new row has a property that has been monotonically
+ * increased by the Mesher
  * @tparam RNG_ Provides access to the Boost Random library to generate Gaussian variates
  * @tparam Output_ Output class that sends option data to a file specified by the user
  * @param source A Pricer whose data members will be deeply copied into this new Pricer
@@ -85,7 +100,10 @@ Pricer<Mesher_, Matrix_, RNG_, Output_> &Pricer<Mesher_, Matrix_, RNG_, Output_>
 /**
  * Calculate closed form solution for Delta
  * @note Delta is the change in the option’s price or premium due to the change in the Underlying futures price
- * @tparam Mesher_ Provides a console interface to dynamically get option data
+ * @tparam Mesher_ Monotonically increases the specified option property. The interval is [start, stop] and each point
+ * is separated by the step
+ * @tparam Matrix_ Creates a matrix of option parameters where each new row has a property that has been monotonically
+ * increased by the Mesher
  * @tparam RNG_ Provides access to the Boost Random library to generate Gaussian variates
  * @tparam Output_ Output class that sends option data to a file specified by the user
  * @param T Expiry
@@ -112,7 +130,10 @@ double Pricer<Mesher_, Matrix_, RNG_, Output_>::delta(double T, double sig, doub
 /**
  * Calculate closed form solution for Delta
  * @note Delta is the change in the option’s price or premium due to the change in the Underlying futures price
- * @tparam Mesher_ Provides a console interface to dynamically get option data
+ * @tparam Mesher_ Monotonically increases the specified option property. The interval is [start, stop] and each point
+ * is separated by the step
+ * @tparam Matrix_ Creates a matrix of option parameters where each new row has a property that has been monotonically
+ * increased by the Mesher
  * @tparam RNG_ Provides access to the Boost Random library to generate Gaussian variates
  * @tparam Output_ Output class that sends option data to a file specified by the user
  * @param matrix A matrix of option parameters where each row has T, sig, r, S, K, b
@@ -135,7 +156,10 @@ Pricer<Mesher_, Matrix_, RNG_, Output_>::delta(const std::vector<std::vector<dou
 /**
  * FDM to approximate option delta using divided differences
  * @note Delta is the change in the option’s price or premium due to the change in the Underlying futures price
- * @tparam Mesher_ Provides a console interface to dynamically get option data
+ * @tparam Mesher_ Monotonically increases the specified option property. The interval is [start, stop] and each point
+ * is separated by the step
+ * @tparam Matrix_ Creates a matrix of option parameters where each new row has a property that has been monotonically
+ * increased by the Mesher
  * @tparam RNG_ Provides access to the Boost Random library to generate Gaussian variates
  * @tparam Output_ Output class that sends option data to a file specified by the user
  * @param h Difference parameter
@@ -164,7 +188,10 @@ double Pricer<Mesher_, Matrix_, RNG_, Output_>::delta(double h, double T, double
 /**
  * FDM to approximate option delta using divided differences
  * @note Delta is the change in the option’s price or premium due to the change in the Underlying futures price
- * @tparam Mesher_ Provides a console interface to dynamically get option data
+ * @tparam Mesher_ Monotonically increases the specified option property. The interval is [start, stop] and each point
+ * is separated by the step
+ * @tparam Matrix_ Creates a matrix of option parameters where each new row has a property that has been monotonically
+ * increased by the Mesher
  * @tparam RNG_ Provides access to the Boost Random library to generate Gaussian variates
  * @tparam Output_ Output class that sends option data to a file specified by the user
  * @param h Difference parameter
@@ -191,7 +218,10 @@ double Pricer<Mesher_, Matrix_, RNG_, Output_>::delta(double h, const std::vecto
 /**
  * FDM to approximate option delta using divided differences
  * @note Delta is the change in the option’s price or premium due to the change in the Underlying futures price
- * @tparam Mesher_ Provides a console interface to dynamically get option data
+ * @tparam Mesher_ Monotonically increases the specified option property. The interval is [start, stop] and each point
+ * is separated by the step
+ * @tparam Matrix_ Creates a matrix of option parameters where each new row has a property that has been monotonically
+ * increased by the Mesher
  * @tparam RNG_ Provides access to the Boost Random library to generate Gaussian variates
  * @tparam Output_ Output class that sends option data to a file specified by the user
  * @param h Difference parameter
@@ -218,7 +248,10 @@ Pricer<Mesher_, Matrix_, RNG_, Output_>::delta(double h, const std::vector<std::
 /**
  * Calculate closed form solution for Gamma
  * @note Gamma is the rate of change in an options delta per one point move in the underlying asset's price
- * @tparam Mesher_ Provides a console interface to dynamically get option data
+ * @tparam Mesher_ Monotonically increases the specified option property. The interval is [start, stop] and each point
+ * is separated by the step
+ * @tparam Matrix_ Creates a matrix of option parameters where each new row has a property that has been monotonically
+ * increased by the Mesher
  * @tparam RNG_ Provides access to the Boost Random library to generate Gaussian variates
  * @tparam Output_ Output class that sends option data to a file specified by the user
  * @param T Expiry
@@ -243,7 +276,10 @@ double Pricer<Mesher_, Matrix_, RNG_, Output_>::gamma(double T, double sig, doub
 /**
  * Calculate closed form solution for Gamma
  * @note Gamma is the rate of change in an options delta per one point move in the underlying asset's price
- * @tparam Mesher_ Provides a console interface to dynamically get option data
+ * @tparam Mesher_ Monotonically increases the specified option property. The interval is [start, stop] and each point
+ * is separated by the step
+ * @tparam Matrix_ Creates a matrix of option parameters where each new row has a property that has been monotonically
+ * increased by the Mesher
  * @tparam RNG_ Provides access to the Boost Random library to generate Gaussian variates
  * @tparam Output_ Output class that sends option data to a file specified by the user
  * @param matrix A matrix of option parameters (e.g. T, sig, r, S, K, b)
@@ -266,10 +302,13 @@ Pricer<Mesher_, Matrix_, RNG_, Output_>::gamma(const std::vector<std::vector<dou
 /**
  * FDM to approximate Gamma using divided differences
  * @note Gamma is the rate of change in an options delta per one point move in the underlying asset's price
- * @tparam Mesher_ Provides a console interface to dynamically get option data
+ * @tparam Mesher_ Monotonically increases the specified option property. The interval is [start, stop] and each point
+ * is separated by the step
+ * @tparam Matrix_ Creates a matrix of option parameters where each new row has a property that has been monotonically
+ * increased by the Mesher
  * @tparam RNG_ Provides access to the Boost Random library to generate Gaussian variates
  * @tparam Output_ Output class that sends option data to a file specified by the user
- * @param h Smaller values of h produce better approximations but we need to avoid round-off errors
+ * @param h Difference parameter
  * @param option A call or put option used to approximate gamma
  * @return An approximation of Gamma for the given option
  */
@@ -288,7 +327,10 @@ double Pricer<Mesher_, Matrix_, RNG_, Output_>::gamma(double h, const std::vecto
 /**
  * FDM to approximate Gamma using divided differences
  * @note Gamma is the rate of change in an options delta per one point move in the underlying asset's price
- * @tparam Mesher_ Provides a console interface to dynamically get option data
+ * @tparam Mesher_ Monotonically increases the specified option property. The interval is [start, stop] and each point
+ * is separated by the step
+ * @tparam Matrix_ Creates a matrix of option parameters where each new row has a property that has been monotonically
+ * increased by the Mesher
  * @tparam RNG_ Provides access to the Boost Random library to generate Gaussian variates
  * @tparam Output_ Output class that sends option data to a file specified by the user
  * @return A matrix of Gamma approximations (one solution for each row of options in the input matrix)
@@ -311,7 +353,10 @@ Pricer<Mesher_, Matrix_, RNG_, Output_>::gamma(double h, const std::vector<std::
 /**
  * Calculate closed form solution for Vega
  * @note Measures option sensitivity to implied vol (e.g. change in the option price per point change in implied vol)
- * @tparam Mesher_ Provides a console interface to dynamically get option data
+ * @tparam Mesher_ Monotonically increases the specified option property. The interval is [start, stop] and each point
+ * is separated by the step
+ * @tparam Matrix_ Creates a matrix of option parameters where each new row has a property that has been monotonically
+ * increased by the Mesher
  * @tparam RNG_ Provides access to the Boost Random library to generate Gaussian variates
  * @tparam Output_ Output class that sends option data to a file specified by the user
  * @param T Expiry
@@ -335,8 +380,53 @@ double Pricer<Mesher_, Matrix_, RNG_, Output_>::vega(double T, double sig, doubl
  *********************************************************************************************************************/
 
 /**
+ *
+ * @tparam Mesher_ Monotonically increases the specified option property. The interval is [start, stop] and each point
+ * is separated by the step
+ * @tparam Matrix_ Creates a matrix of option parameters where each new row has a property that has been monotonically
+ * increased by the Mesher
+ * @tparam RNG_ Provides access to the Boost Random library to generate Gaussian variates
+ * @tparam Output_ Output class that sends option data to a file specified by the user
+ * @param h Difference parameter
+ * @param start Start point of interval
+ * @param stop End point of interval
+ * @param step The step size within the interval
+ * @param option A financial deriviative with parameters T, sig, r, S, K, b, optType, optFlavor
+ * @param property The option parameter which will be monotonically increased by the Mesher
+ * @param isFuture True to calculate Greeks for a futures option. False to calculate Greeks for a stock option
+ */
+template<typename Mesher_, typename Matrix_, typename RNG_, typename Output_>
+void
+Pricer<Mesher_, Matrix_, RNG_, Output_>::price(double h, double start, double stop, double step, const Option& option,
+const std::string& property, const bool isFuture) const {
+
+    std::vector<double> mesh = Mesher_::xarr(start, stop, step);     // Generate the mesh points for the matrix
+
+    std::vector<std::vector<double>> matrix;
+    if (isFuture) {
+        matrix = Matrix_::futuresMatrix(mesh, option, property);
+    } else if (option.flavor() == "European" || option.flavor() == "european") {
+        matrix = Matrix_::europeanMatrix(mesh, option, property);
+    } else {
+        matrix = Matrix_::americanMatrix(mesh, option, property);
+    }
+
+    // Create and fill containers with option data
+    std::vector<std::vector<double>> optionPrices = price(matrix, option.type(), option.flavor());
+    std::vector<std::vector<double>> deltas = delta(h, matrix, option.type(), option.flavor());
+    //std::vector<std::vector<double>> gammas = gamma(h, matrix);
+
+    // Send data to an output file
+    Output::sendToFile(mesh, optionPrices, deltas);
+}
+
+
+/**
  * Receives a matrix of options and prices each of of them
- * @tparam Mesher_ Provides a console interface to dynamically get option data
+ * @tparam Mesher_ Monotonically increases the specified option property. The interval is [start, stop] and each point
+ * is separated by the step
+ * @tparam Matrix_ Creates a matrix of option parameters where each new row has a property that has been monotonically
+ * increased by the Mesher
  * @tparam RNG_ Provides access to the Boost Random library to generate Gaussian variates
  * @tparam Output_ Output class that sends option data to a file specified by the user
  * @param matrix Option parameters
@@ -360,7 +450,10 @@ Pricer<Mesher_, Matrix_, RNG_, Output_>::price(const std::vector<std::vector<dou
 
 /**
  * The core pricing engine that uses the Black-Scholes formula
- * @tparam Mesher_ Provides a console interface to dynamically get option data
+ * @tparam Mesher_ Monotonically increases the specified option property. The interval is [start, stop] and each point
+ * is separated by the step
+ * @tparam Matrix_ Creates a matrix of option parameters where each new row has a property that has been monotonically
+ * increased by the Mesher
  * @tparam RNG_ Provides access to the Boost Random library to generate Gaussian variates
  * @tparam Output_ Output class that sends option data to a file specified by the user
  * @param T Expiry
