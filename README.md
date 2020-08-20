@@ -26,6 +26,4 @@ The system was decomposed into smaller subsystems with each subsystem having a w
 ![UML](https://user-images.githubusercontent.com/12025538/90795325-e7080880-e2db-11ea-98c2-d570c67e2c91.png)
 
 # Output
-The output data is sent directly to Microsoft Excel by default and, therefore, you must have Excel installed on your system. To do this, you need to update the mso.dll, vbe6ext.olb, and EXCEL.exe file paths to point to wherever these files are installed on your system. 
-
-The Output folder included in this project provides sample output data that you can use as a reference.
+The output data can be sent directly to the console or to an an OptionData.csv file on the current path. Sending to OptionData.csv is the recommended approach because it allows you to more easily analyze, chart data, and share data.
