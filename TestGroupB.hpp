@@ -56,11 +56,6 @@ public:
             std::cout << std::setw(15) << row[0]
             << std::setw(15) << row[1] << "\n";
         }
-//        for (int i = 0; i < prices.size(); ++i) {
-//            std::cout << std::setprecision(6)
-//                      << std::setw(15) << prices[0]
-//                      << std::setw(15) << prices[1] << "\n";
-//        }
 
         std::cout << "\n\n*******************************************************************\n\n";
         std::cout << "Completed Group B Pricing Part B\n";

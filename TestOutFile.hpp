@@ -36,7 +36,7 @@ public:
         // Begin simulation
         std::cout << "\n*******************************************************************\n\n";
         std::cout << "Black-Scholes Option Pricing Engine\n";
-        std::cout << "Test Batch: Group B Pricing Part B\n";
+        std::cout << "Test .csv output\n";
         std::cout << "Authored By: Michael Lewis\n";
         std::cout << "\n*******************************************************************" << std::endl;
 
@@ -44,7 +44,7 @@ public:
         //pricer.priceAmerican(0.1, option.spot(), option.spot() + 10, 0.5, option, "S");
 
         std::cout << "\n\n*******************************************************************\n\n";
-        std::cout << "Completed Group B Pricing Part B\n";
+        std::cout << "Completed Simulation - Check for OptionData.csv\n";
         std::cout << "\n*******************************************************************" << std::endl;
     }
 };

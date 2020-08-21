@@ -14,17 +14,17 @@
 int main() {
 
     // Group A Pricing Tests
-//    TestGroupAPricing groupAPricing;
-//    groupAPricing.PartOne();
-//    groupAPricing.PartTwo();
-//    groupAPricing.PartThree();
-//    groupAPricing.PartFour();
+    TestGroupAPricing groupAPricing;
+    groupAPricing.PartOne();
+    groupAPricing.PartTwo();
+    groupAPricing.PartThree();
+    groupAPricing.PartFour();
 
     // Group A Greeks Tests;
-//    TestGroupAGreeks groupAGreeks;
-//    groupAGreeks.PartOne();
-//    groupAGreeks.PartTwoAndThree();
-//    groupAGreeks.PartFour();
+    TestGroupAGreeks groupAGreeks;
+    groupAGreeks.PartOne();
+    groupAGreeks.PartTwoAndThree();
+    groupAGreeks.PartFour();
 
     // Group B Pricing Tests
     TestGroupB groupB;
