@@ -1,4 +1,4 @@
-# Black-Scholes-Option-Pricer
+# Financial-Derivative-Pricing-Application
 
 # Description
 The option pricing application can be used by Financial Engineers to price financial derivatives. In particular, the pricing application provides solutions for European and Perpetual American equity options and their associated option sensitivities (Greeks).
