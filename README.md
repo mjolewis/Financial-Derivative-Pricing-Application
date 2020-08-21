@@ -19,7 +19,7 @@ Note that there are multiple ways to get Boost.
 The system was decomposed into smaller subsystems with each subsystem having a well-defined responsibility. The descriptions provided below highlight these subsystems along with how and why they are used. At a macro level, the Pricer acts as the kernel and delegates responsibility whenever it's logical to do so. 
 
 ***Instrument***\
-The base class for all Options. This class is currently plain, but could provide additional benefits in the future as more instruments are added to the system or if we wanted to enforce certain constraints on any derived class.
+The base class for all Options. This class is currently plain but could provide additional benefits in the future as more instruments are added to the system or if we wanted to enforce certain constraints on any derived class.
 
 ***Option***\
 A financial derivative that has the following core member data (T, sig, r, S, K, b). An Option also provides accessors and mutators for each of the core member datum.
@@ -29,7 +29,7 @@ There is also a relationship between Call and Put prices of a European option. T
 Finally, you can use the Put-Call relationship as a mechanism to calculate the Call (or Put) price for a corresponding Put (or Call) price or as a mechanism to check if a given set of Put and Call prices satisfy parity. If not, then an arbitrage opportunity exists.
 
 ***Mesher***\
-Creates a one dimensional domain of mesh points. The mesh points are bounded by [start, stop] and separated by a step size. You can use the Mesher to create a mesh array of a monotonically increasing range for any of the Option datum.
+Creates a one-dimensional domain of mesh points. The mesh points are bounded by [start, stop] and separated by a step size. You can use the Mesher to create a mesh array of a monotonically increasing range for any of the Option datum.
 
 This mesh array is fed into the Matrix.
 
@@ -48,7 +48,7 @@ The Pricer relies on Template Metroprogamming techniques. In particular, the Pri
 
 A Pricer has the obvious job of pricing a financial derivative. As such, it includes functions to appropriately price European and Perpetual American equity options using the generalized Black-Scholes formulae. Additionally, the Pricer calculates option sensitivities (Delta and Gamma) using either the closed-form or divided difference formulae. 
 
-Finally, the pricing functions always return a matrix where the first element of each row is the Call price and the second element of each row is the Put price. This approach ensures that you always receives all relevant pricing information and makes the system more usable from an analytics perspective.
+Finally, the pricing functions always return a matrix where the first element of each row is the Call price and the second element of each row is the Put price. This approach ensures that you always receive all relevant pricing information and makes the system more usable from an analytics perspective.
 
 ***Output***\
 The Pricer sends multiple matrices of option data directly to the Output. This includes matrices for Mesh Points, Call and Put prices, Call and Put Deltas, and Gammas. Upon receiving these matrices, the Output's sole job is to create a CSV file and parse the matrices into rows and columns. 
