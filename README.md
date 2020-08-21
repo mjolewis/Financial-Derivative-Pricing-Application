@@ -16,7 +16,7 @@ Note that there are multiple ways to get Boost.
 3. MacPorts: https://www.macports.org/ and run sudo port install boost 
 
 # System Analysis
-The system was decomposed into smaller subsystems with each subsystem having a well-defined responsibility. The concept mapping below highlights the subsystems used and their associated relationship and data flow. At a macro level, the Pricer acts as the kernel and delegates responsibility whenever it's logical to do so. 
+The system was decomposed into smaller subsystems with each subsystem having a well-defined responsibility. The descriptions provided below highlights these subsystems along with how and why they are used. At a macro level, the Pricer acts as the kernel and delegates responsibility whenever it's logical to do so. 
 
 *Instrument*\
 The base class for all Options. This class is currently plain, but could provide additional benefits in the future as more instruments are added to the system or if we wanted to enforce certain constraints on any derived class.
