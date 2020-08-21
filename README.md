@@ -22,6 +22,20 @@ Note that there are multiple ways to get Boost.
 # System Analysis
 The system was decomposed into smaller subsystems with each subsystem having a well-defined responsibility. The concept mapping below highlights the subsystems used and their associated relationship and data flow. At a macro level, the Pricer acts as the kernal and delegates responsibility whenever it's logical to do so. 
 
+*Instrument*
+
+*Option*
+
+*Mesher*
+
+*Matrix*
+
+*RNG*
+
+*Pricer*
+
+*Output*
+
 # System Design
 ![UML](https://user-images.githubusercontent.com/12025538/90795325-e7080880-e2db-11ea-98c2-d570c67e2c91.png)
 
