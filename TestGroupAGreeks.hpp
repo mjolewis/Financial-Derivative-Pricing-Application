@@ -39,7 +39,7 @@ public:
         std::cout << "Authored By: Michael Lewis\n";
         std::cout << "\n*******************************************************************" << std::endl;
 
-        std::vector<double> prices = pricer.delta(option.expiry(), option.vol(), option.riskFree(), option.spot(),
+        std::vector<std::vector<double>> prices = pricer.delta(option.expiry(), option.vol(), option.riskFree(), option.spot(),
                                                           option.strike(), option.carry());
         std::cout << "\nExpiry: " << option.expiry()
                   << "\nVolatility: " << option.vol()
@@ -52,10 +52,10 @@ public:
                   << std::setw(15) << "-----------"
                   << std::setw(15) << "-----------\n";
 
-        for (int i = 0; i < prices.size(); ++i) {
-            std::cout << std::setprecision(6)
-                      << std::setw(15) << prices[0]
-                      << std::setw(15) << prices[1] << "\n";
+        for (const auto& row : prices) {
+            std::cout << std::setprecision(7)
+                      << std::setw(15) << row[0]
+                      << std::setw(15) << row[1] << "\n";
         }
 
         std::cout << "\n\n*******************************************************************\n\n";
@@ -93,7 +93,7 @@ public:
 
         mesh = mesher.xarr(option.spot(), option.spot() + 5, 0.5);
         options = matrix.futuresMatrix(mesh, option, "S");
-        prices = pricer.gamma(options);
+        std::vector<double> gamma = pricer.gamma(options);
 
         // Iterate through the matrix and print the option prices and sensitivities
         std::cout << "\nExact solution for Gamma as a function of monotonically increasing Spot:\n"
@@ -104,7 +104,7 @@ public:
         for (int i = 0; i < options.size(); ++i) {
             std::cout << std::setprecision(7)
                       << std::setw(15) << mesh[i]
-                      << std::setw(15) << prices[i][0] << "\n";
+                      << std::setw(15) << gamma[i] << "\n";
         }
 
         std::cout << "\n\n*******************************************************************\n\n";
@@ -127,7 +127,7 @@ public:
         std::vector<std::vector<double>> prices = pricer.deltaEuropean(.1, options);
 
         // Iterate through the matrix and print the option prices and sensitivities
-        std::cout << "\n\nBatch 1 (h = 0.1):"
+        std::cout << "\n\nh = 0.1:"
                   << "\nFDM approximation for Call and Put Delta for a monotonically increasing Spot:\n"
                   << std::setw(15) << "Spot Price"
                   << std::setw(15) << "Call Delta"
@@ -144,10 +144,10 @@ public:
 
         mesh = mesher.xarr(option.spot(), option.spot() + 5, 0.5);
         options = matrix.futuresMatrix(mesh, option, "S");
-        prices = pricer.gammaEuropean(.1, options);
+        std::vector<double> gamma = pricer.gammaEuropean(.1, options);
 
         // Iterate through the matrix and print the option prices and sensitivities
-        std::cout << "\n\nBatch 1 (h = 0.1):"
+        std::cout << "\n\nh = 0.1:"
                   << "\nFDM approximation for Gamma as a function of monotonically increasing Spot:\n"
                   << std::setw(15) << "Spot Price"
                   << std::setw(15) << "Gamma\n"
@@ -156,7 +156,45 @@ public:
         for (int i = 0; i < options.size(); ++i) {
             std::cout << std::setprecision(7)
                       << std::setw(15) << mesh[i]
-                      << std::setw(15) << prices[i][0] << "\n";
+                      << std::setw(15) << gamma[i] << "\n";
+        }
+
+        // FDM for monotonically increasing Spot
+        mesh = mesher.xarr(option.spot(), option.spot() + 5, 0.5);
+        options = matrix.futuresMatrix(mesh, option, "S");
+        prices = pricer.deltaEuropean(.5, options);
+
+        // Iterate through the matrix and print the option prices and sensitivities
+        std::cout << "\n\nh = .5:"
+                  << "\nFDM approximation for Call and Put Delta for a monotonically increasing Spot:\n"
+                  << std::setw(15) << "Spot Price"
+                  << std::setw(15) << "Call Delta"
+                  << std::setw(15) << "Put Delta\n"
+                  << std::setw(15) << "-----------"
+                  << std::setw(15) << "-----------"
+                  << std::setw(15) << "-----------\n";
+        for (int i = 0; i < options.size(); ++i) {
+            std::cout << std::setprecision(7)
+                      << std::setw(15) << mesh[i]
+                      << std::setw(15) << prices[i][0]
+                      << std::setw(15) << prices[i][1] << "\n";
+        }
+
+        mesh = mesher.xarr(option.spot(), option.spot() + 5, 0.5);
+        options = matrix.futuresMatrix(mesh, option, "S");
+        gamma = pricer.gammaEuropean(.5, options);
+
+        // Iterate through the matrix and print the option prices and sensitivities
+        std::cout << "\n\nh = 0.5:"
+                  << "\nFDM approximation for Gamma as a function of monotonically increasing Spot:\n"
+                  << std::setw(15) << "Spot Price"
+                  << std::setw(15) << "Gamma\n"
+                  << std::setw(15) << "-----------"
+                  << std::setw(15) << "-----------\n";
+        for (int i = 0; i < options.size(); ++i) {
+            std::cout << std::setprecision(7)
+                      << std::setw(15) << mesh[i]
+                      << std::setw(15) << gamma[i] << "\n";
         }
 
         // FDM for monotonically increasing Spot
@@ -165,7 +203,7 @@ public:
         prices = pricer.deltaEuropean(2, options);
 
         // Iterate through the matrix and print the option prices and sensitivities
-        std::cout << "\n\nBatch 1 (h = .5):"
+        std::cout << "\n\nh = 2:"
                   << "\nFDM approximation for Call and Put Delta for a monotonically increasing Spot:\n"
                   << std::setw(15) << "Spot Price"
                   << std::setw(15) << "Call Delta"
@@ -182,10 +220,10 @@ public:
 
         mesh = mesher.xarr(option.spot(), option.spot() + 5, 0.5);
         options = matrix.futuresMatrix(mesh, option, "S");
-        prices = pricer.gammaEuropean(2, options);
+        gamma = pricer.gammaEuropean(2, options);
 
         // Iterate through the matrix and print the option prices and sensitivities
-        std::cout << "\n\nBatch 1 (h = 0.5):"
+        std::cout << "\n\nh = 2:"
                   << "\nFDM approximation for Gamma as a function of monotonically increasing Spot:\n"
                   << std::setw(15) << "Spot Price"
                   << std::setw(15) << "Gamma\n"
@@ -194,7 +232,7 @@ public:
         for (int i = 0; i < options.size(); ++i) {
             std::cout << std::setprecision(7)
                       << std::setw(15) << mesh[i]
-                      << std::setw(15) << prices[i][0] << "\n";
+                      << std::setw(15) << gamma[i] << "\n";
         }
 
 
