@@ -29,14 +29,14 @@ The base class for all Options. This class is currently plain, but could provide
 
 *RNG*
 
-*Pricer*
+*Pricer*\
 The Pricer relies on Template Metroprogamming techniques. In particular, the Pricer uses Template Inheritance to avoid creating false composition relationships because a Pricer does not have a HAS-A relationship with an RNG, Mesher, Matrix, or Output class. Template Inheritance also makes the system more efficient because it avoids passing potentially large objects around through aggregation techniques. Instead, each Pricer calls the default constructor for its inherited template parameters and those objects exist until the Pricer goes out of scope. Additionally, templates are parametric polymorphic, which is significantly faster than subtype polymorphism.
 
 A Pricer has the obvious job of pricing a financial derivative. As such, it includes functions to appropriately price European and Perpetual American equity options using the generalized Black-Scholes formulae. Additionally, the Pricer calculates option sensitivities (Delta and Gamma) using either the closed-form or divided difference formulae. 
 
 Finally, the pricing functions always return a matrix where the first element of each row is the Call price and the second element of each row is the Put price. This approach ensures the user always receives all relevant pricing information and makes the system more usable from an analytics perspective.
 
-*Output*
+*Output*\
 The Pricer sends multiple matrices of option data directly to the Output. This includes matrices for Mesh Points, Call and Put prices, Call and Put Deltas, and Gammas. Upon receiving these matrices, the Output's sole job is to create a CSV file and parse the matrices into rows and columns. 
 
 This approach enables a user to perform additional analysis on the option data and to also more easily share that data wherever appropriate.
