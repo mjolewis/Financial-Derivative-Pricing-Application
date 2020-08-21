@@ -50,14 +50,13 @@ void Output::csv(const std::vector<double>& meshPoints, const std::vector<std::v
                  const std::vector<std::vector<double> > &deltas) const {
 
     std::ofstream outFile;                       // Object for writing to a file
-    std::string fileName;
 
     outFile.open("OptionData.csv");
     if (outFile.is_open()) {
         outFile << "Mesh Points" << "," << "Call Price" << "," << "Put Price" << "," << "Call Delta" << ","
                 << "Put Delta"<< std::endl;
         for (int i = 0; i < prices.size(); ++i) {
-            outFile << meshPoints[i] << "," << prices[i][0] << "," << prices[i][1] << "," << deltas[i][0]
+            outFile << meshPoints[i] << "," << prices[i][0] << "," << prices[i][1] << "," << deltas[i][0] << ","
                     << deltas[i][1] << "," << std::endl;
         }
         outFile.close();
@@ -76,7 +75,6 @@ void Output::csv(const std::vector<double>& meshPoints, const std::vector<std::v
                  const std::vector<std::vector<double> > &deltas, const std::vector<double>& gammas) const {
 
     std::ofstream outFile;                       // Object for writing to a file
-    std::string fileName;
 
     outFile.open("OptionData.csv");
     if (outFile.is_open()) {
