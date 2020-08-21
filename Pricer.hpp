@@ -45,7 +45,6 @@ public:
     std::vector<std::vector<double>> delta(const std::vector<std::vector<double>>& matrix) const;
     double gamma(double T, double sig, double r, double S, double K, double b) const;
     std::vector<double> gamma(const std::vector<std::vector<double>>& matrix) const;
-    double vega(double T, double sig, double r, double S, double K, double b) const;
 
     // American Greeks using Finite difference methods
     std::vector<std::vector<double>> deltaAmerican(double h, double T, double sig, double r, double S, double K, double b) const;
