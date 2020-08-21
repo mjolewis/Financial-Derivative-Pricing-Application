@@ -18,16 +18,16 @@ Note that there are multiple ways to get Boost.
 # System Analysis
 The system was decomposed into smaller subsystems with each subsystem having a well-defined responsibility. The concept mapping below highlights the subsystems used and their associated relationship and data flow. At a macro level, the Pricer acts as the kernal and delegates responsibility whenever it's logical to do so. 
 
-*Instrument*
+*Instrument*\
 The base class for all Options. This class is currently plain, but could provide additional benefits in the future as more instruments are added to the system or if we wanted to enforce certain contraints on any derived class.
 
-*Option*
+*Option*\
 
-*Mesher*
+*Mesher*\
 
-*Matrix*
+*Matrix*\
 
-*RNG*
+*RNG*\
 
 *Pricer*\
 The Pricer relies on Template Metroprogamming techniques. In particular, the Pricer uses Template Inheritance to avoid creating false composition relationships because a Pricer does not have a HAS-A relationship with an RNG, Mesher, Matrix, or Output class. Template Inheritance also makes the system more efficient because it avoids passing potentially large objects around through aggregation techniques. Instead, each Pricer calls the default constructor for its inherited template parameters and those objects exist until the Pricer goes out of scope. Additionally, templates are parametric polymorphic, which is significantly faster than subtype polymorphism.
