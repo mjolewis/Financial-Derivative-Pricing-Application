@@ -26,4 +26,4 @@ The system was decomposed into smaller subsystems with each subsystem having a w
 ![UML](https://user-images.githubusercontent.com/12025538/90795325-e7080880-e2db-11ea-98c2-d570c67e2c91.png)
 
 # Output
-The output data can be sent directly to the console or to an an OptionData.csv file on the current path. Sending to OptionData.csv is the recommended approach because it allows you to more easily analyze, chart data, and share data.
+The output data can be written directly to the console or to an OptionData.csv file on the current path. Sending the option output data to OptionData.csv is the recommended approach because it allows you to more easily analyze, chart, and share data. See the sample-output folder for an example output file.
