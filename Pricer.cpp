@@ -514,31 +514,6 @@ Pricer<Mesher_, Matrix_, RNG_, Output_>::gammaEuropean(double h, const std::vect
     return gammas;
 }
 
-/**
- * Calculate closed form solution for Vega
- * @note Measures option sensitivity to implied vol (e.g. change in the option price per point change in implied vol)
- * @tparam Mesher_ Monotonically increases the specified option property. The interval is [start, stop] and each point
- * is separated by the step
- * @tparam Matrix_ Creates a matrix of option parameters where each new row has a property that has been monotonically
- * increased by the Mesher
- * @tparam RNG_ Provides access to the Boost Random library to generate Gaussian variates
- * @tparam Output_ Output class that sends option data to a file specified by the user
- * @param T Expiry
- * @param sig Volatility
- * @param r Risk-free rate
- * @param S Spot price
- * @param K Strike price
- * @param b Cost of carry
- * @return The rate of change in the option price with respect to volatility
- */
-template<typename Mesher_, typename Matrix_, typename RNG_, typename Output_>
-double Pricer<Mesher_, Matrix_, RNG_, Output_>::vega(double T, double sig, double r, double S, double K, double b) const {
-
-    double d1 = (log(S / K) + (b + (sig * sig) * 0.5) * T) / (sig * sqrt(T));
-
-    return (S * exp((b - r) * T) * RNG_::PDF(d1) * sqrt(T));
-}
-
 /* ********************************************************************************************************************
  * Core pricing functions - American Options
  *********************************************************************************************************************/
