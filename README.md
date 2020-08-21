@@ -42,7 +42,7 @@ The Pricer sends multiple matrices of option data directly to the Output. This i
 This approach enables a user to perform additional analysis on the option data and to also more easily share that data wherever appropriate.
 
 # System Design
-![UML](https://user-images.githubusercontent.com/12025538/90795325-e7080880-e2db-11ea-98c2-d570c67e2c91.png)
+![UML (1)](https://user-images.githubusercontent.com/12025538/90927449-2198a080-e3c3-11ea-9522-158d46427b8b.png)
 
 # Output
 The output data can be written directly to the console or to a CSV file on the current path. The CSV file is titled OptionData and is appended with the current date and time to create unique file names across multiple simulations.
