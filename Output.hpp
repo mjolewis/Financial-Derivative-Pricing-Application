@@ -26,9 +26,6 @@ public:
 
     // Core functionality
     void csv(const std::vector<double>& meshPoints, const std::vector<std::vector<double>>& prices,
-             const std::vector<std::vector<double>>& deltas) const;
-
-    void csv(const std::vector<double>& meshPoints, const std::vector<std::vector<double>>& prices,
              const std::vector<std::vector<double>>& deltas, const std::vector<double>& gammas) const;
 
 };

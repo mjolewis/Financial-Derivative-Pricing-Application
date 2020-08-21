@@ -569,9 +569,10 @@ void Pricer<Mesher_, Matrix_, RNG_, Output_>::priceAmerican(double h, double sta
     // Create and fill containers with option data
     std::vector<std::vector<double>> prices = priceAmerican(matrix);
     std::vector<std::vector<double>> deltas = deltaAmerican(h, matrix);
+    std::vector<double> gammas = gammaAmerican(h, matrix);
 
     // Send data to an output file
-    Output::csv(mesh, prices, deltas);
+    Output::csv(mesh, prices, deltas, gammas);
 }
 
 /**
