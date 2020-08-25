@@ -9,8 +9,6 @@
 
 #include <vector>
 
-#include "Option.hpp"
-
 class Mesher {
 private:
     double start, stop, step;                                        // Interval and step size

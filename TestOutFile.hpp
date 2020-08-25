@@ -1,5 +1,5 @@
 /**********************************************************************************************************************
- * Black-Scholes Option Pricer - Output option data to a CSV file
+ * Black-Scholes Option EuropeanOption - Output option data to a CSV file
  *
  * Created by Michael Lewis on 8/2/20.
  *********************************************************************************************************************/
@@ -12,19 +12,17 @@
 
 #include "Matrix.hpp"
 #include "Mesher.hpp"
-#include "Option.hpp"
 #include "Output.hpp"
-#include "Pricer.hpp"
+#include "EuropeanOption.hpp"
 #include "RNG.hpp"
 
 class TestOutFile {
 private:
 
     // Perpetual price is the time-homogenous price and is the same as the normal price when the expiry price T tends to infinity
-    Option europeanOption = Option(0.25, 0.3, 0.08, 60, 65, 0.08);
-    Option americanOption = Option(std::numeric_limits<double>::infinity(), 0.1, 0.1, 110, 100, 0.02);
+    EuropeanOption<Mesher, Matrix, RNG, Output> europeanOption = EuropeanOption<Mesher, Matrix, RNG, Output>(0.25, 0.3, 0.08, 60, 65, 0.08);
+    AmericanOption<Mesher, Matrix, Output> americanOption = AmericanOption<Mesher, Matrix, Output>(0.1, 0.1, 110, 100, 0.02);
 
-    Pricer<Mesher, Matrix, RNG, Output> pricer;                 // Pricing engine
 public:
     TestOutFile() {};
 
@@ -38,8 +36,8 @@ public:
         std::cout << "Authored By: Michael Lewis\n";
         std::cout << "\n*******************************************************************" << std::endl;
 
-        pricer.priceEuropean(0.1, europeanOption.spot(), europeanOption.spot() + 10, 0.5, europeanOption, "S");
-        pricer.priceAmerican(0.1, americanOption.spot(), americanOption.spot() + 10, 0.5, americanOption, "S");
+        europeanOption.price(0.1, europeanOption.spot(), europeanOption.spot() + 10, 0.5, "S");
+        americanOption.price(americanOption.spot(), americanOption.spot() + 10, 0.5, "S");
 
         std::cout << "\n\n*******************************************************************\n\n";
         std::cout << "Completed Simulation - Check for OptionData.csv\n";

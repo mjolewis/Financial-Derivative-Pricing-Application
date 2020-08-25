@@ -1,5 +1,5 @@
 /**********************************************************************************************************************
- * Generates model parameter for Pricer
+ * Generates model parameter for EuropeanOption
  *
  * Created by Michael Lewis on 7/31/20.
  *********************************************************************************************************************/
@@ -14,17 +14,10 @@ RNG::RNG() {}
 
 /**
  * Initialize a new RNG with the specified parameters
- * @param RNGName_ The random number generator to use
- * @throws OutOfMemoryError Indicates insufficient memory for this RNG
- */
-RNG::RNG(const std::string &RNGName_) : RNGName(RNGName_) {}
-
-/**
- * Initialize a new RNG with the specified parameters
  * @param source A RNG whose data members will be used to initialize this RNG
  * @throws OutOfMemoryError Indicates insufficient memory for this RNG
  */
-RNG::RNG(const RNG &source) : RNGName(source.RNGName) {}
+RNG::RNG(const RNG &source) {}
 
 /**
  * Destroy this RNG
@@ -40,13 +33,11 @@ RNG &RNG::operator=(const RNG &source) {
     // Avoid self-assign
     if (this == &source) { return *this; }
 
-    RNGName = source.RNGName;
-
     return *this;
 }
 
 /**
- * Generate N(x) for Black-Scholes Pricer
+ * Generate N(x) for Black-Scholes EuropeanOption
  * @return Probability that X will take on a value less than or equal to x
  */
 double RNG::CDF(double x) const {
@@ -55,7 +46,7 @@ double RNG::CDF(double x) const {
 }
 
 /**
- * Generate n(x) for Black-Scholes Pricer
+ * Generate n(x) for Black-Scholes EuropeanOption
  * @return Probability that X will take on a value greater than x
  */
 double RNG::PDF(double x) const {
@@ -64,11 +55,10 @@ double RNG::PDF(double x) const {
 }
 
 /**
- * Generate N(x) for Black-Scholes Pricer
+ * Generate N(x) for Black-Scholes EuropeanOption
  * @return A Gaussian random variate
  */
 double RNG::MersenneTwister() {
-    RNGName = "Mersenne Twister";
     boost::random::mt19937 rng;
 
     // Set the seed using the current time to generate more randomness
@@ -78,5 +68,3 @@ double RNG::MersenneTwister() {
     boost::normal_distribution<double> N(0, 1);
     return N(rng);
 }
-
-const std::string &RNG::getRNGName() const { return RNGName; }

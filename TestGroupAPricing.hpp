@@ -1,5 +1,5 @@
 /**********************************************************************************************************************
- * Black-Scholes Option Pricer - Group A
+ * Black-Scholes Option EuropeanOption - Group A
  *
  * Created by Michael Lewis on 8/2/20.
  *********************************************************************************************************************/
@@ -13,19 +13,18 @@
 
 #include "Matrix.hpp"
 #include "Mesher.hpp"
-#include "Option.hpp"
 #include "Output.hpp"
-#include "Pricer.hpp"
+#include "EuropeanOption.hpp"
 #include "RNG.hpp"
 
 class TestGroupAPricing {
 private:
-    Option option1 = Option(0.25, 0.30, 0.08, 60, 65, 0.08);
-    Option option2 = Option(1, 0.2, 0, 100, 100, 0);
-    Option option3 = Option(1, .5, .12, 5, 10, .12);
-    Option option4 = Option(30, .3, .08, 100, 100, 0.08);
+    EuropeanOption<Mesher, Matrix, RNG, Output> option1 = EuropeanOption<Mesher, Matrix, RNG, Output>(0.25, 0.30, 0.08, 60, 65, 0.08);
+    EuropeanOption<Mesher, Matrix, RNG, Output> option2 = EuropeanOption<Mesher, Matrix, RNG, Output>(1, 0.2, 0, 100, 100, 0);
+    EuropeanOption<Mesher, Matrix, RNG, Output> option3 = EuropeanOption<Mesher, Matrix, RNG, Output>(1, .5, .12, 5, 10, .12);
+    EuropeanOption<Mesher, Matrix, RNG, Output> option4 = EuropeanOption<Mesher, Matrix, RNG, Output>(30, .3, .08, 100, 100, 0.08);
 
-    Pricer<Mesher, Matrix, RNG, Output> pricer;                 // Pricing engine
+    EuropeanOption<Mesher, Matrix, RNG, Output> option;         // Pricing engine
     Mesher mesher;                                              // Meshing engine
     Matrix matrix;                                              // Matrix engine
 
@@ -54,8 +53,7 @@ public:
                   << std::setw(15) << "-----------"
                   << std::setw(15) << "-----------\n";
 
-        std::vector<std::vector<double>> prices = pricer.priceEuropean(option1.expiry(), option1.vol(), option1.riskFree(),
-                                                          option1.spot(), option1.strike(), option1.carry());
+        std::vector<std::vector<double>> prices = option1.price();
 
         for (const auto& row : prices) {
             std::cout << std::setprecision(6)
@@ -81,20 +79,13 @@ public:
                 << std::setw(15) << "-----------"
                 << std::setw(15) << "-----------\n";
 
-        prices = pricer.priceEuropean(option2.expiry(), option2.vol(), option2.riskFree(), option2.spot(),
-                                      option2.strike(), option2.carry());
+        prices = option2.price();
 
         for (const auto& row : prices) {
             std::cout << std::setprecision(6)
                       << std::setw(15) << row[0]
                       << std::setw(15) << row[1] << "\n";
         }
-
-//        for (int i = 0; i < prices.size(); ++i) {
-//            std::cout << std::setprecision(6)
-//                      << std::setw(15) << prices[0]
-//                      << std::setw(15) << prices[1] << "\n";
-//        }
 
         // Batch 3
         std::cout << "\n\nBatch 3:"
@@ -109,20 +100,13 @@ public:
                 << std::setw(15) << "-----------"
                 << std::setw(15) << "-----------\n";
 
-        prices = pricer.priceEuropean(option3.expiry(), option3.vol(), option3.riskFree(), option3.spot(),
-                                      option3.strike(), option3.carry());
+        prices = option3.price();
 
         for (const auto& row : prices) {
             std::cout << std::setprecision(6)
                       << std::setw(15) << row[0]
                       << std::setw(15) << row[1] << "\n";
         }
-
-//        for (int i = 0; i < prices.size(); ++i) {
-//            std::cout << std::setprecision(6)
-//                      << std::setw(15) << prices[0]
-//                      << std::setw(15) << prices[1] << "\n";
-//        }
 
         // Batch 4
         std::cout << "\n\nBatch 4:"
@@ -137,20 +121,13 @@ public:
                 << std::setw(15) << "-----------"
                 << std::setw(15) << "-----------\n";
 
-        prices = pricer.priceEuropean(option4.expiry(), option4.vol(), option4.riskFree(), option4.spot(),
-                                      option4.strike(), option4.carry());
+        prices = option4.price();
 
         for (const auto& row : prices) {
             std::cout << std::setprecision(6)
                       << std::setw(15) << row[0]
                       << std::setw(15) << row[1] << "\n";
         }
-
-//        for (int i = 0; i < prices.size(); ++i) {
-//            std::cout << std::setprecision(6)
-//                      << std::setw(15) << prices[0]
-//                      << std::setw(15) << prices[1] << "\n";
-//        }
 
 
         std::cout << "\n\n*******************************************************************\n\n";
@@ -231,8 +208,9 @@ public:
 
         // Batch 1
         std::vector<double> mesh = mesher.xarr(option1.spot(), option1.spot() + 5, 0.5);
-        std::vector<std::vector<double>> options = matrix.europeanMatrix(mesh, option1, "S");
-        std::vector<std::vector<double>> prices = pricer.priceEuropean(options);
+        std::vector<std::vector<double>> options = Matrix::matrix(mesh, "S", option1.expiry(),
+                option1.vol(), option1.riskFree(), option1.spot(), option1.strike(), option1.carry());
+        std::vector<std::vector<double>> prices = option.price(options);
 
         // Iterate through the matrix and print the option prices and sensitivities
         std::cout << "\n\nBatch 1:"
@@ -252,8 +230,9 @@ public:
 
         // Batch 2
         mesh = mesher.xarr(option2.spot(), option2.spot() + 5, 0.5);
-        options = matrix.europeanMatrix(mesh, option2, "S");
-        prices = pricer.priceEuropean(options);
+        options = Matrix::matrix(mesh, "S", option2.expiry(),
+                                 option2.vol(), option2.riskFree(), option2.spot(), option2.strike(), option2.carry());
+        prices = option.price(options);
 
         // Iterate through the matrix and print the option prices and sensitivities
         std::cout << "\n\nBatch 2:"
@@ -273,8 +252,9 @@ public:
 
         // Batch 3
         mesh = mesher.xarr(option3.spot(), option3.spot() + 5, 0.5);
-        options = matrix.europeanMatrix(mesh, option3, "S");
-        prices = pricer.priceEuropean(options);
+        options = Matrix::matrix(mesh, "S", option3.expiry(),
+                                 option3.vol(), option3.riskFree(), option3.spot(), option3.strike(), option3.carry());
+        prices = option.price(options);
 
         // Iterate through the matrix and print the option prices and sensitivities
         std::cout << "\n\nBatch 3:"
@@ -294,8 +274,9 @@ public:
 
         // Batch 4
         mesh = mesher.xarr(option4.spot(), option4.spot() + 5, 0.5);
-        options = matrix.europeanMatrix(mesh, option4, "S");
-        prices = pricer.priceEuropean(options);
+        options = Matrix::matrix(mesh, "S", option4.expiry(),
+                                 option4.vol(), option4.riskFree(), option4.spot(), option4.strike(), option4.carry());
+        prices = option.price(options);
 
         // Iterate through the matrix and print the option prices and sensitivities
         std::cout << "\n\nBatch 4:"
@@ -329,8 +310,9 @@ public:
 
         // Batch 1
         std::vector<double> mesh = mesher.xarr(option1.expiry(), option1.expiry() + 5, 0.5);
-        std::vector<std::vector<double>> options = matrix.europeanMatrix(mesh, option1, "T");
-        std::vector<std::vector<double>> prices = pricer.priceEuropean(options);
+        std::vector<std::vector<double>> options = Matrix::matrix(mesh, "T", option1.expiry(),
+                option1.vol(), option1.riskFree(), option1.spot(), option1.strike(), option1.carry());
+        std::vector<std::vector<double>> prices = option.price(options);
 
         // Iterate through the matrix and print the option prices and sensitivities
         std::cout << "\n\nBatch 1:"
@@ -350,8 +332,9 @@ public:
 
         // Batch 2
         mesh = mesher.xarr(option2.vol(), option2.vol() + 5, 0.5);
-        options = matrix.europeanMatrix(mesh, option2, "sig");
-        prices = pricer.priceEuropean(options);
+        options = Matrix::matrix(mesh, "sig", option2.expiry(),option2.vol(), option2.riskFree(),
+                option2.spot(), option2.strike(), option2.carry());
+        prices = option.price(options);
 
         // Iterate through the matrix and print the option prices and sensitivities
         std::cout << "\n\nBatch 2:"
@@ -371,8 +354,9 @@ public:
 
         // Batch 3
         mesh = mesher.xarr(option3.strike(), option3.strike() + 5, 0.5);
-        options = matrix.europeanMatrix(mesh, option3, "K");
-        prices = pricer.priceEuropean(options);
+        options = Matrix::matrix(mesh, "K", option3.expiry(),option3.vol(), option3.riskFree(),
+                                 option3.spot(), option3.strike(), option3.carry());
+        prices = option.price(options);
 
         // Iterate through the matrix and print the option prices and sensitivities
         std::cout << "\n\nBatch 3:"
@@ -392,8 +376,9 @@ public:
 
         // Batch 4
         mesh = mesher.xarr(option4.riskFree(), option4.riskFree() + .05, 0.005);
-        options = matrix.europeanMatrix(mesh, option4, "r");
-        prices = pricer.priceEuropean(options);
+        options = Matrix::matrix(mesh, "r", option4.expiry(),option4.vol(), option4.riskFree(),
+                                 option4.spot(), option4.strike(), option4.carry());
+        prices = option.price(options);
 
         // Iterate through the matrix and print the option prices and sensitivities
         std::cout << "\n\nBatch 4:"

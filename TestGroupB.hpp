@@ -1,5 +1,5 @@
 /**********************************************************************************************************************
- * Black-Scholes Option Pricer - Group A
+ * Black-Scholes Option EuropeanOption - Group A
  *
  * Created by Michael Lewis on 8/2/20.
  *********************************************************************************************************************/
@@ -12,18 +12,18 @@
 
 #include "Matrix.hpp"
 #include "Mesher.hpp"
-#include "Option.hpp"
 #include "Output.hpp"
-#include "Pricer.hpp"
+#include "AmericanOption.hpp"
+#include "EuropeanOption.hpp"
 #include "RNG.hpp"
 
 class TestGroupB {
 private:
 
     // Perpetual price is the time-homogenous price and is the same as the normal price when the expiry price T tends to infinity
-    Option option = Option(std::numeric_limits<double>::infinity(), 0.1, 0.1, 110, 100, 0.02);
+    AmericanOption<Mesher, Matrix, Output> option = AmericanOption<Mesher, Matrix, Output>(0.1, 0.1, 110, 100, 0.02);
 
-    Pricer<Mesher, Matrix, RNG, Output> pricer;                 // Pricing engine
+    EuropeanOption<Mesher, Matrix, RNG, Output> pricer;                 // Pricing engine
     Mesher mesher;                                              // Meshing engine
     Matrix matrix;                                              // Matrix engine
 public:
@@ -39,10 +39,8 @@ public:
         std::cout << "Authored By: Michael Lewis\n";
         std::cout << "\n*******************************************************************" << std::endl;
 
-        std::vector<std::vector<double>> prices = pricer.priceAmerican(option.expiry(), option.vol(), option.riskFree(), option.spot(),
-                option.strike(), option.carry());
-        std::cout << "\nExpiry: " << option.expiry()
-                  << "\nVolatility: " << option.vol()
+        std::vector<std::vector<double>> prices = option.price();
+        std::cout << "\nVolatility: " << option.vol()
                   << "\nRisk-free rate: " << option.riskFree()
                   << "\nStock price: " << option.spot()
                   << "\nStrike price: " << option.strike()
@@ -72,8 +70,9 @@ public:
         std::cout << "\n*******************************************************************" << std::endl;
 
         std::vector<double> mesh = mesher.xarr(option.spot(), option.spot() + 5, 0.5);
-        std::vector<std::vector<double>> options = matrix.americanMatrix(mesh, option, "S");
-        std::vector<std::vector<double>> prices = pricer.priceAmerican(options);
+        std::vector<std::vector<double>> options = Matrix::matrix(mesh, "S", option.vol(),
+                option.riskFree(), option.spot(),option.strike(), option.carry());
+        std::vector<std::vector<double>> prices = option.price(options);
 
         // Iterate through the matrix and print the option prices and sensitivities
         std::cout << "\n\nExact prices as a function of monotonically increasing spot price:\n"
@@ -91,8 +90,9 @@ public:
         }
 
         mesh = mesher.xarr(option.vol(), option.vol() + 1, 0.1);
-        options = matrix.americanMatrix(mesh, option, "sig");
-        prices = pricer.priceAmerican(options);
+        options = Matrix::matrix(mesh, "sig", option.vol(),option.riskFree(), option.spot(),
+                option.strike(), option.carry());
+        prices = option.price(options);
 
         // Iterate through the matrix and print the option prices and sensitivities
         std::cout << "\n\nExact prices as a function of monotonically increasing volatility:\n"
@@ -110,8 +110,9 @@ public:
         }
 
         mesh = mesher.xarr(option.strike(), option.strike() + 5, 0.5);
-        options = matrix.americanMatrix(mesh, option, "K");
-        prices = pricer.priceAmerican(options);
+        options = Matrix::matrix(mesh, "K", option.vol(),option.riskFree(), option.spot(),
+                option.strike(), option.carry());
+        prices = option.price(options);
 
         // Iterate through the matrix and print the option prices and sensitivities
         std::cout << "\n\nExact prices as a function of monotonically increasing strike price:\n"

@@ -8,8 +8,7 @@
 #define MATRIX_HPP
 
 #include <vector>
-
-#include "Option.hpp"
+#include <string>
 
 class Matrix {
 private:
@@ -22,14 +21,17 @@ public:
     Matrix& operator=(const Matrix& source);
 
     // Generate matrices
-    std::vector<std::vector<double>>
-    americanMatrix(const std::vector<double>& mesh, const Option& option, const std::string& property) const;
+    static std::vector<std::vector<double>>
+    matrix(const std::vector<double>& mesh, const std::string &property, double sig, double r, double S,
+           double K, double b);
 
-    std::vector<std::vector<double>>
-    europeanMatrix(const std::vector<double>& mesh, const Option& option, const std::string& property) const;
+    static std::vector<std::vector<double>>
+    matrix(const std::vector<double>& mesh, const std::string &property, double T, double sig, double r,
+           double S, double K, double b);
 
-    std::vector<std::vector<double>>
-    futuresMatrix(const std::vector<double>& mesh, const Option& option, const std::string& property) const;
+    static std::vector<std::vector<double>>
+    futuresMatrix(const std::vector<double>& mesh, const std::string &property, double T, double sig, double r,
+                  double S, double K, double b);
 
 };
 
