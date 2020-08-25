@@ -59,10 +59,9 @@ void Output::csv(const std::vector<double>& meshPoints, const std::vector<std::v
     std::stringstream ss;
     ss << std::put_time(&tm, "%m-%d-%Y %H-%M-%S");
 
-    outFile.open("OptionData " + ss.str() + ".csv");
+    outFile.open("American Option Data " + ss.str() + ".csv");
     if (outFile.is_open()) {
-        outFile << "Mesh Points" << "," << "Call Price" << "," << "Put Price" << "," << "Call Delta" << ","
-                << "Put Delta"<< "," << "Gamma" << std::endl;
+        outFile << "Mesh Points" << "," << "Call Price" << "," << "Put Price" << std::endl;
         for (int i = 0; i < prices.size(); ++i) {
             outFile << meshPoints[i] << "," << prices[i][0] << "," << prices[i][1] << std::endl;
         }
@@ -89,7 +88,7 @@ void Output::csv(const std::vector<double>& meshPoints, const std::vector<std::v
     std::stringstream ss;
     ss << std::put_time(&tm, "%m-%d-%Y %H-%M-%S");
 
-    outFile.open("OptionData " + ss.str() + ".csv");
+    outFile.open("European Option Data " + ss.str() + ".csv");
     if (outFile.is_open()) {
         outFile << "Mesh Points" << "," << "Call Price" << "," << "Put Price" << "," << "Call Delta" << ","
                 << "Put Delta"<< "," << "Gamma" << std::endl;
