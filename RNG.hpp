@@ -1,5 +1,5 @@
 /**********************************************************************************************************************
- * Generates model parameter for Pricer
+ * Generates model parameter for EuropeanOption
  *
  * Created by Michael Lewis on 7/31/20.
  *********************************************************************************************************************/
@@ -15,20 +15,16 @@
 
 class RNG {
 private:
-    std::string RNGName;                         // Name of random number generator
+
 public:
 
     // Constructors and Destructors
     RNG();
     RNG(const RNG &source);
-    explicit RNG(const std::string &RNGName_);
     virtual ~RNG();
 
     // Operator overloading
     RNG &operator=(const RNG &source);
-
-    // Getters
-    const std::string &getRNGName() const;
 
     // Core functionality
     double MersenneTwister();                    // Generate a standard normal distribution using Mersenne Twister

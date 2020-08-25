@@ -49,6 +49,35 @@ Output & Output::operator=(const Output &source) {
  * @param deltas A matrix of Option deltas
  * @param gammas A matrix of Option gammas
  */
+void Output::csv(const std::vector<double>& meshPoints, const std::vector<std::vector<double> > &prices) const {
+
+    std::ofstream outFile;                                      // Object for writing to a file
+
+    // Current time used to create unique file names
+    auto t = std::time(nullptr);
+    auto tm = *std::localtime(&t);
+    std::stringstream ss;
+    ss << std::put_time(&tm, "%m-%d-%Y %H-%M-%S");
+
+    outFile.open("OptionData " + ss.str() + ".csv");
+    if (outFile.is_open()) {
+        outFile << "Mesh Points" << "," << "Call Price" << "," << "Put Price" << "," << "Call Delta" << ","
+                << "Put Delta"<< "," << "Gamma" << std::endl;
+        for (int i = 0; i < prices.size(); ++i) {
+            outFile << meshPoints[i] << "," << prices[i][0] << "," << prices[i][1] << std::endl;
+        }
+        outFile.close();
+    } else {
+        std::cout << "Unable to open the file. Check filepath permissions\n";
+    }
+}
+
+/**
+ * Send option data to OptionData.csv
+ * @param matrix A prices of Option prices
+ * @param deltas A matrix of Option deltas
+ * @param gammas A matrix of Option gammas
+ */
 void Output::csv(const std::vector<double>& meshPoints, const std::vector<std::vector<double> > &prices,
                  const std::vector<std::vector<double> > &deltas, const std::vector<double>& gammas) const {
 
