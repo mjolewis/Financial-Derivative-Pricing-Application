@@ -27,9 +27,9 @@ public:
     RNG &operator=(const RNG &source);
 
     // Core functionality
-    double MersenneTwister();                    // Generate a standard normal distribution using Mersenne Twister
-    double CDF(double x) const;                  // Cumulative normal distribution function
-    double PDF(double x) const;                  // Normal (Gaussian) probability density function
+    static double MersenneTwister();             // Generate a standard normal distribution using Mersenne Twister
+    static double CDF(double x);                 // Cumulative normal distribution function
+    static double PDF(double x);                 // Normal (Gaussian) probability density function
 };
 
 #endif //RNG_HPP

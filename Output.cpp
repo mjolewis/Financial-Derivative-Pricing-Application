@@ -44,12 +44,11 @@ Output & Output::operator=(const Output &source) {
 }
 
 /**
- * Send option data to OptionData.csv
- * @param matrix A prices of Option prices
- * @param deltas A matrix of Option deltas
- * @param gammas A matrix of Option gammas
+ * Send option data to American_Option_Data.csv
+ * @param meshPoints A vector of mesh points where each point is a monotonically increased option parameter
+ * @param matrix A prices of Call and Put prices
  */
-void Output::csv(const std::vector<double>& meshPoints, const std::vector<std::vector<double> > &prices) const {
+void Output::csv(const std::vector<double>& meshPoints, const std::vector<std::vector<double> > &prices) {
 
     std::ofstream outFile;                                      // Object for writing to a file
 
@@ -59,7 +58,7 @@ void Output::csv(const std::vector<double>& meshPoints, const std::vector<std::v
     std::stringstream ss;
     ss << std::put_time(&tm, "%m-%d-%Y %H-%M-%S");
 
-    outFile.open("American Option Data " + ss.str() + ".csv");
+    outFile.open("American_Option_Data " + ss.str() + ".csv");
     if (outFile.is_open()) {
         outFile << "Mesh Points" << "," << "Call Price" << "," << "Put Price" << std::endl;
         for (int i = 0; i < prices.size(); ++i) {
@@ -72,13 +71,14 @@ void Output::csv(const std::vector<double>& meshPoints, const std::vector<std::v
 }
 
 /**
- * Send option data to OptionData.csv
- * @param matrix A prices of Option prices
- * @param deltas A matrix of Option deltas
- * @param gammas A matrix of Option gammas
+ * Send option data to European_Option_Data.csv
+ * @param meshPoints A vector of mesh points where each point is a monotonically increased option parameter
+ * @param prices A matrix of Call and Put prices
+ * @param deltas A matrix of Call and Put Deltas
+ * @param gammas A matrix of gammas. Note that there is no distinction between a Call and Put gamma
  */
 void Output::csv(const std::vector<double>& meshPoints, const std::vector<std::vector<double> > &prices,
-                 const std::vector<std::vector<double> > &deltas, const std::vector<double>& gammas) const {
+                 const std::vector<std::vector<double> > &deltas, const std::vector<double>& gammas) {
 
     std::ofstream outFile;                                      // Object for writing to a file
 
@@ -88,7 +88,7 @@ void Output::csv(const std::vector<double>& meshPoints, const std::vector<std::v
     std::stringstream ss;
     ss << std::put_time(&tm, "%m-%d-%Y %H-%M-%S");
 
-    outFile.open("European Option Data " + ss.str() + ".csv");
+    outFile.open("European_Option_Data " + ss.str() + ".csv");
     if (outFile.is_open()) {
         outFile << "Mesh Points" << "," << "Call Price" << "," << "Put Price" << "," << "Call Delta" << ","
                 << "Put Delta"<< "," << "Gamma" << std::endl;
