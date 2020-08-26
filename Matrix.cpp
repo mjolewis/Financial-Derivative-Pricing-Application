@@ -184,37 +184,35 @@ Matrix::futuresMatrix(const std::vector<double>& mesh, const std::string &proper
 
         // Monotonically increase expiry and add the new option to a new row in the matrix
         for (double T_ : mesh) {
-            matrix.push_back({T_, sig, r, S, K, b});
+            matrix.push_back({T_, sig, r, S, K, 0});
         }
     } else if (property == "Sig" || property == "sig" || property == "Volatility" || property == "volatility" ) {
 
         // Monotonically increase vol and add the new option to a new row in the matrix
         for (double sig_ : mesh) {
-            matrix.push_back({T, sig_, r, S, K, b});
+            matrix.push_back({T, sig_, r, S, K, 0});
         }
     } else if (property == "R" || property == "r" || property == "Risk-free" || property == "risk-free" ) {
 
         // Monotonically increase risk free rate and add the new option to a new row in the matrix
-        // Note that because we are using the Black-Scholes stock option model, we must maintain b = r
         for (double r_ : mesh) {
-            matrix.push_back({T, sig, r_, S, K, r_});
+            matrix.push_back({T, sig, r_, S, K, 0});
         }
     } else if (property == "S" || property == "s" || property == "Spot" || property == "spot" ) {
 
         // Monotonically increase spot price and add the new option to a new row in the matrix
         for (double S_ : mesh) {
-            matrix.push_back({T, sig, r, S_, K, b});
+            matrix.push_back({T, sig, r, S_, K, 0});
         }
     } else if (property == "K" || property == "k" || property == "Strike" || property == "strike" ) {
 
         // Monotonically increase strike price and add the new option to a new row in the matrix
         for (double K_ : mesh) {
-            matrix.push_back({T, sig, r, S, K_, b});
+            matrix.push_back({T, sig, r, S, K_, 0});
         }
     } else if (property == "B" || property == "b" || property == "Beta" || property == "beta" ) {
 
         // Monotonically increase beta and add the new option to a new row in the matrix
-        // Note that because we are using the Black-Scholes stock option model, we must maintain b = 0
         for (double b_ : mesh) {
             matrix.push_back({T, sig, r, S, K, 0});
         }
