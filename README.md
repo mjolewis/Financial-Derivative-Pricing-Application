@@ -3,9 +3,9 @@
 # Description
 This application can be used by Financial Engineers to price financial derivatives. In particular, the application is capable of dealing with European and Perpetual American options but can be extended for additional option types.
 
-To use the application, you should create a European or American option with the required option parameters (T (European only), sig, r, S, K, and b). Afterward, you can use various functions and methodologies (closed form or finite difference methods) to price the options and to determine their sensitivities (European only).
+To use the application, create a European or American option with the required option parameters (T (European only), sig, r, S, K, and b). Afterward, the application provides various functions and methodologies (closed form or finite difference methods) to price the options and to determine their sensitivities (European only).
 
-Importantly, you can send the option data directly to the console or to a CSV file on your current path. The latter approach is recommended. The only requirement is to price the option using the function that is pre-built to send data to the CSV file.
+Importantly, the option data can be sent directly to the console or to a CSV file on your current path. The latter approach is recommended. The only requirement is to price the option using the function that is pre-built to send data to the CSV file.
 
 # Libraries
 The application uses STL for Containers and the Boost library to generate the Guassian probability density and cumulative normal distribution functions. As a result, you must download and include the Boost libraries to compile the application on your machine. 
@@ -19,20 +19,20 @@ Note that there are multiple ways to install Boost:
 This application was decomposed into smaller subsystems, with each subsystem having a well-defined responsibility. The class descriptions provided below highlight these subsystems, along with their indications and parameters for implementation.
 
 ***AmericanOption***\
-The AmericanOption class relies on Template Metroprogamming and Policy-Based Design. Importantly, this is a host class for the various policies (Mesher, Matrix, Output) mentioned below. Please see System Design for additional detail. 
+The AmericanOption class relies on Template Metroprogamming and Policy-Based Design. Importantly, this is a host class for the various policies (Mesher, Matrix, Output) mentioned below. Please see System Design for additional detail regarding the design choice. 
 
 American options can be exercised at any time prior to expiry and generally do not have an exact solution. However, Perpetual American options are the exception because the expiry time tends to infinity. Thus, this application appropriately implements the formulae to provide an exact solution for Perpetual American options. 
 
 Finally, the pricing functions always return a matrix where the first element of each row is the Call price and the second element of each row is the Put price. This approach ensures that all relevant pricing information is received and makes the system more usable from an analytics perspective.
 
 ***EuropeanOption***\
-The EuropeanOption class relies on Template Metroprogamming and Policy-Based Design. Importantly, this is a host class for the various policies (Mesher, Matrix, RNG, Output) mentioned below. Please see System Design for additional detail. 
+The EuropeanOption class relies on Template Metroprogamming and Policy-Based Design. Importantly, this is a host class for the various policies (Mesher, Matrix, RNG, Output) mentioned below. Please see System Design for additional detail regarding the design choice. 
 
 A EuropeanOption is a financial derivative and has the following core member data: T, sig, r, S, K, and b. These options can only be exercised at expiration and, as a result, have prices and sensitivities calculated by the generalized Black-Scholes formulae. 
 
-We also know the option sensitivities are the partial derivatives of the Black-Scholes option pricing formula with respect to one of its parameters and, therefore, can rely on closed form solutions for the Greeks in most cases. However, a closed form solution is not guaranteed or can be difficult to find. For those scenarios, I implemented the divided differences method to find a numerical solution.
+Option sensitivities are the partial derivatives of the Black-Scholes option pricing formula with respect to one of its parameters and, therefore, can rely on closed form solutions for the Greeks in most cases. However, a closed form solution is not guaranteed or can be difficult to find. For those scenarios, the application provides divided difference methods to find a numerical solution.
 
-There is also a relationship between Call and Put prices of a European option. This relationship is defined by the Put-Call parity formula where the Put and Call have the same strike, expiration, and underlying. This relationship can also be tested for a corresponding Put (or Call) price, which helps us exploit arbitrage opportunities if the relationship is not satisfied.
+There is also a relationship between Call and Put prices of a European option. This relationship is defined by the Put-Call parity formula where the Put and Call have the same strike, expiration, and underlying. This relationship can also be tested for a corresponding Put (or Call) price, which helps identify arbitrage opportunities if the relationship is not satisfied.
 
 Finally, the pricing functions always return a matrix where the first element of each row is the Call price and the second element of each row is the Put price. This approach ensures that all relevant pricing information is received and makes the system more usable from an analytics perspective.
 
