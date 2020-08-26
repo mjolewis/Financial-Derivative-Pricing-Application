@@ -23,7 +23,6 @@ private:
     // Perpetual price is the time-homogenous price and is the same as the normal price when the expiry price T tends to infinity
     AmericanOption<Mesher, Matrix, Output> option = AmericanOption<Mesher, Matrix, Output>(0.1, 0.1, 110, 100, 0.02);
 
-    EuropeanOption<Mesher, Matrix, RNG, Output> pricer;                 // Pricing engine
     Mesher mesher;                                              // Meshing engine
     Matrix matrix;                                              // Matrix engine
 public:
@@ -72,7 +71,7 @@ public:
         std::vector<double> mesh = mesher.xarr(option.spot(), option.spot() + 5, 0.5);
         std::vector<std::vector<double>> options = Matrix::matrix(mesh, "S", option.vol(),
                 option.riskFree(), option.spot(),option.strike(), option.carry());
-        std::vector<std::vector<double>> prices = option.price(options);
+        std::vector<std::vector<double>> prices = AmericanOption<Mesher, Matrix, Output>::price(options);
 
         // Iterate through the matrix and print the option prices and sensitivities
         std::cout << "\n\nExact prices as a function of monotonically increasing spot price:\n"
@@ -92,7 +91,7 @@ public:
         mesh = mesher.xarr(option.vol(), option.vol() + 1, 0.1);
         options = Matrix::matrix(mesh, "sig", option.vol(),option.riskFree(), option.spot(),
                 option.strike(), option.carry());
-        prices = option.price(options);
+        prices = AmericanOption<Mesher, Matrix, Output>::price(options);
 
         // Iterate through the matrix and print the option prices and sensitivities
         std::cout << "\n\nExact prices as a function of monotonically increasing volatility:\n"
@@ -112,7 +111,7 @@ public:
         mesh = mesher.xarr(option.strike(), option.strike() + 5, 0.5);
         options = Matrix::matrix(mesh, "K", option.vol(),option.riskFree(), option.spot(),
                 option.strike(), option.carry());
-        prices = option.price(options);
+        prices = AmericanOption<Mesher, Matrix, Output>::price(options);
 
         // Iterate through the matrix and print the option prices and sensitivities
         std::cout << "\n\nExact prices as a function of monotonically increasing strike price:\n"

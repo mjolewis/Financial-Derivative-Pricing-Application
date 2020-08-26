@@ -25,7 +25,7 @@ private:
     double b;                                    // Cost of carry
 
     // Helper function
-    std::vector<std::vector<double>> price(double sig_, double r_, double S_, double K_, double b_) const;
+    static std::vector<std::vector<double>> price(double sig_, double r_, double S_, double K_, double b_);
 
 public:
     // Constructors and Destructors
@@ -40,7 +40,7 @@ public:
     // Core pricing functionality
     std::vector<std::vector<double>> price() const;
     void price(double start, double stop, double step, const std::string& property) const;
-    std::vector<std::vector<double>> price(const std::vector<std::vector<double> >& matrix) const;
+    static std::vector<std::vector<double>> price(const std::vector<std::vector<double> >& matrix);
 
     // Accessors
     double vol() const;

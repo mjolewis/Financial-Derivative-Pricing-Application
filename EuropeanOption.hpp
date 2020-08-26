@@ -25,11 +25,11 @@ private:
     double K;                                    // Strike price
     double b;                                    // Cost of carry; b = r for Black-Scholes equity option model
 
-    // Mechanism to check if a given set of call (C) and put (P) prices satisfy parity
+    // Helper function to check if a given set of call (C) and put (P) prices satisfy parity
     static bool putCallParity(double C, double P, double T_, double K_, double r_, double S);
 
     // Helper function to price the option
-    std::vector<std::vector<double>> price(double T_, double sig_, double r_, double S_, double K_, double b_) const;
+    static std::vector<std::vector<double>> price(double T_, double sig_, double r_, double S_, double K_, double b_);
 
 public:
     // Constructors and destructors
@@ -43,7 +43,7 @@ public:
 
     // European Option Pricing Formulae
     std::vector<std::vector<double>> price() const;
-    std::vector<std::vector<double>> price(const std::vector<std::vector<double> >& matrix) const;
+    static std::vector<std::vector<double>> price(const std::vector<std::vector<double> >& matrix);
     void price(double h, double start, double stop, double step, const std::string& property) const;
 
     // Mechanism to calculate the call (or put) price for a corresponding put (or call) price
@@ -53,19 +53,19 @@ public:
 
     // Exact solutions for option sensitivities (Greeks)
     std::vector<std::vector<double>> delta() const;
-    std::vector<std::vector<double>> delta(double T_, double sig_, double r_, double S_, double K_, double b_) const;
-    std::vector<std::vector<double>> delta(const std::vector<std::vector<double>>& matrix) const;
+    static std::vector<std::vector<double>> delta(double T_, double sig_, double r_, double S_, double K_, double b_);
+    static std::vector<std::vector<double>> delta(const std::vector<std::vector<double>>& matrix);
     double gamma() const;
-    double gamma(double T_, double sig_, double r_, double S_, double K_, double b_) const;
-    std::vector<double> gamma(const std::vector<std::vector<double>>& matrix) const;
+    static double gamma(double T_, double sig_, double r_, double S_, double K_, double b_);
+    static std::vector<double> gamma(const std::vector<std::vector<double>>& matrix);
 
     // European Greeks using Finite difference methods
     std::vector<std::vector<double>> delta(double h) const;
-    std::vector<std::vector<double>> delta(double h, double T_, double sig_, double r_, double S_, double K_, double b_) const;
-    std::vector<std::vector<double>> delta(double h, const std::vector<std::vector<double>>& matrix) const;
+    static std::vector<std::vector<double>> delta(double h, double T_, double sig_, double r_, double S_, double K_, double b_);
+    static std::vector<std::vector<double>> delta(double h, const std::vector<std::vector<double>>& matrix);
     double gamma(double h) const;
-    std::vector<double>gamma(double h, const std::vector<std::vector<double>>& matrix) const;
-    double gamma(double h, const std::vector<double>& option) const;
+    static std::vector<double>gamma(double h, const std::vector<std::vector<double>>& matrix);
+    static double gamma(double h, const std::vector<double>& option);
 
     // Accessors
     double expiry() const;

@@ -13,6 +13,7 @@
 #include "Matrix.hpp"
 #include "Mesher.hpp"
 #include "Output.hpp"
+#include "AmericanOption.hpp"
 #include "EuropeanOption.hpp"
 #include "RNG.hpp"
 

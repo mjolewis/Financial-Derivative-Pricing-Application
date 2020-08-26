@@ -153,7 +153,7 @@ std::vector<std::vector<double>> AmericanOption<Mesher_, Matrix_, Output_>::pric
  */
 template<typename Mesher_, typename Matrix_, typename Output_>
 std::vector<std::vector<double> >
-AmericanOption<Mesher_, Matrix_, Output_>::price(const std::vector<std::vector<double> > &matrix) const {
+AmericanOption<Mesher_, Matrix_, Output_>::price(const std::vector<std::vector<double> > &matrix) {
 
     // Create a new container for each new matrix
     std::vector<std::vector<double> > prices;
@@ -181,7 +181,7 @@ AmericanOption<Mesher_, Matrix_, Output_>::price(const std::vector<std::vector<d
  */
 template<typename Mesher_, typename Matrix_, typename Output_>
 std::vector<std::vector<double>>
-AmericanOption<Mesher_, Matrix_, Output_>::price(double sig_, double r_, double S_, double K_, double b_) const {
+AmericanOption<Mesher_, Matrix_, Output_>::price(double sig_, double r_, double S_, double K_, double b_) {
 
     std::vector<std::vector<double>> prices;
 
