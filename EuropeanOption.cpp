@@ -445,7 +445,7 @@ EuropeanOption<Mesher_, Matrix_, RNG_, Output_>::price(double h, double start, d
     std::vector<double>gammas = gamma(h, matrix);
 
     // Send data to an output file
-    Output::csv(mesh, prices, deltas, gammas);
+    Output_::csv(mesh, prices, deltas, gammas);
 }
 
 /**
