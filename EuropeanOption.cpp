@@ -141,7 +141,7 @@ std::vector<std::vector<double>> EuropeanOption<Mesher_, Matrix_, RNG_, Output_>
  */
 template<typename Mesher_, typename Matrix_, typename RNG_, typename Output_>
 std::vector<std::vector<double>> EuropeanOption<Mesher_, Matrix_, RNG_, Output_>::delta(double T_, double sig_,
-        double r_, double S_, double K_, double b_) const {
+        double r_, double S_, double K_, double b_) {
 
     std::vector<std::vector<double>> deltas;
 
@@ -170,7 +170,7 @@ std::vector<std::vector<double>> EuropeanOption<Mesher_, Matrix_, RNG_, Output_>
  */
 template<typename Mesher_, typename Matrix_, typename RNG_, typename Output_>
 std::vector<std::vector<double>>
-EuropeanOption<Mesher_, Matrix_, RNG_, Output_>::delta(const std::vector<std::vector<double> > &matrix) const {
+EuropeanOption<Mesher_, Matrix_, RNG_, Output_>::delta(const std::vector<std::vector<double> > &matrix) {
 
     std::vector<std::vector<double> > deltas;
 
@@ -215,7 +215,7 @@ double EuropeanOption<Mesher_, Matrix_, RNG_, Output_>::gamma() const {
  */
 template<typename Mesher_, typename Matrix_, typename RNG_, typename Output_>
 double EuropeanOption<Mesher_, Matrix_, RNG_, Output_>::gamma(double T_, double sig_, double r_, double S_, double K_,
-        double b_) const {
+        double b_) {
     double tmp = sig_ * sqrt(T_);
 
     double d1 = (log(S_ / K_) + (b_ + (sig_ * sig_) * 0.5) * T_) / tmp;
@@ -239,7 +239,7 @@ double EuropeanOption<Mesher_, Matrix_, RNG_, Output_>::gamma(double T_, double 
  */
 template<typename Mesher_, typename Matrix_, typename RNG_, typename Output_>
 std::vector<double>
-EuropeanOption<Mesher_, Matrix_, RNG_, Output_>::gamma(const std::vector<std::vector<double> > &matrix) const {
+EuropeanOption<Mesher_, Matrix_, RNG_, Output_>::gamma(const std::vector<std::vector<double> > &matrix) {
 
     // Create a new container for each new matrix
     std::vector<double> gammas;
@@ -292,7 +292,7 @@ std::vector<std::vector<double>> EuropeanOption<Mesher_, Matrix_, RNG_, Output_>
  */
 template<typename Mesher_, typename Matrix_, typename RNG_, typename Output_>
 std::vector<std::vector<double>> EuropeanOption<Mesher_, Matrix_, RNG_, Output_>::delta(double h, double T_,
-        double sig_, double r_, double S_, double K_, double b_) const {
+        double sig_, double r_, double S_, double K_, double b_) {
 
     // Call and Put Deltas
     std::vector<std::vector<double>> deltas;
@@ -325,7 +325,7 @@ std::vector<std::vector<double>> EuropeanOption<Mesher_, Matrix_, RNG_, Output_>
  */
 template<typename Mesher_, typename Matrix_, typename RNG_, typename Output_>
 std::vector<std::vector<double>>
-EuropeanOption<Mesher_, Matrix_, RNG_, Output_>::delta(double h, const std::vector<std::vector<double> > &matrix) const {
+EuropeanOption<Mesher_, Matrix_, RNG_, Output_>::delta(double h, const std::vector<std::vector<double> > &matrix) {
 
     // Container for divided differences results
     std::vector<std::vector<double>> deltaPrices;
@@ -375,7 +375,7 @@ double EuropeanOption<Mesher_, Matrix_, RNG_, Output_>::gamma(double h) const {
  * @return An approximation of Gamma for the given option
  */
 template<typename Mesher_, typename Matrix_, typename RNG_, typename Output_>
-double EuropeanOption<Mesher_, Matrix_, RNG_, Output_>::gamma(double h, const std::vector<double> &option) const {
+double EuropeanOption<Mesher_, Matrix_, RNG_, Output_>::gamma(double h, const std::vector<double> &option) {
 
     // Input for divided differences numerator
     double S1 = (price(option[0], option[1], option[2], option[3] + h, option[4], option[5])[0][0]);
@@ -399,7 +399,7 @@ double EuropeanOption<Mesher_, Matrix_, RNG_, Output_>::gamma(double h, const st
  */
 template<typename Mesher_, typename Matrix_, typename RNG_, typename Output_>
 std::vector<double>
-EuropeanOption<Mesher_, Matrix_, RNG_, Output_>::gamma(double h, const std::vector<std::vector<double>> &matrix) const {
+EuropeanOption<Mesher_, Matrix_, RNG_, Output_>::gamma(double h, const std::vector<std::vector<double>> &matrix) {
 
     // Create a new container for each new matrix
     std::vector<double> gammas;
@@ -476,7 +476,7 @@ std::vector<std::vector<double>> EuropeanOption<Mesher_, Matrix_, RNG_, Output_>
  */
 template<typename Mesher_, typename Matrix_, typename RNG_, typename Output_>
 std::vector<std::vector<double> >
-EuropeanOption<Mesher_, Matrix_, RNG_, Output_>::price(const std::vector<std::vector<double> > &matrix) const {
+EuropeanOption<Mesher_, Matrix_, RNG_, Output_>::price(const std::vector<std::vector<double> > &matrix) {
 
     // Create a new container for each new matrix
     std::vector<std::vector<double> > prices;
@@ -506,7 +506,7 @@ EuropeanOption<Mesher_, Matrix_, RNG_, Output_>::price(const std::vector<std::ve
  */
 template<typename Mesher_, typename Matrix_, typename RNG_, typename Output_>
 std::vector<std::vector<double>> EuropeanOption<Mesher_, Matrix_, RNG_, Output_>::price(double T_, double sig_, double r_,
-        double S_, double K_, double b_) const {
+        double S_, double K_, double b_) {
 
     std::vector<std::vector<double>> prices;
 

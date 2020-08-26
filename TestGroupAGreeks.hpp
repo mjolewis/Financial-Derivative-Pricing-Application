@@ -72,7 +72,7 @@ public:
         std::vector<double> mesh = mesher.xarr(option.spot(), option.spot() + 5, 0.5);
         std::vector<std::vector<double>> options = Matrix::futuresMatrix(mesh,"S", option.expiry(),
                 option.vol(), option.riskFree(), option.spot(), option.strike(), option.carry());
-        std::vector<std::vector<double>> prices = option.delta(options);
+        std::vector<std::vector<double>> prices = EuropeanOption<Mesher, Matrix, RNG, Output>::delta(options);
 
         // Iterate through the matrix and print the option prices and sensitivities
         std::cout << "\nExact solution for Call and Put Delta as a function of monotonically increasing Spot:\n"
@@ -92,7 +92,7 @@ public:
         mesh = mesher.xarr(option.spot(), option.spot() + 5, 0.5);
         options = Matrix::futuresMatrix(mesh, "S", option.expiry(),option.vol(), option.riskFree(),
                 option.spot(), option.strike(), option.carry());
-        std::vector<double> gamma = option.gamma(options);
+        std::vector<double> gamma = EuropeanOption<Mesher, Matrix, RNG, Output>::gamma(options);
 
         // Iterate through the matrix and print the option prices and sensitivities
         std::cout << "\nExact solution for Gamma as a function of monotonically increasing Spot:\n"
@@ -124,7 +124,7 @@ public:
         std::vector<double> mesh = mesher.xarr(option.spot(), option.spot() + 5, 0.5);
         std::vector<std::vector<double>> options = Matrix::futuresMatrix(mesh, "S", option.expiry(),
                 option.vol(), option.riskFree(), option.spot(), option.strike(), option.carry());
-        std::vector<std::vector<double>> prices = option.delta(.1, options);
+        std::vector<std::vector<double>> prices = EuropeanOption<Mesher, Matrix, RNG, Output>::delta(.1, options);
 
         // Iterate through the matrix and print the option prices and sensitivities
         std::cout << "\n\nh = 0.1:"
@@ -145,7 +145,7 @@ public:
         mesh = mesher.xarr(option.spot(), option.spot() + 5, 0.5);
         options = Matrix::futuresMatrix(mesh, "S", option.expiry(),option.vol(), option.riskFree(),
                 option.spot(), option.strike(), option.carry());
-        std::vector<double> gamma = option.gamma(.1, options);
+        std::vector<double> gamma = EuropeanOption<Mesher, Matrix, RNG, Output>::gamma(.1, options);
 
         // Iterate through the matrix and print the option prices and sensitivities
         std::cout << "\n\nh = 0.1:"
@@ -164,7 +164,7 @@ public:
         mesh = mesher.xarr(option.spot(), option.spot() + 5, 0.5);
         options = Matrix::futuresMatrix(mesh, "S", option.expiry(),option.vol(), option.riskFree(),
                 option.spot(), option.strike(), option.carry());
-        prices = option.delta(.5, options);
+        prices = EuropeanOption<Mesher, Matrix, RNG, Output>::delta(.5, options);
 
         // Iterate through the matrix and print the option prices and sensitivities
         std::cout << "\n\nh = .5:"
@@ -185,7 +185,7 @@ public:
         mesh = mesher.xarr(option.spot(), option.spot() + 5, 0.5);
         options = Matrix::futuresMatrix(mesh, "S", option.expiry(),option.vol(), option.riskFree(),
                 option.spot(), option.strike(), option.carry());
-        gamma = option.gamma(.5, options);
+        gamma = EuropeanOption<Mesher, Matrix, RNG, Output>::gamma(.5, options);
 
         // Iterate through the matrix and print the option prices and sensitivities
         std::cout << "\n\nh = 0.5:"
@@ -204,7 +204,7 @@ public:
         mesh = mesher.xarr(option.spot(), option.spot() + 5, 0.5);
         options = Matrix::futuresMatrix(mesh, "S", option.expiry(),option.vol(), option.riskFree(),
                 option.spot(), option.strike(), option.carry());
-        prices = option.delta(2, options);
+        prices = EuropeanOption<Mesher, Matrix, RNG, Output>::delta(2, options);
 
         // Iterate through the matrix and print the option prices and sensitivities
         std::cout << "\n\nh = 2:"
@@ -225,7 +225,7 @@ public:
         mesh = mesher.xarr(option.spot(), option.spot() + 5, 0.5);
         options = Matrix::futuresMatrix(mesh, "S", option.expiry(),option.vol(), option.riskFree(),
                 option.spot(), option.strike(), option.carry());
-        gamma = option.gamma(2, options);
+        gamma = EuropeanOption<Mesher, Matrix, RNG, Output>::gamma(2, options);
 
         // Iterate through the matrix and print the option prices and sensitivities
         std::cout << "\n\nh = 2:"
