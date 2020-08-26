@@ -123,7 +123,7 @@ void AmericanOption<Mesher_, Matrix_, Output_>::price(double start, double stop,
     // Create and fill containers with option data
     std::vector<std::vector<double>> prices = price(matrix);
 
-    // Send data to an output file1
+    // Send data to an output file
     Output_::csv(mesh, prices);
 }
 
