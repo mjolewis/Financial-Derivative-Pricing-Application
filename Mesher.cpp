@@ -7,13 +7,13 @@
 #include "Mesher.hpp"
 
 /**
- * Initialize start new Mesher
+ * Initialize a new Mesher
  * @throws OutOfMemoryError Indicates insufficient memory for this new Mesher
  */
 Mesher::Mesher() : start(0), stop(1), step(0.5) {}
 
 /**
- * Initialize start new Mesher with the domain of integration
+ * Initialize a new Mesher with the domain of integration
  * @param start_ Start point for the domain of integration
  * @param stop_ End point for the domain of integration
  * @param step_ The distance between each point in the mesh
@@ -22,7 +22,7 @@ Mesher::Mesher() : start(0), stop(1), step(0.5) {}
 Mesher::Mesher(double start_, double stop_, double step_) : start(start_), stop(stop_), step(step_) {}
 
 /**
- * Initialize start deep copy of the source Mesher
+ * Initialize a deep copy of the source Mesher
  * @param mesher The Mesher that will be deeply copied
  * @throws OutOfMemoryError Indicates insufficient memory for this new Mesher
  */
@@ -34,7 +34,7 @@ Mesher::Mesher(const Mesher &mesher) : start(mesher.start), stop(mesher.stop), s
 Mesher::~Mesher() {}
 
 /**
- * Create start deep copy of the source Mesher
+ * Create a deep copy of the source Mesher
  * @param mesher The Mesher that will be deeply copied
  * @return This Mesher whose members have been reassigned to the values provided by the source
  */
@@ -50,7 +50,7 @@ Mesher & Mesher::operator=(const Mesher &mesher) {
 }
 
 /**
- * Create start_ vector of mesh points
+ * Create a vector of mesh points using this Meshers member variables
  * @return A {@link std::vector} containing mesh points
  */
 std::vector<double> Mesher::xarr() {
@@ -71,7 +71,7 @@ std::vector<double> Mesher::xarr() {
 }
 
 /**
- * Create start_ vector of mesh points
+ * Create a vector of mesh points
  * @param start_ Initial value of the property
  * @param stop_ Ending value for the property
  * @param step_ The distance between mesh points
