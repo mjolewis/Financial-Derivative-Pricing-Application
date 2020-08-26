@@ -71,5 +71,5 @@ The policies also encapsulate an orthogonal behavior of the host class, which mo
 
 As stated, Policy-Based Design relies on Template Metaprogramming. This means the system is parametric polymorphic, which avoids the cost of virtual lookup tables associated with subtype polymorphism.
 
-![UML (2)](https://user-images.githubusercontent.com/12025538/91354783-3ad29000-e7bb-11ea-9422-ab651a8af4e3.png)
+![UML (3)](https://user-images.githubusercontent.com/12025538/91356153-34ddae80-e7bd-11ea-83b8-1404852f3316.png)
 
