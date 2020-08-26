@@ -64,8 +64,8 @@ The application implements Template Metroprogamming and Policy-Based Design. The
 
 For example, host classes derive from each of its policies but do not violate the HAS-A or IS-A design patterns because they invert the relationship between base class and derived class. An alternative design choice could have been Composition or Aggregation. However, both of these designs would have violated core OOP principles:
      
-     1.	Composition would have required creating false HAS-A relationships
-     2.	Aggregation would have created objects that survive past the lifetime of a financial derivative even though there is no use for them once the financial derivative has gone out of scope
+   1.	Composition would have required creating false HAS-A relationships
+   2.	Aggregation would have created objects that survive past the lifetime of a financial derivative even though there is no use for them once the financial derivative has gone out of scope
 
 The policies also encapsulate an orthogonal behavior of the host class, which modularizes the application. Therefore, the application can easily be extended by creating additional policies that subsequently get supplied to the host classes.
 
