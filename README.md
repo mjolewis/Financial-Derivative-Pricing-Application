@@ -51,7 +51,6 @@ An RNG class is a policy used by the financial derivative host classes. The RNG 
 Additionally, this class provides the normal (Gaussian) probability density function as well as the ability to generate a standard normal distribution using the Mersenne Twister random number generator. 
 
 ***Output***\
-
 An Output class is a policy used by the financial derivative host classes. The Output is responsible for receiving data matrices from the financial derivative host classes. Upon receiving these matrices, the Output's sole job is to create a CSV file and parse the matrices into rows and columns.
 
 The CSV file is titled either European_Option_Data or American_Option_Data and is appended with the current date and time to create unique file names across multiple simulations.
@@ -64,6 +63,7 @@ See the sample-output folder for an example. This file includes the option Call 
 The application implements Template Metroprogamming and Policy-Based Design. These design choices provide several benefits.
 
 For example, host classes derive from each of its policies but do not violate the HAS-A or IS-A design patterns because they invert the relationship between base class and derived class. An alternative design choice could have been Composition or Aggregation. However, both of these designs would have violated core OOP principles:
+     
      1.	Composition would have required creating false HAS-A relationships
      2.	Aggregation would have created objects that survive past the lifetime of a financial derivative even though there is no use for them once the financial derivative has gone out of scope
 
@@ -71,5 +71,5 @@ The policies also encapsulate an orthogonal behavior of the host class, which mo
 
 As stated, Policy-Based Design relies on Template Metaprogramming. This means the system is parametric polymorphic, which avoids the cost of virtual lookup tables associated with subtype polymorphism.
 
-![UML (1)](https://user-images.githubusercontent.com/12025538/90927449-2198a080-e3c3-11ea-9522-158d46427b8b.png)
+![UML (2)](https://user-images.githubusercontent.com/12025538/91354783-3ad29000-e7bb-11ea-9422-ab651a8af4e3.png)
 
