@@ -5,10 +5,10 @@ This application can be used by Financial Engineers to price financial derivativ
 
 To use the application, create a European or American option with the required option parameters (T (European only), sig, r, S, K, and b). Afterward, the application provides various functions and methodologies (closed form or finite difference methods) to price the options and to determine their sensitivities (European only).
 
-Importantly, the option data can be sent directly to the console or to a CSV file on your current path. The latter approach is recommended. The only requirement is to price the option using the function that is pre-built to send data to the CSV file.
+Importantly, the option data can be sent directly to the console or to a CSV file on the current file path. The latter approach is recommended. The only requirement is to price the option using the function that is pre-built to send data to the CSV file.
 
 # Libraries
-The application uses STL for Containers and the Boost library to generate the Guassian probability density and cumulative normal distribution functions. As a result, you must download and include the Boost libraries to compile the application on your machine. 
+The application uses STL for Containers and the Boost library to generate the Guassian probability density and cumulative normal distribution functions. As a result, the Boost libraries must be download and included for the application to compile. 
 
 Note that there are multiple ways to install Boost: 
 1. SourceForce: https://sourceforge.net/projects/boost/files/boost-binaries/
@@ -21,7 +21,7 @@ This application was decomposed into smaller subsystems, with each subsystem hav
 ***AmericanOption***\
 The AmericanOption class relies on Template Metroprogamming and Policy-Based Design. Importantly, this is a host class for the various policies (Mesher, Matrix, Output) mentioned below. Please see System Design for additional detail regarding the design choice. 
 
-American options can be exercised at any time prior to expiry and generally do not have an exact solution. However, Perpetual American options are the exception because the expiry time tends to infinity. Thus, this application appropriately implements the formulae to provide an exact solution for Perpetual American options. 
+American options can be exercised at any time prior to expiration and generally do not have an exact solution. However, Perpetual American options are the exception because the expiration tends to infinity. Thus, this application appropriately implements the formulae to provide an exact solution for Perpetual American options. 
 
 Finally, the pricing functions always return a matrix where the first element of each row is the Call price and the second element of each row is the Put price. This approach ensures that all relevant pricing information is received and makes the system more usable from an analytics perspective.
 
