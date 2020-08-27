@@ -3,7 +3,7 @@
 # Description
 This application can be used by Financial Engineers to price financial derivatives. In particular, the application is capable of dealing with European and Perpetual American options but can be extended for additional option types.
 
-To use the application, create a European or American option with the required option parameters (T (European only), sig, r, S, K, and b). Afterward, the application provides various functions and methodologies (closed form or finite difference methods) to price the options and to determine their sensitivities (European only).
+To use the application, create a European or American option with the required option parameters (T (European only), sig, r, S, K, and b). Afterward, the application provides various functions and methodologies (closed form or divided difference approximations) to price the options and to determine their sensitivities (European only).
 
 Importantly, the option data can be sent directly to the console or to a CSV file on the current file path. The latter approach is recommended. The only requirement is to price the option using the function that is pre-built to send data to the CSV file.
 
