@@ -353,9 +353,9 @@ EuropeanOption<Mesher_, Matrix_, RNG_, Output_>::delta(double h, const std::vect
 template<typename Mesher_, typename Matrix_, typename RNG_, typename Output_>
 double EuropeanOption<Mesher_, Matrix_, RNG_, Output_>::gamma(double h) const {
     // Input for divided differences numerator
-    double S1 = price(T, sig, r, S + h, K, b);
-    double S2 = 2 * price(T, sig, r, S, K, b);
-    double S3 = price(T, sig, r, S - h, K, b);
+    double S1 = price(T, sig, r, S + h, K, b)[0][0];
+    double S2 = 2 * price(T, sig, r, S, K, b)[0][0];
+    double S3 = price(T, sig, r, S - h, K, b)[0][0];
 
     // Divided differences method
     return (S1 - S2 + S3) / (h * h);

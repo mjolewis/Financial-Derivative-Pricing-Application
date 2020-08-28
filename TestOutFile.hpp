@@ -37,8 +37,8 @@ public:
         std::cout << "Authored By: Michael Lewis\n";
         std::cout << "\n*******************************************************************" << std::endl;
 
-        europeanOption.price(0.1, europeanOption.spot(), europeanOption.spot() + 10, 0.5, "S");
-        americanOption.price(americanOption.spot(), americanOption.spot() + 10, 0.5, "S");
+        europeanOption.price(0.1, europeanOption.spot(), europeanOption.spot() + 500000, 0.5, "S");
+        americanOption.price(americanOption.spot(), americanOption.spot() + 500000, 0.5, "S");
 
         std::cout << "\n\n*******************************************************************\n\n";
         std::cout << "Completed Simulation - Check for OptionData.csv\n";
