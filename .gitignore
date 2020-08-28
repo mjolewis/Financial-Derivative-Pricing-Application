@@ -4,7 +4,3 @@ cmake-build-debug
 CMakeLists.txt
 .gitignore
 TestExtras.hpp
-TestGroupAGreeks.hpp
-TestGroupAPricing.hpp
-TestGroupB.hpp
-TestOutFile.hpp
